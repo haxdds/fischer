@@ -1,66 +1,151 @@
 package chess.structure;
 
-import chess.transform.Translation;
-
 /**
- * Created by Rahul on 6/12/2017.
+ * Created by Rahul on 7/19/2017.
+ * <p>
+ * This class represents the squares which compose a chess board. The squares
+ * act as the possible positions which a piece may occupy in a game. Squares
+ * have colors and may also house a piece.
+ *
+ * @see Board
+ * @see Color
+ * @see Piece
  */
 public class Square {
+    /**
+     * Properties of a square:
+     * row: vertical coordinate of the square on the board.
+     * col: (column) horizontal coordinate of the square on the board.
+     * color: the color of the square.
+     * piece: the piece that occupies the square if the square is occupied.
+     * occupied: state boolean of whether the square is occupied by a piece.
+     *
+     * @see Color
+     * @see Piece
+     */
+    private int row;
+    private int col;
     private Color color;
     private Piece piece;
-    private int row;
-    private int column;
+    private boolean occupied = false;
 
-    public Square(Color color, int row, int column){
+    /**
+     * A constructor for Square objects.
+     *
+     * @param row   the row coordinate of the square.
+     * @param col   the column coordinate of the square.
+     * @param color the color of the square.
+     * @see Color
+     */
+    Square(int row, int col, Color color) {
+        this.row = row;
+        this.col = col;
         this.color = color;
-        this.row = row;
-        this.column = column;
     }
 
-    public Square(int row, int column){
-        this.row = row;
-        this.column = column;
+    /**
+     * Adds a piece to the square if it is already not occupied.
+     *
+     * @param p the piece to be added.
+     * @see Piece
+     */
+    public void addPiece(Piece p) {
+        if (isOccupied()) {
+            throw new IllegalArgumentException("Square is already occupied");
+        }
+        this.piece = p;
+        this.occupied = true;
     }
 
-
-    public void addPiece(Piece piece){
-        this.piece = piece;
+    /**
+     * @return returns the piece occupying the square if there is a piece
+     * @see Piece
+     */
+    public Piece getPiece() {
+        if (!isOccupied()) {
+            throw new IllegalArgumentException("Square is not occupied");
+        }
+        return this.piece;
     }
 
-    public void removePiece(){
+    /**
+     * removes piece occupying square if there is a piece.
+     */
+
+    public void removePiece() {
+        if (!isOccupied()) {
+            throw new IllegalArgumentException("Square is not occupied.");
+        }
         this.piece = null;
     }
 
-    public Piece getPiece(){return piece;}
-
-    public boolean hasPiece(){
-        return piece!=null;
+    /**
+     * @return a new square object which has the same properties as this square.
+     */
+    public Square clone() {
+        Square clone = new Square(getRow(), getCol(), getColor());
+        if (isOccupied()) {
+            clone.addPiece(getPiece().clone());
+        }
+        return clone;
     }
 
-    public Color getColor(){
-        return this.color;
+    /**
+     * Creates and returns a new square object whose coordinates are translated by
+     * a given Translation. The new square has the same color as the old square, but
+     * not the same piece state.
+     *
+     * @param t the translation to be applied
+     * @return the new square after translation
+     */
+    public Square translate(Translation t) {
+        return new Square(getRow() + t.getY(), getCol() + t.getX(), getColor());
     }
 
+    /**
+     * Determines if the row and column coordinates of the square are legal
+     * Square coordinates must be between 0 and 7, inclusive.
+     *
+     * @return state boolean of whether the square is within legal bounds.
+     */
+    public boolean inBounds() {
+        return row >= 0 && row < 8 && col >= 0 && col < 8;
+    }
+
+    /**
+     * @return state boolean of whether the square is occupied by a piece.
+     * @see Piece
+     */
+    public boolean isOccupied() {
+        return piece != null;
+    }
+
+    /**
+     * @return the row coordinate.
+     */
     public int getRow() {
         return row;
     }
 
-    public int getColumn() {
-        return column;
+    /**
+     * @return the column coordinate.
+     */
+    public int getCol() {
+        return col;
     }
 
-    public Square add(Translation t){
-        return new Square(this.getRow() + t.getY(), this.getColumn() + t.getX());
+    /**
+     * @return the color of the square.
+     * @see Color
+     */
+    public Color getColor() {
+        return color;
     }
 
-    public boolean inBounds(){
-        return getRow() <= 7 && getRow() >= 0 && getColumn() <= 7 && getColumn() >= 0;
+    public boolean equals(Square s){
+         if(getRow() != s.getRow() || getCol() != s.getCol()) return false;
+         if(isOccupied() != s.isOccupied()) return false;
+         if(!getPiece().equals(s.getPiece())) return false;
+         return true;
     }
-
-    public boolean equals(Square sq){
-        return row == sq.getRow() && column == sq.getColumn();
-    }
-
 }
-
-

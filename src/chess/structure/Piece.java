@@ -1,38 +1,69 @@
 package chess.structure;
 
-import java.awt.*;
-
 /**
- * Created by Rahul on 6/12/2017.
+ * Created by Rahul on 7/19/2017.
+ * <p>
+ * This class represents the pieces involved in a chess game.
+ * Pieces are the most dynamic objects in a chess game, their
+ * motion on a board is what define a chess game.
+ * <p>
+ * Dependencies:
+ *
+ * @see Type
+ * @see Color
  */
 public class Piece {
+
+    /**
+     * These are the characteristics which define a piece:
+     * Type defines the character signature, value, and translations associated
+     * with the Piece object.
+     * Color defines the color of the piece.
+     *
+     * @see Type
+     * @see Color
+     */
     private Type type;
     private Color color;
-    private Square square;
 
-    Piece(Type type, Color color){
+    /**
+     * A constructor for Piece objects.
+     *
+     * @param type  the type associated with the piece
+     * @param color the color of the piece
+     * @see Type
+     * @see Color
+     */
+    public Piece(Type type, Color color) {
         this.type = type;
         this.color = color;
     }
 
-    public Type getType(){
+    /**
+     * @return the type of the piece
+     * @see Type
+     */
+    public Type getType() {
         return type;
     }
 
-    public Color getColor(){
+    /**
+     * @return the color of the pice
+     * @see Color
+     */
+    public Color getColor() {
         return color;
     }
 
-    public boolean equals(Piece piece){
-        return piece.type == this.type && piece.getColor() == this.getColor();
+    /**
+     * Decides whether two pieces are the same piece in color and type.
+     *
+     * @param p the piece being compared to.
+     * @return boolean of whether pieces are equal,
+     */
+    public boolean equals(Piece p) {
+        return p.getColor() == this.getColor() && p.getType() == this.getType();
     }
 
-    public Square getSquare() {
-        return square;
-    }
-
-    public void setSquare(Square square) {
-        this.square = square;
-    }
+    public Piece clone() { return new Piece(type, color); }
 }
-
