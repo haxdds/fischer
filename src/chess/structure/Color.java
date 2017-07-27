@@ -1,19 +1,16 @@
 package chess.structure;
 
 /**
- * Created by Rahul on 6/12/2017.
+ * Created by Rahul on 7/19/2017.
+ * <p>
+ * This class represents the color of pieces, squares, and players in a chess game.
+ * We use our own concept of abstract color instead of the java.awt.Color package.
  */
 public enum Color {
-    BLACK(java.awt.Color.BLACK),
-    WHITE(java.awt.Color.WHITE);
+    /**
+     * The two colors involved in a chess game: Black and White.
+     */
+    BLACK(),
+    WHITE()
 
-    private java.awt.Color color;
-
-    Color(java.awt.Color color){
-        this.color = color;
-    }
-
-    public java.awt.Color getColor(){
-        return this.color;
-    }
 }
