@@ -50,7 +50,12 @@ public class MoveHandler {
      */
     public ArrayList<Square> getValidMoves(Square start, Board board) {
         ArrayList<Square> moves = iterateMoves(start, board);
+<<<<<<< HEAD
         return verifyMoves(start, moves, board);
+=======
+        verifyMoves(start, moves, board);
+        return moves;
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
     }
 
     /**
@@ -71,10 +76,18 @@ public class MoveHandler {
                 Square s = board.translateSquare(start, t);
                 if (!t.isSignature(signature) || p.getType() == Type.KNIGHT) {
                     if (s.isOccupied()) {
+<<<<<<< HEAD
                         if (s.getPiece().getColor() != p.getColor()){
                             moves.add(s);
                             signature = t.getSignature();
                         } else {
+=======
+                        if (!equalColors(s,start)) {
+                            moves.add(s);
+                            signature = t.getSignature();
+                        } else {
+                            System.out.println("\n\n===TEST===" +   " row:" + s.getRow() + " col: " + s.getCol() +"  " +board.toString());
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
                             signature = t.getSignature();
                         }
                     } else {
@@ -84,6 +97,7 @@ public class MoveHandler {
             }
 
         }
+<<<<<<< HEAD
 
         return moves;
     }
@@ -95,15 +109,39 @@ public class MoveHandler {
         Color pieceColor = board.getPiece(start).getColor();
         ArrayList<Square> removeList = new ArrayList<>();
         ArrayList<Square> verifiedMoves = new ArrayList<>();
+=======
+        return moves;
+    }
+
+    public boolean equalColors(Square s1, Square s2){
+        return s1.getPiece().getColor() == s2.getPiece().getColor();
+    }
+    //TODO: MAKE THIS CODE MODULAR!!
+
+    public void verifyMoves(Square start, ArrayList<Square> moves, Board board) {
+        Color pieceColor = board.getPiece(start).getColor();
+        ArrayList<Square> removeList = new ArrayList<>();
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
         for (Square s : moves) {
             Board clone = board.clone();
             Move move = new Move(start, s);
             if (isCheck(clone)) {
+<<<<<<< HEAD
                 Color checkedColor = getCheckedColor(clone);
                 if (checkedColor == pieceColor) {
                     clone.movePiece(move);
                     if (isCheck(clone)) {
                         if (getCheckedColor(clone) == pieceColor) {
+=======
+                //System.out.println("CHECK");
+                Color checkedColor = getCheckedColor(clone);
+                if (checkedColor == pieceColor) {
+                    System.out.println();
+                    clone.movePiece(move);
+                    if (isCheck(clone)) {
+                        if (getCheckedColor(clone) == pieceColor) {
+                            System.out.println("get out of check.");
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
                             removeList.add(s);
                         }
                     }
@@ -116,14 +154,24 @@ public class MoveHandler {
                 if (isCheck(clone)) {
                     Color checkedColor = getCheckedColor(clone);
                     if (checkedColor == pieceColor) {
+<<<<<<< HEAD
                         removeList.add(s);
+=======
+                        System.out.println("dont put yourself in check");
+                        removeList.add(s);
+
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
                     }
                 }
             }
         }
+<<<<<<< HEAD
         verifiedMoves.addAll(moves);
         verifiedMoves.removeAll(removeList);
         return verifiedMoves;
+=======
+        moves.removeAll(removeList);
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
     }
 
     /**
@@ -147,6 +195,10 @@ public class MoveHandler {
     public Color getCheckedColor(Board board) {
         Square blackKing = board.getBlackKing();
         Square whiteKing = board.getWhiteKing();
+<<<<<<< HEAD
+=======
+        if(whiteKing==null){System.out.print("WHITEKING"+board.toString());}
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if (board.getSquare(row, col).isOccupied()) {
@@ -167,8 +219,17 @@ public class MoveHandler {
                                     return null;
                                 }
                             }
+<<<<<<< HEAD
                         }
                     }
+=======
+                        } else {
+                            continue;
+                        }
+                    }
+                } else {
+                    continue;
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
                 }
             }
         }
@@ -179,6 +240,7 @@ public class MoveHandler {
     public ArrayList<Square> pawnIterate(Square start, Board board){
         Color c = start.getPiece().getColor();
         ArrayList<Square> moves = new ArrayList<>();
+<<<<<<< HEAD
         if(c == Color.BLACK){
             for(Translation t: Type.PAWN.getGroup().getGroup()){
                 if(t.getY() >  0) continue;
@@ -190,6 +252,19 @@ public class MoveHandler {
                         moves.add(s);
                     }else if(t.getY() == -2){
                         if(start.getRow() == 6){
+=======
+        if(c == Color.WHITE){
+            for(Translation t: Type.PAWN.getGroup().getGroup()){
+                if(t.getY() <  0) continue;
+                if(start.translate(t).inBounds()){
+                    Square s = board.translateSquare(start,t);
+                    if((t.getY() == 1 && t.getX() == -1) || (t.getY() == 1 && t.getX() == 1)){
+                        if(!s.isOccupied()) continue;
+                        if(s.getColor() == c) continue;
+                        moves.add(s);
+                    }else if(t.getY() == 2){
+                        if(start.getRow() == 1){
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
                             if(!s.isOccupied()) {
                                 moves.add(s);
                             }
@@ -203,6 +278,7 @@ public class MoveHandler {
             }
         }else{
             for(Translation t: Type.PAWN.getGroup().getGroup()){
+<<<<<<< HEAD
                 if(t.getY() <  0) continue;
                 if(start.translate(t).inBounds()){
                     Square s = board.translateSquare(start,t);
@@ -212,6 +288,17 @@ public class MoveHandler {
                         moves.add(s);
                     }else if(t.getY() == 2){
                         if(start.getRow() == 1){
+=======
+                if(t.getY() >  0) continue;
+                if(start.translate(t).inBounds()){
+                    Square s = board.translateSquare(start,t);
+                    if((t.getY() == -1 && t.getX() == -1) || (t.getY() == -1 && t.getX() == 1)){
+                        if(!s.isOccupied()) continue;
+                        if(s.getColor() == c) continue;
+                        moves.add(s);
+                    }else if(t.getY() == -2){
+                        if(start.getRow() == 6){
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
                             if(!s.isOccupied()) {
                                 moves.add(s);
                             }

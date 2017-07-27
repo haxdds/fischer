@@ -134,6 +134,7 @@ public class GroupFactoryImpl implements GroupFactory {
      *
      * @return a group object for queens.
      * @see Group
+<<<<<<< HEAD
      *
      * @FIXME switching the order of groups creates the weirdest bug. Bug causes some squares
      * @FIXME to not be iterated.
@@ -143,6 +144,13 @@ public class GroupFactoryImpl implements GroupFactory {
     public Group createQueenGroup() {
         Group g = createBishopGroup();
         g.addAll(createRookGroup().getGroup());
+=======
+     */
+    @Override
+    public Group createQueenGroup() {
+        Group g = createRookGroup();
+        g.addAll(createBishopGroup().getGroup());
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
         return g;
     }
 

@@ -5,7 +5,10 @@ import chess.gui.GUI;
 import chess.structure.Board;
 import chess.structure.Move;
 import chess.structure.Square;
+<<<<<<< HEAD
 import chess.structure.Type;
+=======
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
 
 import java.util.ArrayList;
 
@@ -49,7 +52,13 @@ public class Controller {
      * @see Controller#authenticateUserInput()
      */
     public void pushUserInput(Square square) {
+<<<<<<< HEAD
         System.out.println(square.toString());
+=======
+        System.out.println("row:" + square.getRow()+ "  col:" + square.getCol());
+        if(moveHandler.isCheck(board)){System.out.println("CHECK");}
+        System.out.println(moveHandler.getCheckedColor(board));
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
         if(userInput == null){
             if(!square.isOccupied()) return;
             userInput = new Move(square);
@@ -59,7 +68,10 @@ public class Controller {
                 if(!square.isOccupied()) return;
                 userInput.update(square);
                 gui.highlight(moveHandler.getValidMoves(userInput.getStart(), board));
+<<<<<<< HEAD
 
+=======
+>>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
             }else{
                 userInput.update(square);
                 authenticateUserInput();
