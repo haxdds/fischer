@@ -88,7 +88,6 @@ public class Square {
             clone.addPiece(getPiece().clone());
         }
         return clone;
-<<<<<<< HEAD
     }
 
     /**
@@ -153,66 +152,4 @@ public class Square {
     public String toString(){
         return "(" + row + ", " + col + "}";
     }
-=======
-    }
-
-    /**
-     * Creates and returns a new square object whose coordinates are translated by
-     * a given Translation. The new square has the same color as the old square, but
-     * not the same piece state.
-     *
-     * @param t the translation to be applied
-     * @return the new square after translation
-     */
-    public Square translate(Translation t) {
-        return new Square(getRow() + t.getY(), getCol() + t.getX(), getColor());
-    }
-
-    /**
-     * Determines if the row and column coordinates of the square are legal
-     * Square coordinates must be between 0 and 7, inclusive.
-     *
-     * @return state boolean of whether the square is within legal bounds.
-     */
-    public boolean inBounds() {
-        return row >= 0 && row < 8 && col >= 0 && col < 8;
-    }
-
-    /**
-     * @return state boolean of whether the square is occupied by a piece.
-     * @see Piece
-     */
-    public boolean isOccupied() {
-        return piece != null;
-    }
-
-    /**
-     * @return the row coordinate.
-     */
-    public int getRow() {
-        return row;
-    }
-
-    /**
-     * @return the column coordinate.
-     */
-    public int getCol() {
-        return col;
-    }
-
-    /**
-     * @return the color of the square.
-     * @see Color
-     */
-    public Color getColor() {
-        return color;
-    }
-
-    public boolean equals(Square s){
-         if(getRow() != s.getRow() || getCol() != s.getCol()) return false;
-         if(isOccupied() != s.isOccupied()) return false;
-         if(!getPiece().equals(s.getPiece())) return false;
-         return true;
-    }
->>>>>>> 278a0098fb9b96fd411e19277e13e28d838c809d
 }
