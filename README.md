@@ -1,6 +1,6 @@
 # Chess
 
-This chess game was developed using the MVC design pattern.
+This chess game was developed under the MVC design pattern.
 
 
 The goal is to hopefully use machine learning algorithms to 
