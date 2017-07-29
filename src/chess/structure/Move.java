@@ -50,6 +50,12 @@ public class Move {
     }
 
     /**
+     * A constructor for a move which not been started. This
+     * can be used for utility objects.
+     */
+    public Move(){}
+
+    /**
      * @return whether the move is ready to be executed, i.e. whether
      * both the start and end squares are defined.
      */
@@ -114,6 +120,11 @@ public class Move {
         this.matured = false;
     }
 
+    /**
+     *
+     * @param s
+     * @throws
+     */
     public void update(Square s){
         if(isMatured()) throw new IllegalArgumentException("Move is already mature");
         if(getStart() == null){
@@ -126,12 +137,22 @@ public class Move {
     }
 
     /**
+     *
+     * @return whether the move has been started
+     */
+    public boolean isStarted(){
+        return getStart() != null;
+    }
+
+    /**
      * @return string containing move log
      * @TODO FINISH IMPLEMENTING COLUMNS AS LETTERS SHOULD BE IN FORM K F2, N C3, etc.
      */
     public String toString() {
         String s = "";
-        s += this.getStart().getPiece().getType().getSignature();
-        return null;
+        s += getStart().getPiece().getType().getSignature();
+        if(getEnd().isOccupied()) s += " x";
+        s += " " + getStart().toString() + " " + getEnd().toString();
+        return s;
     }
 }

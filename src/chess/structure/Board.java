@@ -1,5 +1,8 @@
 package chess.structure;
 
+import chess.Game;
+import chess.controller.Controller;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +26,13 @@ public class Board {
      * Pieces occupy squares on the board
      * whitePieceSet is a list of all white colored pieces on the board.
      * blackPieceSet is a list of all black colored pieces on the board.
-     *
+     * TODO: {The Game field links the board object to a game.}
+     * TODO: IS LINKING NECESSARY? SEE CASTLING
+     * @see Game
      * @see Square
      * @see Piece
      */
+    private Game game;
     private Square[][] board = new Square[8][8];
     private List<Piece> whitePieceSet = new ArrayList<>();
     private List<Piece> blackPieceSet = new ArrayList<>();
@@ -37,7 +43,14 @@ public class Board {
      *
      * @see Board#setUpBoard()
      */
-    public Board() {
+    public Board() {setUpBoard();}
+
+    /**
+     * A constructor for a board which is linked to a game.
+     * @param game the Game which the board is a part of
+     */
+    public Board(Game game) {
+        this.game = game;
         setUpBoard();
     }
 
@@ -191,7 +204,11 @@ public class Board {
      * @see Board#movePiece(int, int, int, int)
      */
     public void movePiece(Move m) {
-        movePiece(m.getStart(), m.getEnd());
+        if(isCastlingMove(m)){
+           castle(m);
+        }else {
+            movePiece(m.getStart(), m.getEnd());
+        }
     }
 
     /**
@@ -200,9 +217,7 @@ public class Board {
      * @param m the move to be undone
      * @see Board#movePiece(Move)
      */
-    public void moveBack(Move m) {
-        movePiece(m.getEnd(), m.getStart());
-    }
+    public void moveBack(Move m) {movePiece(m.getEnd(), m.getStart());}
 
     /**
      * Adds a given piece to the square on the board with the given coordinates.
@@ -402,8 +417,64 @@ public class Board {
         return null;
     }
 
+    /**
+     *
+     * @param start the starting square from where to translate
+     * @param t the translation to execute
+     * @return the square after the translation
+     */
     public Square translateSquare(Square start, Translation t) {
         return getSquare(start.getRow() + t.getY(), start.getCol() + t.getX());
+    }
+
+    /**
+     * Determines if a move is a castling move
+     * @param m the move to be checked
+     * @return whether the move is a castling move
+     */
+    public boolean isCastlingMove(Move m){
+        if(m.getStart().getPiece().getType() != Type.KING) return false;
+        int deltaRow = Math.abs(m.getStart().getCol() - m.getEnd().getCol());
+        if(deltaRow != 2) return false;
+        return true;
+    }
+
+    /**
+     * Retrieves the corresponding rook move for castling for
+     * a given king castling move.
+     * @param start the starting position of king
+     * @param end the ending position of castled king
+     * @return the corresponding rook move for castling
+     */
+    public Move getCastlingRookMove(Square start, Square end){
+        if(end.getCol() == 6){
+            Square s1 = getSquare(start.getRow(), 7);
+            Square s2 = getSquare(start.getRow(), 5);
+            Move rookMove = new Move(s1, s2);
+            return rookMove;
+        }else if(end.getCol() == 2){
+            Square s1 = getSquare(start.getRow(), 0);
+            Square s2 = getSquare(start.getRow(), 3);
+            Move rookMove = new Move(s1, s2);
+            return rookMove;
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param m the move which castles the king
+     * @return the corresponding rook move for castling
+     * @see Board#getCastlingRookMove(Square, Square)
+     */
+    public Move getCastlingRookMove(Move m){
+        return getCastlingRookMove(m.getStart(), m.getEnd());
+    }
+
+    public void castle(Move m){
+        movePiece(m.getStart(), m.getEnd());
+        Move rookMove = getCastlingRookMove(m);
+        movePiece(rookMove.getStart(), rookMove.getEnd());
     }
 
     /**

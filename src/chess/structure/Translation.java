@@ -31,6 +31,7 @@ public class Translation {
      * <p>
      * Signatures are defined by a 1-dimensional array of length 2, where the zeroth
      * component defines the x signature and the first component defines the y signature.
+     * @see Translation#getSignature()
      */
     private int[] signature = new int[2];
 
@@ -72,7 +73,8 @@ public class Translation {
     /**
      * Signatures are defined by the direction of motion of each component of
      * the translation. Components that are less than 0 are given a signature of -1,
-     * and components that are greater than or equal to 0 are given a signature of 1.
+     * components that are greater than 0 are given a signature of 1, and components
+     * of 0 are given a signature of 0.
      * These conventions were chosen out of convenience.
      * <p>
      * This method is called on construction of the translation object.
@@ -81,13 +83,17 @@ public class Translation {
     public void setSignature() {
         if (x < 0) {
             signature[0] = -1;
-        } else {
+        } else if(x > 0){
             signature[0] = 1;
+        }else{
+            signature[0] = 0;
         }
         if (y < 0) {
             signature[1] = -1;
-        } else {
+        } else if(y > 0){
             signature[1] = 1;
+        }else{
+            signature[1] = 0;
         }
     }
 

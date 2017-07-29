@@ -1,12 +1,12 @@
 package chess.controller;
 
+import chess.Game;
 import chess.controller.logic.MoveHandler;
 import chess.gui.GUI;
-import chess.structure.Board;
-import chess.structure.Move;
-import chess.structure.Square;
-import chess.structure.Type;
+import chess.structure.*;
 
+
+import javax.tools.Diagnostic;
 import java.util.ArrayList;
 
 /**
@@ -20,22 +20,37 @@ import java.util.ArrayList;
  * @see Board
  * @see GUI
  * @see Listener
- * @see
+ * @see Game
  */
 public class Controller {
 
     /**
-     *
+     * The board and gui that the controller object regulates.
+     * The moveHandler object acts as a logic filter for
+     * incoming moves from the user.
+     * The userInput object handles all move requests from
+     * the user.
+     * @see MoveHandler
+     * @see Move
      */
+    private Game game;
     private Board board;
     private GUI gui;
     private MoveHandler moveHandler;
-    private Move userInput = null;
+    private Move userInput = new Move();
 
-    public Controller(Board board, GUI gui){
+    /**
+     * A constructor for a controller object
+     * @param game the game which the controller will regulate
+     * @param board the board in the game which is being regulated
+     * @param gui the gui in the game which is being regulated
+     * @see Game
+     */
+    public Controller(Game game, Board board, GUI gui){
+        this.game = game;
         this.board = board;
         this.gui = gui;
-        this.moveHandler = new MoveHandler();
+        this.moveHandler = new MoveHandler(game);
         addListeners();
     }
 
@@ -44,26 +59,31 @@ public class Controller {
      * the view/gui, verifies and updates the board.
      * @param square the square where the user clicked
      * @see Listener
-     * @see GUI#highlight(ArrayList)
      * @see Move#update(Square)
-     * @see Controller#authenticateUserInput()
+     * @see Controller#renderUserInput()
      */
     public void pushUserInput(Square square) {
-        System.out.println(square.toString());
-        if(userInput == null){
-            if(!square.isOccupied()) return;
-            userInput = new Move(square);
-            gui.highlight(moveHandler.getValidMoves(userInput.getStart(), board));
-        }else{
-            if(userInput.getStart() == null){
-                if(!square.isOccupied()) return;
-                userInput.update(square);
-                gui.highlight(moveHandler.getValidMoves(userInput.getStart(), board));
+        userInput.update(square);
+        renderUserInput();
+    }
 
-            }else{
-                userInput.update(square);
-                authenticateUserInput();
-            }
+    /**
+     * Processes the userInput move object and
+     * updates the gui accordingly. If the move
+     * is matured {@link Move#isMatured()}
+     * @see Move#reset()
+     * @see Controller#highlightView()
+     * @see Controller#authenticateAndUpdate()
+     */
+    public void renderUserInput(){
+        if(!userInput.getStart().isOccupied()){
+            userInput.reset();
+            return;
+        }
+        if(!userInput.isMatured()){
+            highlightView();
+        }else{
+            authenticateAndUpdate();
         }
     }
 
@@ -90,16 +110,24 @@ public class Controller {
      * @see GUI#refreshColor()
      * @see Move#reset()
      */
-    public void authenticateUserInput(){
-        if(moveHandler.isValidMove(userInput, board)){
+    public void authenticateAndUpdate(){
+        if(moveHandler.isValidMove(userInput, board)) {
+            System.out.println(userInput.toString());
+            game.writeMove(userInput);
             update(userInput);
-            gui.refreshColor();
-            userInput.reset();
-            System.out.println(board.toString());
+            refresh();
         }else{
-            userInput.reset();
-            gui.refreshColor();
+            refresh();
         }
+    }
+
+    /**\
+     * Resets the userInput Move object and refreshes the GUI
+     * @see GUI#refreshColor()
+     */
+    public void refresh(){
+        userInput.reset();
+        gui.refreshColor();
     }
 
     /**
@@ -121,8 +149,12 @@ public class Controller {
     /**
      * Updates the model board with the verified user input.
      * @param move the move used to update the model/board
+     * @FIXME INCORRECT ORDER FUCKS IT UP BECAUSE PIECE IS MOVED BEFORE CHECKING
      */
     public void updateModel(Move move){
+        if(board.isCastlingMove(move)){
+            updateView(board.getCastlingRookMove(move));
+        }
         board.movePiece(move);
     }
 
@@ -133,6 +165,22 @@ public class Controller {
     public void updateView(Move move){
         gui.update(move);
     }
+
+    /**
+     * Highlights the possible square on the gui that
+     * the user can move to
+     */
+    public void highlightView(){
+       gui.highlight(moveHandler.getValidMoves(userInput.getStart(), board));
+    }
+
+    /**
+     *
+     * @return whether there is a checkmate on the board
+     */
+    public boolean isCheckMate(){return moveHandler.isCheckMate(board);}
+
+
 
 
 }

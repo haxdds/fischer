@@ -136,12 +136,13 @@ public class GroupFactoryImpl implements GroupFactory {
      * @see Group
      * @FIXME switching the order of groups creates the weirdest bug. Bug causes some squares
      * @FIXME to not be iterated.
-     * @FIXME
+     * @UPDATED: THE BUG WAS CAUSED BY MY CHOICE OF SIGNATURE. COMPONENTS OF 0 HAS 0 SIGNATURE NOW.
+     * @see Translation#getSignature()
      */
     @Override
     public Group createQueenGroup() {
-        Group g = createBishopGroup();
-        g.addAll(createRookGroup().getGroup());
+        Group g = createRookGroup();
+        g.addAll(createBishopGroup().getGroup());
         return g;
     }
 

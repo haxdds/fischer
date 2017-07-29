@@ -142,6 +142,11 @@ public class Square {
         return color;
     }
 
+    /**
+     *
+     * @param s the square being compared to
+     * @return whether the calling square and the input square are equal
+     */
     public boolean equals(Square s){
          if(getRow() != s.getRow() || getCol() != s.getCol()) return false;
          if(isOccupied() != s.isOccupied()) return false;
@@ -149,7 +154,41 @@ public class Square {
          return true;
     }
 
+    /**
+     *
+     * @return a stylized string version of the square object
+     */
     public String toString(){
-        return "(" + row + ", " + col + "}";
+        String s = null;
+        switch(col){
+            case 0:
+                s = "A";
+                break;
+            case 1:
+                s = "B";
+                break;
+            case 2:
+                s = "C";
+                break;
+            case 3:
+                s = "D";
+                break;
+            case 4:
+                s = "E";
+                break;
+            case 5:
+                s = "F";
+                break;
+            case 6:
+                s = "G";
+                break;
+            case 7:
+                s = "H";
+                break;
+
+        }
+        return  s + "" + (row + 1);
     }
+
+
 }
