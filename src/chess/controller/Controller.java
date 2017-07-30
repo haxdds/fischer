@@ -38,6 +38,9 @@ public class Controller {
     private GUI gui;
     private MoveHandler moveHandler;
     private Move userInput = new Move();
+    private boolean userMove = true;
+    private boolean whiteMove = true;
+
 
     /**
      * A constructor for a controller object
@@ -63,6 +66,7 @@ public class Controller {
      * @see Controller#renderUserInput()
      */
     public void pushUserInput(Square square) {
+        if(!userMove) return;
         userInput.update(square);
         renderUserInput();
     }
@@ -179,6 +183,52 @@ public class Controller {
      * @return whether there is a checkmate on the board
      */
     public boolean isCheckMate(){return moveHandler.isCheckMate(board);}
+
+    /**
+     *
+     * @return
+     */
+    public boolean isUserMove(){return userMove;}
+
+    /**
+     * Starts userMove by setting it to true.
+     */
+    public void startUserMove(){userMove = true;}
+    /**
+     *
+     *
+     */
+    public void endUserMove(){userMove = false;}
+
+    /**
+     *
+     * @return
+     */
+    public boolean isWhiteMove() {
+        return whiteMove;
+    }
+
+    /**
+     *
+     */
+    public void startWhiteMove() {
+        this.whiteMove = true;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isBlackMove() {
+        return whiteMove == false;
+    }
+
+    /**
+     *
+     */
+    public void startBlackMove() {
+        this.whiteMove = false;
+    }
 
 
 

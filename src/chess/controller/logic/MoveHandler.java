@@ -102,7 +102,7 @@ public class MoveHandler {
     }
 
 
-    //TODO: MAKE THIS CODE MODULAR!!
+    //TODO: MAKE THIS CODE MODULAR!! -- Done 7/30/17
 
     /**
      * A verified list of moves that can be made by the piece occupying
@@ -112,47 +112,119 @@ public class MoveHandler {
      * @param moves the list of unverified moves
      * @param board the board on which the moves are being played
      * @return the verified list of moves
+     * @see MoveHandler#verifyForChecks(Square, Board, ArrayList)
+     * @see MoveHandler#verifyKingMoves(Square, Board, ArrayList)
      */
     public ArrayList<Square> verifyMoves(Square start, ArrayList<Square> moves, Board board) {
-        Color pieceColor = board.getPiece(start).getColor();
+        verifyForChecks(start, board, moves);
+        verifyKingMoves(start, board, moves);
+        return moves;
+    }
+
+    /**
+     *
+     * @param start
+     * @param board
+     * @param moves
+     * @see MoveHandler#verifyForCheck(Board, Move)
+     */
+    public void verifyForChecks(Square start, Board board, ArrayList<Square> moves){
         ArrayList<Square> removeList = new ArrayList<>();
-        ArrayList<Square> verifiedMoves = new ArrayList<>();
         for (Square s : moves) {
             Board clone = board.clone();
             Move move = new Move(start, s);
-            if (isCheck(clone)) {
-                Color checkedColor = getCheckedColor(clone);
-                if (checkedColor == pieceColor) {
-                    clone.movePiece(move);
-                    if (isCheck(clone)) {
-                        if (getCheckedColor(clone) == pieceColor) {
-                            removeList.add(s);
-                        }
-                    }
-                } else {
-                    //TODO: WTF
-                    //TODO: OPPONENT IN CHECK AND YOUR MOVE?!?
-                }
-            } else {
-                    clone.movePiece(move);
-                if (isCheck(clone)) {
-                    Color checkedColor = getCheckedColor(clone);
-                    if (checkedColor == pieceColor) {
-                        removeList.add(s);
-                    }else if(concurrentCheck(board)){
-                        removeList.add(s);
-                    }
-                }
+            if(!verifyForCheck(clone, move)){
+                removeList.add(s);
             }
         }
-        if(start.getPiece().getType() == Type.KING){
-            adjacentKingsVerification(start, board, moves, removeList);
-            //possible castling
-            verifiedMoves.addAll(getVerifiedCastling(start,board));
+        moves.removeAll(removeList);
+    }
+
+    /**
+     * Verifies whether a move is consistent with check legality
+     * @param board the board on which the move is being made
+     * @param move the move being made
+     * @return whether the move is legal with respect to checks.
+     * @see MoveHandler#verifyCurrentCheck(Board, Move)
+     * @see MoveHandler#verifyFutureChecks(Board, Move)
+     */
+    public boolean verifyForCheck(Board board, Move move){
+        if (isCheck(board)) {
+            if(!verifyCurrentCheck(board, move)) {
+                return false;
+            }
+        } else {
+            if(!verifyFutureChecks(board, move)){
+                return false;
+            }
         }
-        verifiedMoves.addAll(moves);
-        verifiedMoves.removeAll(removeList);
-        return verifiedMoves;
+        return true;
+    }
+    /**
+     *
+     * @param start
+     * @param board
+     * @param moves
+     * @see MoveHandler#adjacentKingsVerification(Square, Board, ArrayList)
+     * @see MoveHandler#getVerifiedCastling(Square, Board)
+     */
+    public void verifyKingMoves(Square start, Board board, ArrayList<Square> moves){
+        if (start.getPiece().getType() == Type.KING) {
+            adjacentKingsVerification(start, board, moves);
+            moves.addAll(getVerifiedCastling(start, board));
+        }else{
+            return;
+        }
+    }
+
+
+    /**
+     * Verifies that the move deals with the current check on the board.
+     * That is the move removes the check from the board.
+     * @param board the board on which the move is being made
+     * @param move the move to be verified
+     * @return whether that move deals with the check
+     */
+    public boolean verifyCurrentCheck(Board board, Move move){
+        if(getCheckedColor(board) == move.getStart().getPiece().getColor()) {
+            Board clone = board.clone();
+            clone.movePiece(move);
+            if (isCheck(clone)) {
+                if (getCheckedColor(clone) == move.getStart().getPiece().getColor()) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        }else{
+            return true;
+        }
+    }
+
+    /**
+     * Verifies that the move being made is consistent with checks.
+     * That is the move doesn't create a check to one's own side.
+     * @param board the board on which the move is being made
+     * @param move the move to be verified
+     * @return whether that move is consistent with future checks
+     */
+    public boolean verifyFutureChecks(Board board, Move move){
+        Board clone = board.clone();
+        clone.movePiece(move);
+        if (isCheck(clone)) {
+            Color checkedColor = getCheckedColor(clone);
+            if (checkedColor == move.getStart().getPiece().getColor()) {
+                return false;
+            }else if(concurrentCheck(clone)){
+                return false;
+            }else{
+                return true;
+            }
+        }else{
+            return true;
+        }
     }
 
     /**
@@ -208,15 +280,21 @@ public class MoveHandler {
 
     /**
      *
-     * @param board
-     * @return
+     * @param board the board being *checked* for checks
+     * @return the color in check. Returns the first color
+     * to be identified {@code checkedColors.get(0)}
+     * @see MoveHandler#getCheckedColors(Board)
      */
-    public Color getCheckedColor(Board board){return getCheckedColors(board).get(0);}
+    public Color getCheckedColor(Board board){
+        ArrayList<Color> checkedColors = getCheckedColors(board);
+        return (checkedColors.size() == 0) ? null : checkedColors.get(0);
+    }
 
     /**
      *
-     * @param board
-     * @return
+     * @param board the board being *checked*
+     * @return whether both players are in check simultaneously
+     * @see MoveHandler#getCheckedColors(Board) 
      */
     public boolean concurrentCheck(Board board){return getCheckedColors(board).size() == 2;}
 
@@ -228,53 +306,47 @@ public class MoveHandler {
      * @param board the board on which the game is being played
      * @return the list of all possible moves for the pawn
      */
-    public ArrayList<Square> pawnIterate(Square start, Board board){
+    public ArrayList<Square> pawnIterate(Square start, Board board) {
         Color c = start.getPiece().getColor();
-        ArrayList<Square> moves = new ArrayList<>();
         if(c == Color.BLACK){
-            for(Translation t: Type.PAWN.getGroup().getGroup()){
-                if(t.getY() >  0) continue;
-                if(start.translate(t).inBounds()){
-                    Square s = board.translateSquare(start,t);
-                    if((t.getY() == -1 && t.getX() == -1) || (t.getY() == -1 && t.getX() == 1)){
-                        if(!s.isOccupied()) continue;
-                        if(s.getPiece().getColor() == c) continue;
-                        moves.add(s);
-                    }else if(t.getY() == -2){
-                        if(start.getRow() == 6){
-                            if(!s.isOccupied()) {
-                                moves.add(s);
-                            }
-                        }
-                    }else{
-                        if(!s.isOccupied()){
-                            moves.add(s);
-                        }
-                    }
-                }
-            }
+            return pawnIterate(start,board,c,6,-1);
         }else{
-            for(Translation t: Type.PAWN.getGroup().getGroup()){
-                if(t.getY() <  0) continue;
-                if(start.translate(t).inBounds()){
-                    Square s = board.translateSquare(start,t);
-                    if((t.getY() == 1 && t.getX() == -1) || (t.getY() == 1 && t.getX() == 1)){
-                        if(!s.isOccupied()) continue;
-                        if(s.getPiece().getColor() == c) continue;
-                        moves.add(s);
-                    }else if(t.getY() == 2){
-                        if(start.getRow() == 1){
-                            if(!s.isOccupied()) {
-                                moves.add(s);
-                            }
-                        }
-                    }else{
-                        if(!s.isOccupied()){
+            return pawnIterate(start, board, c, 1, 1);
+        }
+    }
+
+    /**
+     *
+     * @param start
+     * @param board
+     * @param c
+     * @param startingRow
+     * @param y
+     * @return
+     */
+    private ArrayList<Square> pawnIterate(Square start, Board board, Color c, int startingRow, int y){
+        ArrayList<Square> moves = new ArrayList<>();
+        for (Translation t : Type.PAWN.getGroup().getGroup()) {
+            if (t.getY() * y < 0) continue; //if move is in opposite direction
+            if (start.translate(t).inBounds()) {
+                Square s = board.translateSquare(start, t);
+                if ((t.getY() == y && t.getX() == -1) || (t.getY() == y && t.getX() == 1)) {
+                    if (!s.isOccupied()) continue;
+                    if (s.getPiece().getColor() == c) continue;
+                    moves.add(s);
+                } else if (t.getY() == (2 * y)) {
+                    if (start.getRow() == startingRow) {
+                        if (!s.isOccupied()) {
                             moves.add(s);
                         }
                     }
+                } else {
+                    if (!s.isOccupied()) {
+                        moves.add(s);
+                    }
                 }
             }
+
         }
         return moves;
     }
@@ -316,10 +388,10 @@ public class MoveHandler {
      *
      * @param start
      * @param board
-     * @param moves
-     * @param removeList
+     * @param moves     *
      */
-    public void adjacentKingsVerification(Square start, Board board, ArrayList<Square> moves, ArrayList<Square> removeList){
+    public void adjacentKingsVerification(Square start, Board board, ArrayList<Square> moves){
+        ArrayList<Square> removeList = new ArrayList<>();
         Color c = start.getPiece().getColor();
         if(c == Color.WHITE){
             Square king = board.getBlackKing();
@@ -336,6 +408,7 @@ public class MoveHandler {
                 }
             }
         }
+        moves.removeAll(removeList);
     }
     //TODO: MAKE CASTLING CODE NEATER
     /**

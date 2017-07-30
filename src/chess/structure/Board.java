@@ -32,7 +32,7 @@ public class Board {
      * @see Square
      * @see Piece
      */
-    private Game game;
+    private Controller controller;
     private Square[][] board = new Square[8][8];
     private List<Piece> whitePieceSet = new ArrayList<>();
     private List<Piece> blackPieceSet = new ArrayList<>();
@@ -47,10 +47,10 @@ public class Board {
 
     /**
      * A constructor for a board which is linked to a game.
-     * @param game the Game which the board is a part of
+     * @param controller the Game which the board is a part of
      */
-    public Board(Game game) {
-        this.game = game;
+    public Board(Controller controller) {
+        this.controller = controller;
         setUpBoard();
     }
 
