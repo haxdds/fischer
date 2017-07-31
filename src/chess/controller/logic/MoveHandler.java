@@ -257,6 +257,8 @@ public class MoveHandler {
     }
 
     /**
+     * TODO: WTF IS UP WITH THIS METHOD
+     * TODO: FIXED THIS SHIT FUCK YEAH 7-31-17
      * Returns the color of the checked player
      * @param board the board to be *checked*
      * @return List of the colors of the players in check. Empty List if no
@@ -266,29 +268,14 @@ public class MoveHandler {
         Square blackKing = board.getBlackKing();
         Square whiteKing = board.getWhiteKing();
         HashSet<Color> checked = new HashSet<>();
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                if (board.getSquare(row, col).isOccupied()) {
-                    Color c = board.getPiece(row, col).getColor();
-                    ArrayList<Square> moves = iterateMoves(board.getSquare(row, col), board);
-                    for (Square s : moves) {
-                        if (s.isOccupied()) {
-                            if (s.equals(whiteKing)) {
-                                if(c == Color.BLACK) {
-                                    checked.add(Color.WHITE);
-                                }else{
-                                    return null;
-                                }
-                            } else if (s.equals(blackKing)) {
-                                if(c == Color.WHITE) {
-                                    checked.add(Color.BLACK);
-                                }else{
-                                    return null;
-                                }
-                            }
-                        }
-                    }
-                }
+       for(Piece p: board.getWhitePieceList()){
+             if(iterateMoves(board.mapPiece(p), board).contains(blackKing)){
+                 checked.add(Color.BLACK);
+             }
+        }
+        for(Piece p: board.getBlackPieceList()){
+            if(iterateMoves(board.mapPiece(p), board).contains(whiteKing)){
+                checked.add(Color.WHITE);
             }
         }
         return new ArrayList<>(checked);

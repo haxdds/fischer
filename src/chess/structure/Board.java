@@ -4,6 +4,7 @@ import chess.Game;
 import chess.controller.Controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -34,8 +35,10 @@ public class Board {
      */
     private Controller controller;
     private Square[][] board = new Square[8][8];
-    private List<Piece> whitePieceSet = new ArrayList<>();
-    private List<Piece> blackPieceSet = new ArrayList<>();
+    private ArrayList<Piece> pieceList = new ArrayList<>();
+    private ArrayList<Piece> whitePieceList = new ArrayList<>();
+    private ArrayList<Piece> blackPieceList = new ArrayList<>();
+    private HashMap<Piece, Square> pieceMap  = new HashMap<>();
 
     /**
      * A constructor for a board. It takes no arguments.
@@ -100,8 +103,8 @@ public class Board {
      * in both the appropriate squares on the board and the list of
      * pieces.
      *
-     * @see Board#whitePieceSet
-     * @see Board#blackPieceSet
+     * @see Board#whitePieceList
+     * @see Board#blackPieceList
      */
     public void setPieces() {
         Piece wpawn = new Piece(Type.PAWN, Color.WHITE);
@@ -119,48 +122,46 @@ public class Board {
         Piece bking = new Piece(Type.KING, Color.BLACK);
 
         for (int column = 0; column < 8; column++) {
-            addPiece(1, column, wpawn);
-            addPiece(6, column, bpawn);
-            whitePieceSet.add(wpawn);
-            blackPieceSet.add(bpawn);
+            addPiece(1, column, wpawn.clone());
+            addPiece(6, column, bpawn.clone());
         }
 
-        whitePieceSet.add(wrook);
-        whitePieceSet.add(wknight);
-        whitePieceSet.add(wbishop);
-        whitePieceSet.add(wqueen);
-        whitePieceSet.add(wking);
-        whitePieceSet.add(wbishop);
-        whitePieceSet.add(wknight);
-        whitePieceSet.add(wrook);
+//        whitePieceSet.add(wrook.clone());
+//        whitePieceSet.add(wknight.clone());
+//        whitePieceSet.add(wbishop.clone());
+//        whitePieceSet.add(wqueen.clone());
+//        whitePieceSet.add(wking.clone());
+//        whitePieceSet.add(wbishop.clone());
+//        whitePieceSet.add(wknight.clone());
+//        whitePieceSet.add(wrook.clone());
+//
+//        blackPieceSet.add(brook.clone());
+//        blackPieceSet.add(bknight.clone());
+//        blackPieceSet.add(bbishop.clone());
+//        blackPieceSet.add(bqueen.clone());
+//        blackPieceSet.add(bking.clone());
+//        blackPieceSet.add(bbishop.clone());
+//        blackPieceSet.add(bknight.clone());
+//        blackPieceSet.add(brook.clone());
 
-        blackPieceSet.add(brook);
-        blackPieceSet.add(bknight);
-        blackPieceSet.add(bbishop);
-        blackPieceSet.add(bqueen);
-        blackPieceSet.add(bking);
-        blackPieceSet.add(bbishop);
-        blackPieceSet.add(bknight);
-        blackPieceSet.add(brook);
 
+        addPiece(0, 0, wrook.clone());
+        addPiece(0, 1, wknight.clone());
+        addPiece(0, 2, wbishop.clone());
+        addPiece(0, 3, wqueen.clone());
+        addPiece(0, 4, wking.clone());
+        addPiece(0, 5, wbishop.clone());
+        addPiece(0, 6, wknight.clone());
+        addPiece(0, 7, wrook.clone());
 
-        board[0][0].addPiece(wrook);
-        board[0][1].addPiece(wknight);
-        board[0][2].addPiece(wbishop);
-        board[0][3].addPiece(wqueen);
-        board[0][4].addPiece(wking);
-        board[0][5].addPiece(wbishop);
-        board[0][6].addPiece(wknight);
-        board[0][7].addPiece(wrook);
-
-        board[7][0].addPiece(brook);
-        board[7][1].addPiece(bknight);
-        board[7][2].addPiece(bbishop);
-        board[7][3].addPiece(bqueen);
-        board[7][4].addPiece(bking);
-        board[7][5].addPiece(bbishop);
-        board[7][6].addPiece(bknight);
-        board[7][7].addPiece(brook);
+        addPiece(7, 0, brook.clone());
+        addPiece(7, 1, bknight.clone());
+        addPiece(7, 2, bbishop.clone());
+        addPiece(7, 3, bqueen.clone());
+        addPiece(7, 4, bking.clone());
+        addPiece(7, 5, bbishop.clone());
+        addPiece(7, 6, bknight.clone());
+        addPiece(7, 7, brook.clone());
 
     }
 
@@ -181,8 +182,11 @@ public class Board {
         if(getSquare(endRow, endCol).isOccupied()){
             removePiece(endRow, endCol);
         }
-        addPiece(endRow, endCol, getPiece(startRow, startCol));
+        Piece p = getPiece(startRow, startCol);
         removePiece(startRow, startCol);
+        addPiece(endRow, endCol, p);
+//        addPiece(endRow, endCol, getPiece(startRow, startCol));
+//        removePiece(startRow, startCol);
     }
 
     /**
@@ -230,6 +234,8 @@ public class Board {
      * @see Square#addPiece(Piece)
      */
     public void addPiece(int row, int col, Piece p) {
+        addToList(p);
+        addToMap(p, getSquare(row, col));
         getSquare(row, col).addPiece(p);
     }
 
@@ -254,6 +260,8 @@ public class Board {
      * @see Square#removePiece()
      */
     public void removePiece(int row, int col) {
+        removeFromList(getPiece(row,col));
+        removeFromMap(getPiece(row, col), getSquare(row, col));
         getSquare(row, col).removePiece();
     }
 
@@ -364,7 +372,33 @@ public class Board {
                 clone.setSquare(getSquare(row, col).clone());
             }
         }
+        cloneListAndMap(clone);
         return clone;
+    }
+
+    /**
+     *
+     * @param clone
+     */
+    public void cloneListAndMap(Board clone){
+        ArrayList<Piece> clonelist = new ArrayList<>();
+        ArrayList<Piece> clonewhitelist = new ArrayList<>();
+        ArrayList<Piece> cloneblacklist = new ArrayList<>();
+        HashMap<Piece, Square> clonemap = new HashMap<>();
+        for(Piece p: getPieceList()){
+            Piece clonepiece = p.clone();
+            if(clonepiece.getColor() == Color.WHITE){
+                clonewhitelist.add(clonepiece);
+            }else{
+                cloneblacklist.add(clonepiece);
+            }
+            clonelist.add(clonepiece);
+            clonemap.put(clonepiece, mapPiece(p).clone());
+        }
+        clone.setPieceList(clonelist);
+        clone.setBlackPieceList(cloneblacklist);
+        clone.setWhitePieceList(clonewhitelist);
+        clone.setPieceMap(clonemap);
     }
 
     /**
@@ -471,10 +505,159 @@ public class Board {
         return getCastlingRookMove(m.getStart(), m.getEnd());
     }
 
+    /**
+     *
+     * @param m
+     */
     public void castle(Move m){
         movePiece(m.getStart(), m.getEnd());
         Move rookMove = getCastlingRookMove(m);
         movePiece(rookMove.getStart(), rookMove.getEnd());
+    }
+
+    public void addToList(Piece p){
+        pieceList.add(p);
+        if(p.getColor() == Color.WHITE){
+            addToWhiteList(p);
+        }else{
+            addToBlackList(p);
+        }
+    }
+
+    /**
+     *
+     * @param p
+     */
+    public void addToWhiteList(Piece p){
+        whitePieceList.add(p);
+    }
+
+    /**
+     *
+     * @param p
+     */
+    public void addToBlackList(Piece p){
+        blackPieceList.add(p);
+    }
+
+    /**
+     *
+     * @param p
+     */
+    public void removeFromList(Piece p){
+        pieceList.remove(p);
+        if(p.getColor() == Color.WHITE){
+            removeFromWhiteList(p);
+        }else{
+            removeFromBlackList(p);
+        }
+    }
+
+    /**
+     *
+     * @param p
+     */
+    public void removeFromWhiteList(Piece p){
+        whitePieceList.remove(p);
+    }
+
+    /**
+     *
+     * @param p
+     */
+    public void removeFromBlackList(Piece p){
+        blackPieceList.remove(p);
+    }
+
+    /**
+     *
+     * @param p
+     * @param s
+     */
+    public void addToMap(Piece p, Square s){
+        pieceMap.put(p, s);
+    }
+
+    /**
+     *
+     * @param p
+     * @param s
+     */
+    public void removeFromMap(Piece p, Square s){
+        pieceMap.remove(p, s);
+    }
+
+    /**
+     * 
+     * @param p
+     * @return
+     */
+    public Square mapPiece(Piece p){
+        return pieceMap.get(p);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Piece> getPieceList() {
+        return pieceList;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Piece> getWhitePieceList() {
+        return whitePieceList;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Piece> getBlackPieceList() {
+        return blackPieceList;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public HashMap<Piece, Square> getPieceMap() {
+        return pieceMap;
+    }
+
+    /**
+     *
+     * @param pieceList
+     */
+    public void setPieceList(ArrayList<Piece> pieceList) {
+        this.pieceList = pieceList;
+    }
+
+    /**
+     *
+     * @param whitePieceList
+     */
+    public void setWhitePieceList(ArrayList<Piece> whitePieceList) {
+        this.whitePieceList = whitePieceList;
+    }
+
+    /**
+     *
+     * @param blackPieceList
+     */
+    public void setBlackPieceList(ArrayList<Piece> blackPieceList) {
+        this.blackPieceList = blackPieceList;
+    }
+
+    /**
+     *
+     * @param pieceMap
+     */
+    public void setPieceMap(HashMap<Piece, Square> pieceMap) {
+        this.pieceMap = pieceMap;
     }
 
     /**

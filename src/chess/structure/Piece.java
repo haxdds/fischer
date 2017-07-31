@@ -26,6 +26,7 @@ public class Piece {
     private Type type;
     private Color color;
 
+
     /**
      * A constructor for Piece objects.
      *
@@ -33,6 +34,7 @@ public class Piece {
      * @param color the color of the piece
      * @see Type
      * @see Color
+     *
      */
     public Piece(Type type, Color color) {
         this.type = type;
@@ -65,5 +67,10 @@ public class Piece {
         return p.getColor() == this.getColor() && p.getType() == this.getType();
     }
 
+    /**
+     *
+     * @return
+     */
     public Piece clone() { return new Piece(type, color); }
+
 }
