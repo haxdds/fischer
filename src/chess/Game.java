@@ -159,7 +159,11 @@ public class Game {
         return moveList.contains(move.toString());
     }
 
-
-
+    /**
+     *
+     * @param s
+     * @return
+     */
+    public boolean hasSquare(Square s){return moveList.contains(s.toString());}
 
 }

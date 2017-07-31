@@ -53,7 +53,7 @@ public class Controller {
         this.game = game;
         this.board = board;
         this.gui = gui;
-        this.moveHandler = new MoveHandler(game);
+        this.moveHandler = new MoveHandler(this);
         addListeners();
     }
 
@@ -230,7 +230,43 @@ public class Controller {
         this.whiteMove = false;
     }
 
+    /**
+     *
+     * @return
+     */
+    public Game getGame() {
+        return game;
+    }
 
+    /**
+     *
+     * @return
+     */
+    public Board getBoard() {
+        return board;
+    }
 
+    /**
+     *
+     * @return
+     */
+    public GUI getGui() {
+        return gui;
+    }
 
+    /**
+     *
+     * @return
+     */
+    public MoveHandler getMoveHandler() {
+        return moveHandler;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Move getUserInput() {
+        return userInput;
+    }
 }

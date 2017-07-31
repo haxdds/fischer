@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import chess.Game;
+import chess.controller.Controller;
 import chess.structure.*;
 
 /**
@@ -24,14 +25,14 @@ public class MoveHandler {
     /**
      * The game which the movehandler regulates
      */
-    private Game game;
+    private Controller controller;
 
     /**
      * A constructor for MoveHandler objects.
-     * @param game the game which is to be regulated
+     * @param controller the controller which uses this move handler.
      */
-    public MoveHandler(Game game){
-        this.game = game;
+    public MoveHandler(Controller controller){
+        this.controller = controller;
     }
 
     /**
@@ -77,28 +78,43 @@ public class MoveHandler {
      */
     public ArrayList<Square> iterateMoves(Square start, Board board) {
         ArrayList<Square> moves = new ArrayList<>();
-        Piece p = board.getPiece(start);
+        Piece p = start.getPiece();
         if(p.getType() == Type.PAWN) return pawnIterate(start, board);
         Group g = p.getType().getGroup();
-        int[] signature = null;
+        int[] signature = {0,0};
         for (Translation t : g.getGroup()) {
-            if (start.translate(t).inBounds()) {
-                Square s = board.translateSquare(start, t);
-                if (!t.isSignature(signature) || p.getType() == Type.KNIGHT) {
-                    if (s.isOccupied()) {
-                        if (s.getPiece().getColor() != p.getColor()) {
-                            moves.add(s);
-                            signature = t.getSignature();
-                        } else {
-                            signature = t.getSignature();
-                        }
-                    } else {
-                        moves.add(s);
-                    }
-                }
+            if(checkTranslation(t, start, board, signature)){
+                moves.add(board.translateSquare(start ,t));
             }
         }
         return moves;
+    }
+
+    /**
+     *
+     * @param t
+     * @param start
+     * @param board
+     * @param signature
+     * @return
+     */
+    public boolean checkTranslation(Translation t, Square start, Board board, int[] signature) {
+        if (start.translate(t).inBounds()) {
+            Square s = board.translateSquare(start, t);
+            if (!t.isSignature(signature) || start.getPiece().getType() == Type.KNIGHT) {
+                if (s.isOccupied()) {
+                    signature[0] = t.getSignature()[0];
+                    signature[1] = t.getSignature()[1];
+                    if (s.getPiece().getColor() != start.getPiece().getColor()) {
+                        return true;
+                    }
+
+                } else {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 
@@ -294,7 +310,7 @@ public class MoveHandler {
      *
      * @param board the board being *checked*
      * @return whether both players are in check simultaneously
-     * @see MoveHandler#getCheckedColors(Board) 
+     * @see MoveHandler#getCheckedColors(Board)
      */
     public boolean concurrentCheck(Board board){return getCheckedColors(board).size() == 2;}
 
@@ -307,48 +323,66 @@ public class MoveHandler {
      * @return the list of all possible moves for the pawn
      */
     public ArrayList<Square> pawnIterate(Square start, Board board) {
-        Color c = start.getPiece().getColor();
-        if(c == Color.BLACK){
-            return pawnIterate(start,board,c,6,-1);
+
+        if(start.getPiece().getColor() == Color.BLACK){
+            return pawnIterate(start,board,6,-1);
         }else{
-            return pawnIterate(start, board, c, 1, 1);
+            return pawnIterate(start, board, 1, 1);
         }
     }
 
     /**
      *
      * @param start
-     * @param board
-     * @param c
+     * @param board     *
      * @param startingRow
      * @param y
      * @return
      */
-    private ArrayList<Square> pawnIterate(Square start, Board board, Color c, int startingRow, int y){
+    private ArrayList<Square> pawnIterate(Square start, Board board, int startingRow, int y){
         ArrayList<Square> moves = new ArrayList<>();
         for (Translation t : Type.PAWN.getGroup().getGroup()) {
-            if (t.getY() * y < 0) continue; //if move is in opposite direction
-            if (start.translate(t).inBounds()) {
-                Square s = board.translateSquare(start, t);
-                if ((t.getY() == y && t.getX() == -1) || (t.getY() == y && t.getX() == 1)) {
-                    if (!s.isOccupied()) continue;
-                    if (s.getPiece().getColor() == c) continue;
-                    moves.add(s);
-                } else if (t.getY() == (2 * y)) {
-                    if (start.getRow() == startingRow) {
-                        if (!s.isOccupied()) {
-                            moves.add(s);
-                        }
-                    }
-                } else {
-                    if (!s.isOccupied()) {
-                        moves.add(s);
-                    }
-                }
+            if(checkPawnTranslation(t, start, board, y, startingRow)){
+                moves.add(board.translateSquare(start, t));
             }
-
         }
         return moves;
+    }
+
+    /**
+     * TODO: MAKE THIS PAWN TRANSLATION CHECKING METHOD EASIER TO UNDERSTAND!
+     */
+
+    /**
+     *
+     * @param t
+     * @param start
+     * @param board
+     * @param y
+     * @param startingRow
+     * @return
+     */
+    public boolean checkPawnTranslation(Translation t, Square start, Board board, int y, int startingRow){
+        if (t.getY() * y < 0) return false; //if move is in opposite direction
+        if (start.translate(t).inBounds()) {
+            Square s = board.translateSquare(start, t);
+            if ((t.getY() == y && t.getX() == -1) || (t.getY() == y && t.getX() == 1)) {
+                if (!s.isOccupied()) return false;
+                if (s.getPiece().getColor() == start.getPiece().getColor()) return false;
+                return true;
+            } else if (t.getY() == (2 * y)) {
+                if (start.getRow() == startingRow) {
+                    if (!s.isOccupied()) {
+                        return true;
+                    }
+                }
+            } else {
+                if (!s.isOccupied()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -388,77 +422,80 @@ public class MoveHandler {
      *
      * @param start
      * @param board
-     * @param moves     *
+     * @param moves
      */
     public void adjacentKingsVerification(Square start, Board board, ArrayList<Square> moves){
-        ArrayList<Square> removeList = new ArrayList<>();
-        Color c = start.getPiece().getColor();
-        if(c == Color.WHITE){
-            Square king = board.getBlackKing();
-            for(Square s: moves){
-                if(areWithinRange(s,king)){
-                    removeList.add(s);
-                }
-            }
+        if(start.getPiece().getColor() == Color.WHITE){
+            removeAdjacentSquares(moves, board.getBlackKing());
         }else{
-            Square king = board.getWhiteKing();
-            for(Square s: moves) {
-                if (areWithinRange(s,king)) {
-                    removeList.add(s);
-                }
+            removeAdjacentSquares(moves, board.getWhiteKing());
+        }
+    }
+
+    /**
+     *
+     * @param squares
+     * @param key
+     */
+    public void removeAdjacentSquares(ArrayList<Square> squares, Square key){
+        ArrayList<Square> removeList = new ArrayList<>();
+        for(Square s: squares){
+            if(areWithinRange(s,key)){
+                removeList.add(s);
             }
         }
-        moves.removeAll(removeList);
     }
-    //TODO: MAKE CASTLING CODE NEATER
+
+    //TODO: MAKE CASTLING CODE NEATER -- progress 7/31/17
     /**
      *
      * @param square the square from which the king will castle
      * @return the list of possible castling squares for that king
+     * @see MoveHandler#addCastlingSquares(Game, int, ArrayList)
      */
     public ArrayList<Square> getCastleSquares(Square square){
-        Board board = game.getModel();
+        Game game = controller.getGame();
         if(!square.isOccupied()) throw new IllegalArgumentException("Square must have king.");
         if(square.getPiece().getType() != Type.KING) throw new IllegalArgumentException("Square must have king.");
         Piece king = square.getPiece();
         ArrayList<Square> castle = new ArrayList<>();
         if(king.getColor() == Color.WHITE){
-            if(game.hasString("E1")){
-                return castle;
-            }else{
-                if(!game.hasString("H1")
-                        && !board.hasPiece(0,6)
-                        && !board.hasPiece(0, 5)){
-                    castle.add(board.getSquare(0,6));
-                    System.out.println("H1----");
-                }
-                if(!game.hasString("A1")
-                        && !board.getSquare(0,1).isOccupied()
-                        && !board.getSquare(0, 2).isOccupied()
-                        && !board.getSquare(0,3).isOccupied()){
-                    castle.add(board.getSquare(0,2));
-                }
-            }
+            addCastlingSquares(game, 0, castle);
         }else{
-            if(game.hasString("E8")){
-                return castle;
-            }else{
-                if(!game.hasString("H8")
-                        && !board.getSquare(7,6).isOccupied()
-                        && !board.getSquare(7, 5).isOccupied()){
-                    castle.add(board.getSquare(7,6));
-                }
-                if(!game.hasString("A8")
-                        && !board.getSquare(7,1).isOccupied()
-                        && !board.getSquare(7, 2).isOccupied()
-                        && !board.getSquare(7,3).isOccupied()){
-                    castle.add(board.getSquare(7,2));
-                }
-            }
+            addCastlingSquares(game, 7, castle);
         }
         return castle;
     }
 
+    /**
+     *
+     * @param game
+     * @param row
+     * @param castle
+     */
+    public void addCastlingSquares(Game game, int row, ArrayList<Square> castle){
+        Board board = game.getModel();
+        Square E = board.getSquare(row, 4);
+        Square H = board.getSquare(row, 7);
+        Square A = board.getSquare(row, 0);
+        if(game.hasSquare(E)){
+            return;
+        }else{
+            if(!game.hasSquare(H)
+                    && !board.getSquare(row,6).isOccupied()
+                    && !board.getSquare(row, 5).isOccupied()){
+                castle.add(board.getSquare(row,6));
+            }
+            if(!game.hasSquare(A)
+                    && !board.getSquare(row,1).isOccupied()
+                    && !board.getSquare(row, 2).isOccupied()
+                    && !board.getSquare(row,3).isOccupied()){
+                castle.add(board.getSquare(row,2));
+            }
+        }
+    }
+
+    //TODO: MORE CHECK REQUIREMENTS
     /**
      *
      * @param start the king's starting square for castling
@@ -468,58 +505,48 @@ public class MoveHandler {
     public ArrayList<Square> getVerifiedCastling(Square start, Board board) {
         ArrayList<Square> moves = getCastleSquares(start);
         Color kingColor = start.getPiece().getColor();
-        Board clone = board.clone();
         //if King is in check, castling is not possible. return empty list.
         if(isCheck(board)) {
             if (getCheckedColor(board) == kingColor) {
-                return new ArrayList<Square>();
+                return new ArrayList<>();
             }
         }
         if (kingColor == Color.WHITE) {
-            Square right = board.getSquare(0, 6);
-            Square left = board.getSquare(0, 2);
-            if (moves.contains(right)) {
-                clone.movePiece(0, 4, 0, 6);
-                clone.movePiece(0, 7, 0, 5);
-                if(isCheck(clone)) {
-                    if (getCheckedColor(clone) == kingColor) {
-                        moves.remove(right);
-                        System.out.println("vro");
-                    }
-                }
-            } else if (moves.contains(left)) {
-                clone = board.clone();
-                clone.movePiece(0, 4, 0, 2);
-                clone.movePiece(0, 0, 0, 3);
-                if(isCheck(clone)) {
-                    if (getCheckedColor(clone) == kingColor) {
-                        moves.remove(left);
-                    }
+            verifyCastlingSquares(moves, board, 0);
+        }else{
+            verifyCastlingSquares(moves, board, 7);
+        }
+        return moves;
+    }
+
+    /**
+     *
+     * @param moves
+     * @param board
+     * @param row
+     */
+    public void verifyCastlingSquares(ArrayList<Square> moves, Board board, int row){
+        Square right = board.getSquare(row, 6);
+        Square left = board.getSquare(row, 2);
+        Board clone = board.clone();
+        if (moves.contains(right)) {
+            clone.movePiece(row, 4, row, 6);
+            clone.movePiece(row, 7, row, 5);
+            if(isCheck(clone)) {
+                if (getCheckedColor(clone) == board.getPiece(row, 4).getColor()) {
+                    moves.remove(right);
                 }
             }
-        }else{
-            Square right = board.getSquare(7, 6);
-            Square left = board.getSquare(7, 2);
-            if (moves.contains(right)) {
-                clone.movePiece(7, 4, 7, 6);
-                clone.movePiece(7, 7, 7, 5);
-                if(isCheck(clone)) {
-                    if (getCheckedColor(clone) == kingColor) {
-                        moves.remove(right);
-                    }
-                }
-            } else if (moves.contains(left)) {
-                clone = board.clone();
-                clone.movePiece(7, 4, 7, 2);
-                clone.movePiece(7, 0, 7, 3);
-                if(isCheck(clone)) {
-                    if (getCheckedColor(clone) == kingColor) {
-                        moves.remove(left);
-                    }
+        } else if (moves.contains(left)) {
+            clone = board.clone();
+            clone.movePiece(row, 4, row, 2);
+            clone.movePiece(row, 0, row, 3);
+            if(isCheck(clone)) {
+                if (getCheckedColor(clone) == board.getPiece(row, 4).getColor()) {
+                    moves.remove(left);
                 }
             }
         }
-        return moves;
     }
 
 

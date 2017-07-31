@@ -28,7 +28,7 @@ public class Board {
      * blackPieceSet is a list of all black colored pieces on the board.
      * TODO: {The Game field links the board object to a game.}
      * TODO: IS LINKING NECESSARY? SEE CASTLING
-     * @see Game
+     * @see Controller
      * @see Square
      * @see Piece
      */
