@@ -1,4 +1,4 @@
-package chess.structure;
+package chess.game;
 
 /**
  * Created by Rahul on 7/28/2017.

@@ -1,10 +1,9 @@
-package chess.controller.logic;
+package chess.controller;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import chess.Game;
-import chess.controller.Controller;
+import chess.game.Game;
 import chess.structure.*;
 
 /**

@@ -1,4 +1,4 @@
-package chess;
+package chess.game;
 
 import chess.controller.Controller;
 import chess.gui.GUI;
@@ -7,7 +7,6 @@ import chess.structure.Move;
 import chess.structure.Square;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by Rahul on 7/27/2017.

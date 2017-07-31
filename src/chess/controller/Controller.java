@@ -1,13 +1,8 @@
 package chess.controller;
 
-import chess.Game;
-import chess.controller.logic.MoveHandler;
+import chess.game.Game;
 import chess.gui.GUI;
 import chess.structure.*;
-
-
-import javax.tools.Diagnostic;
-import java.util.ArrayList;
 
 /**
  * Created by Rahul on 7/20/2017.

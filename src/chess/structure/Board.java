@@ -1,11 +1,9 @@
 package chess.structure;
 
-import chess.Game;
 import chess.controller.Controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Rahul on 7/19/2017.
@@ -27,7 +25,7 @@ public class Board {
      * Pieces occupy squares on the board
      * whitePieceSet is a list of all white colored pieces on the board.
      * blackPieceSet is a list of all black colored pieces on the board.
-     * TODO: {The Game field links the board object to a game.}
+     * TODO: {The game field links the board object to a game.}
      * TODO: IS LINKING NECESSARY? SEE CASTLING
      * @see Controller
      * @see Square
@@ -50,7 +48,7 @@ public class Board {
 
     /**
      * A constructor for a board which is linked to a game.
-     * @param controller the Game which the board is a part of
+     * @param controller the game which the board is a part of
      */
     public Board(Controller controller) {
         this.controller = controller;
@@ -125,25 +123,6 @@ public class Board {
             addPiece(1, column, wpawn.clone());
             addPiece(6, column, bpawn.clone());
         }
-
-//        whitePieceSet.add(wrook.clone());
-//        whitePieceSet.add(wknight.clone());
-//        whitePieceSet.add(wbishop.clone());
-//        whitePieceSet.add(wqueen.clone());
-//        whitePieceSet.add(wking.clone());
-//        whitePieceSet.add(wbishop.clone());
-//        whitePieceSet.add(wknight.clone());
-//        whitePieceSet.add(wrook.clone());
-//
-//        blackPieceSet.add(brook.clone());
-//        blackPieceSet.add(bknight.clone());
-//        blackPieceSet.add(bbishop.clone());
-//        blackPieceSet.add(bqueen.clone());
-//        blackPieceSet.add(bking.clone());
-//        blackPieceSet.add(bbishop.clone());
-//        blackPieceSet.add(bknight.clone());
-//        blackPieceSet.add(brook.clone());
-
 
         addPiece(0, 0, wrook.clone());
         addPiece(0, 1, wknight.clone());
@@ -588,7 +567,7 @@ public class Board {
     }
 
     /**
-     * 
+     *
      * @param p
      * @return
      */
