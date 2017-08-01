@@ -1,36 +1,40 @@
 # Chess
 
-This chess game was developed under the MVC design pattern.
+**This project is still under development**
 
-
-The goal is to hopefully use machine learning algorithms to 
+This is a *mostly* functional game of chess written in java. The project is being
+developed under the *Model-View-Controller (MVC)* design pattern. There are also
+some uses of the *factory* design pattern. The goal is to hopefully use machine learning algorithms to 
 play chess instead of using the traditional brute force method 
-of searching a decision tree.
+of searching a decision tree. As of now, supervised learning by artificial neural
+networks seems to be the way of attacking this problem.
 
-### Installing
+### TODOs / Goals
+* Implement turns
+* Implement pawn on pawn en passante
+* Implement players, clocks, movelogs
+* Implement a brute force engine
+* Implement a more aesthetic gui
+* Implement playing online
+* Implement machine learning algorithm
 
-A step by step series of examples that tell you have to get a development env running
+### Cloning
 
-Say what the step will be
+To import this chess software, execute the following line of code in your command console
 
 ```
-Give the example
+ git clone https://github.com/haxdds/Chess.git
 ```
 
-And repeat
+## Running
 
+To run the current version of this chess software, execute the following lines of code
+in your command console in the .../Chess/src/chess directory:
 ```
-until finished
+ javac Test.java
+ java Test
 ```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-
- 
+This should cause the chess gui to pop up. 
 
 ## Authors
 
