@@ -9,13 +9,18 @@ play chess instead of using the traditional brute force method
 of searching a decision tree. As of now, supervised learning by artificial neural
 networks seems to be the way of attacking this problem.
 
-### To Be Implemented
+### To Be Implemented:
+* ~~castling~~
 * pawn on pawn en passante
 * players, clocks, movelogs
 * a brute force engine
 * a more aesthetic gui
 * ability to play online
 * a machine learning algorithm
+
+## Goals
+> The primary goal of this project is to create well organized and well documented software.
+
 
 ### Cloning
 
