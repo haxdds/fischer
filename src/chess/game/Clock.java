@@ -19,11 +19,11 @@ public class Clock{
     /**
      *
      * @param length
-     * @param increments
+     * @param incremented
      */
-    public Clock(int length, boolean increments){
+    public Clock(int length, boolean incremented){
         this.length = length;
-        this.incremented = increments;
+        this.incremented = incremented;
         this.time = length;
         this.timer = new Timer();
     }
@@ -60,7 +60,7 @@ public class Clock{
             public void run() {
                 update();
             }
-        }, 1000);
+        }, 100, 1000);
     }
 
     /**
@@ -110,11 +110,15 @@ public class Clock{
      * @return
      */
     public String toString(){
-        return "Time Left: " + this.time;
+        int minutes = this.time / 60;
+        int seconds = this.time % 60;
+        return "Time Left: " + minutes + ":" + ((seconds < 10)? "0" : "") + seconds;
     }
 
 
-
+    public void print(){
+        System.out.println(toString());
+    }
 
 
 

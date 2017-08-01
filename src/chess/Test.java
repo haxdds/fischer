@@ -1,5 +1,6 @@
 package chess;
 
+import chess.game.Clock;
 import chess.game.Game;
 
 /**
@@ -7,6 +8,8 @@ import chess.game.Game;
  */
 public class Test {
     public static void main(String[] args) {
+
         new Game();
+
     }
 }
