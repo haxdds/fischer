@@ -111,7 +111,7 @@ public class Controller {
      */
     public void authenticateAndUpdate(){
         if(moveHandler.isValidMove(userInput, board)) {
-            System.out.println(userInput.toString());
+            //System.out.println(userInput.toString());
             game.writeMove(userInput);
             update(userInput);
             refresh();

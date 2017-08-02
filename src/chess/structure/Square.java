@@ -150,7 +150,9 @@ public class Square {
     public boolean equals(Square s){
          if(getRow() != s.getRow() || getCol() != s.getCol()) return false;
          if(isOccupied() != s.isOccupied()) return false;
-         if(!getPiece().equals(s.getPiece())) return false;
+         if(isOccupied()) {
+             if (!getPiece().equals(s.getPiece())) return false;
+         }
          return true;
     }
 

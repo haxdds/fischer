@@ -164,8 +164,6 @@ public class Board {
         Piece p = getPiece(startRow, startCol);
         removePiece(startRow, startCol);
         addPiece(endRow, endCol, p);
-//        addPiece(endRow, endCol, getPiece(startRow, startCol));
-//        removePiece(startRow, startCol);
     }
 
     /**

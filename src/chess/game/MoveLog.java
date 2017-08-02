@@ -13,6 +13,8 @@ public class MoveLog {
      *
      */
     private ArrayList<Move[]> moveLog = new ArrayList<>();
+    private ArrayList<Move> moves = new ArrayList<>();
+    private ArrayList<Square> squares = new ArrayList<>();
 
     /**
      *
@@ -79,6 +81,9 @@ public class MoveLog {
      * @return
      */
     public boolean containsMove(Move move){
+        for(Move m: moves){
+            if(m.equals(move)) return true;
+        }
         return false;
     }
 
@@ -88,7 +93,20 @@ public class MoveLog {
      * @return
      */
     public boolean containsSquare(Square square){
+        for(Square s: squares){
+            if(s.equals(square)) return true;
+        }
         return false;
+    }
+
+    /**
+     *
+     * @param move
+     */
+    public void write(Move move){
+        moves.add(move);
+        squares.add(move.getStart());
+        squares.add(move.getEnd());
     }
 
     /**

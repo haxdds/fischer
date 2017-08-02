@@ -464,12 +464,15 @@ public class MoveHandler {
         Square E = board.getSquare(row, 4);
         Square H = board.getSquare(row, 7);
         Square A = board.getSquare(row, 0);
+
         if(game.hasSquare(E)){
+            //king has been moved
             return;
         }else{
             if(!game.hasSquare(H)
                     && !board.getSquare(row,6).isOccupied()
                     && !board.getSquare(row, 5).isOccupied()){
+
                 castle.add(board.getSquare(row,6));
             }
             if(!game.hasSquare(A)
@@ -517,7 +520,13 @@ public class MoveHandler {
         Board clone = board.clone();
         if (moves.contains(right)) {
             clone.movePiece(row, 4, row, 6);
-            clone.movePiece(row, 7, row, 5);
+            if(isCheck(clone)) {
+                if (getCheckedColor(clone) == board.getPiece(row, 4).getColor()) {
+                    moves.remove(right);
+                }
+            }
+            clone = board.clone();
+            clone.movePiece(row, 4, row, 5);
             if(isCheck(clone)) {
                 if (getCheckedColor(clone) == board.getPiece(row, 4).getColor()) {
                     moves.remove(right);
@@ -526,7 +535,13 @@ public class MoveHandler {
         } else if (moves.contains(left)) {
             clone = board.clone();
             clone.movePiece(row, 4, row, 2);
-            clone.movePiece(row, 0, row, 3);
+            if(isCheck(clone)) {
+                if (getCheckedColor(clone) == board.getPiece(row, 4).getColor()) {
+                    moves.remove(left);
+                }
+            }
+            clone = board.clone();
+            clone.movePiece(row, 4, row, 3);
             if(isCheck(clone)) {
                 if (getCheckedColor(clone) == board.getPiece(row, 4).getColor()) {
                     moves.remove(left);

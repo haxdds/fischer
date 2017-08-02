@@ -20,14 +20,16 @@ public class Game {
     private GUI view;
     private boolean gameRunning = true;
     private ArrayList<String> moveList = new ArrayList<>();
+    private MoveLog log;
 
     /**
      *
      */
     public Game(){
-        model = new Board();
-        view = new GUI();
-        controller = new Controller(this, model, view);
+        this.model = new Board();
+        this.view = new GUI();
+        this.controller = new Controller(this, model, view);
+        this.log = new MoveLog(this);
     }
 
     /**
@@ -115,7 +117,8 @@ public class Game {
      * @param m
      */
     public void writeMove(Move m){
-        moveList.add(m.toString());
+        System.out.println(m.toString());
+        this.log.write(m);
     }
 
     /**
@@ -155,7 +158,7 @@ public class Game {
      * @return whether that move has been played in this game
      */
     public boolean hasMove(Move move){
-        return moveList.contains(move.toString());
+        return this.log.containsMove(move);
     }
 
     /**
@@ -163,6 +166,6 @@ public class Game {
      * @param s
      * @return
      */
-    public boolean hasSquare(Square s){return moveList.contains(s.toString());}
+    public boolean hasSquare(Square s){return this.log.containsSquare(s);}
 
 }
