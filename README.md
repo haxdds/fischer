@@ -11,7 +11,7 @@ networks seems to be the way of attacking this problem.
 
 ### To Be Implemented:
 * ~~castling~~
-* pawn on pawn en passante
+* ~~pawn on pawn en passante~~
 * players, ~~clocks~~, movelogs
 * a brute force engine
 * a more aesthetic gui
