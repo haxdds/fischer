@@ -133,6 +133,7 @@ public class MoveHandler {
     public ArrayList<Square> verifyMoves(Square start, ArrayList<Square> moves, Board board) {
         verifyForChecks(start, board, moves);
         verifyKingMoves(start, board, moves);
+       // if(start.getPiece().getType() == Type.PAWN) getEnPassante(start, board, moves);
         return moves;
     }
 
@@ -309,7 +310,6 @@ public class MoveHandler {
      * @return the list of all possible moves for the pawn
      */
     public ArrayList<Square> pawnIterate(Square start, Board board) {
-
         if(start.getPiece().getColor() == Color.BLACK){
             return pawnIterate(start,board,6,-1);
         }else{
@@ -320,7 +320,7 @@ public class MoveHandler {
     /**
      *
      * @param start
-     * @param board     *
+     * @param board
      * @param startingRow
      * @param y
      * @return
@@ -331,6 +331,9 @@ public class MoveHandler {
             if(checkPawnTranslation(t, start, board, y, startingRow)){
                 moves.add(board.translateSquare(start, t));
             }
+        }
+        if (canEnPassante(start.getRow(), y)) {
+           moves.add(getEnPassante(start, board));
         }
         return moves;
     }
@@ -369,6 +372,57 @@ public class MoveHandler {
             }
         }
         return false;
+    }
+
+    /**
+     *
+     * @param start
+     * @param board
+     * @return
+     */
+    public Square getEnPassante(Square start, Board board){
+        int row = start.getRow();
+        int y;
+        if(start.getPiece().getColor() == Color.WHITE){
+            y = 1;
+        }else{
+            y = -1;
+        }
+        if(canEnPassante(row, y)){
+            Move last = controller.getGame().getLastMove();
+            if(row == 4){
+                return board.getSquare(5, last.getEnd().getCol());
+            }
+            if(row == 3){
+                return board.getSquare(2, last.getEnd().getCol());
+            }
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param row
+     * @param y
+     * @return
+     */
+    public boolean canEnPassante(int row, int y){
+        if(row != 4 && row != 3) return false;
+        if(row == 4 && y != 1) return false;
+        if(row == 3 && y != -1) return false;
+        Move last = controller.getGame().getLastMove();
+        if(last.getStart().getPiece().getType() != Type.PAWN) return false;
+        if(row == 4){
+            if(last.getStart().getPiece().getColor() == Color.WHITE) return false;
+            if(last.getEnd() == null) return false;
+            if(last.getStart().getRow() != 6 && last.getEnd().getRow() != 4) return false;
+        }
+        if(row == 3){
+            if(last.getStart().getPiece().getColor() == Color.BLACK) return false;
+            if(last.getEnd() == null) return false;
+            if(last.getStart().getRow() != 1 && last.getEnd().getRow() != 3) return false;
+        }
+        return true;
     }
 
     /**
@@ -472,7 +526,6 @@ public class MoveHandler {
             if(!game.hasSquare(H)
                     && !board.getSquare(row,6).isOccupied()
                     && !board.getSquare(row, 5).isOccupied()){
-
                 castle.add(board.getSquare(row,6));
             }
             if(!game.hasSquare(A)
@@ -549,6 +602,48 @@ public class MoveHandler {
             }
         }
     }
+
+    /**
+     * Determines if a move is a castling move
+     * @param m the move to be checked
+     * @return whether the move is a castling move
+     */
+    public boolean isCastlingMove(Move m){
+        if(m.getStart().getPiece().getType() != Type.KING) return false;
+        int deltaRow = Math.abs(m.getStart().getCol() - m.getEnd().getCol());
+        if(deltaRow != 2) return false;
+        return true;
+    }
+
+    /**
+     *
+     * @param m
+     * @return
+     */
+    public boolean isEnPassanteMove(Move m){
+        if(m.getStart().getPiece().getType() != Type.PAWN) return false;
+        if(m.getStart().getPiece().getColor() == Color.WHITE){
+            if(m.getStart().getRow() != 4) return false;
+            if(m.getStart().getCol() == m.getEnd().getCol()) return false;
+            return true;
+        }else{
+            if(m.getStart().getRow() != 3) return false;
+            if(m.getStart().getCol() == m.getEnd().getCol()) return false;
+            return true;
+        }
+    }
+
+    /**
+     *
+      * @return
+     */
+    public Square hasEnPassanteMove(Square start, ArrayList<Square> moves){
+        for(Square s: moves){
+            if(isEnPassanteMove(new Move(start, s))) return s;
+        }
+        return null;
+    }
+
 
 
 

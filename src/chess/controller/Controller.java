@@ -52,6 +52,14 @@ public class Controller {
         addListeners();
     }
 
+    public Controller(Game game){
+        this.game = game;
+        this.board = new Board(this);
+        this.gui = new GUI();
+        this.moveHandler = new MoveHandler(this);
+        addListeners();
+    }
+
     /**
      * Retrieves user input from the listener objects in
      * the view/gui, verifies and updates the board.
@@ -82,6 +90,10 @@ public class Controller {
         if(!userInput.isMatured()){
             highlightView();
         }else{
+            if(userInput.getStart().equalCoordinate(userInput.getEnd())){
+                userInput.reset();
+                return;
+            }
             authenticateAndUpdate();
         }
     }
@@ -104,6 +116,8 @@ public class Controller {
     /**
      * Authenticates the user input move on the model board
      * by using MoveHandler.
+     * @ATTENTION order of writeMove and update shouldn't be
+     * changed or bad things will happen.
      * @see MoveHandler#isValidMove(Move, Board)
      * @see Controller#update(Move)
      * @see GUI#refreshColor()
@@ -111,7 +125,6 @@ public class Controller {
      */
     public void authenticateAndUpdate(){
         if(moveHandler.isValidMove(userInput, board)) {
-            //System.out.println(userInput.toString());
             game.writeMove(userInput);
             update(userInput);
             refresh();
@@ -151,8 +164,10 @@ public class Controller {
      * @FIXME INCORRECT ORDER FUCKS IT UP BECAUSE PIECE IS MOVED BEFORE CHECKING
      */
     public void updateModel(Move move){
-        if(board.isCastlingMove(move)){
+        if(moveHandler.isCastlingMove(move)){
             updateView(board.getCastlingRookMove(move));
+        }else if(moveHandler.isEnPassanteMove(move)){
+            enPassanteUpdate(move);
         }
         board.movePiece(move);
     }
@@ -170,7 +185,26 @@ public class Controller {
      * the user can move to
      */
     public void highlightView(){
-       gui.highlight(moveHandler.getValidMoves(userInput.getStart(), board));
+       gui.highlight(userInput.getStart(),
+               moveHandler.getValidMoves(userInput.getStart(), board), this);
+    }
+
+    /**
+     *
+     * @param s
+     */
+    public void removePieceFromView(Square s){
+        gui.remove(s);
+    }
+
+    /**
+     *
+     * @param m
+     */
+    public void enPassanteUpdate(Move m){
+        Color c = (m.getStart().getColor() == Color.WHITE) ? Color.BLACK : Color.WHITE;
+        Square remove = new Square(m.getStart().getRow(), m.getEnd().getCol(), c);
+        removePieceFromView(remove);
     }
 
     /**

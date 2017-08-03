@@ -185,9 +185,12 @@ public class Board {
      * @see Board#movePiece(int, int, int, int)
      */
     public void movePiece(Move m) {
+
         if(isCastlingMove(m)){
            castle(m);
-        }else {
+        }else if(isEnPassanteMove(m)){
+            enPassante(m);
+        }else{
             movePiece(m.getStart(), m.getEnd());
         }
     }
@@ -386,7 +389,6 @@ public class Board {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if (!getSquare(row, col).equals(b.getSquare(row, col))) {
-                    System.out.println("UNEQUAL" +row + "  " + col);
                     return false;
                 }
             }
@@ -438,17 +440,7 @@ public class Board {
         return getSquare(start.getRow() + t.getY(), start.getCol() + t.getX());
     }
 
-    /**
-     * Determines if a move is a castling move
-     * @param m the move to be checked
-     * @return whether the move is a castling move
-     */
-    public boolean isCastlingMove(Move m){
-        if(m.getStart().getPiece().getType() != Type.KING) return false;
-        int deltaRow = Math.abs(m.getStart().getCol() - m.getEnd().getCol());
-        if(deltaRow != 2) return false;
-        return true;
-    }
+
 
     /**
      * Retrieves the corresponding rook move for castling for
@@ -492,6 +484,19 @@ public class Board {
         movePiece(rookMove.getStart(), rookMove.getEnd());
     }
 
+    /**
+     *
+     * @param m
+     */
+    public void enPassante(Move m){
+        movePiece(m.getStart(), m.getEnd());
+        removePiece(m.getStart().getRow(), m.getEnd().getCol());
+    }
+
+    /**
+     *
+     * @param p
+     */
     public void addToList(Piece p){
         pieceList.add(p);
         if(p.getColor() == Color.WHITE){
@@ -635,6 +640,54 @@ public class Board {
      */
     public void setPieceMap(HashMap<Piece, Square> pieceMap) {
         this.pieceMap = pieceMap;
+    }
+
+    /**
+     *
+     * @param controller
+     */
+    public void setController(Controller controller) {
+        this.controller = controller;
+
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Controller getController(){
+        if(this.controller == null) throw new NullPointerException("NULL CONTROLLER");
+        return this.controller;
+    }
+
+    /**
+     * Determines if a move is a castling move
+     * @param m the move to be checked
+     * @return whether the move is a castling move
+     */
+    public boolean isCastlingMove(Move m){
+        if(m.getStart().getPiece().getType() != Type.KING) return false;
+        int deltaRow = Math.abs(m.getStart().getCol() - m.getEnd().getCol());
+        if(deltaRow != 2) return false;
+        return true;
+    }
+
+    /**
+     *
+     * @param m
+     * @return
+     */
+    public boolean isEnPassanteMove(Move m){
+        if(m.getStart().getPiece().getType() != Type.PAWN) return false;
+        if(m.getStart().getPiece().getColor() == Color.WHITE){
+            if(m.getStart().getRow() != 4) return false;
+            if(m.getStart().getCol() == m.getEnd().getCol()) return false;
+            return true;
+        }else{
+            if(m.getStart().getRow() != 3) return false;
+            if(m.getStart().getCol() == m.getEnd().getCol()) return false;
+            return true;
+        }
     }
 
     /**

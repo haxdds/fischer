@@ -37,7 +37,7 @@ public class Square {
      * @param color the color of the square.
      * @see Color
      */
-    Square(int row, int col, Color color) {
+    public Square(int row, int col, Color color) {
         this.row = row;
         this.col = col;
         this.color = color;
@@ -154,6 +154,11 @@ public class Square {
              if (!getPiece().equals(s.getPiece())) return false;
          }
          return true;
+    }
+
+    public boolean equalCoordinate(Square s){
+        if(getRow() == s.getRow() && getCol() == s.getCol()) return true;
+        return false;
     }
 
     /**

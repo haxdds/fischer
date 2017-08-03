@@ -55,7 +55,7 @@ public class MoveLog {
      *
      * @return
      */
-    public Move[] getLastMove(){
+    public Move[] getLastMoveSet(){
         return moveLog.get(moveLog.size() - 1);
     }
 
@@ -63,8 +63,16 @@ public class MoveLog {
      *
      * @return
      */
+    public Move getLastMove(){
+        return moves.get(moves.size() - 1);
+    }
+
+    /**
+     *
+     * @return
+     */
     public Move getWhiteLastMove(){
-        return getLastMove()[0];
+        return getLastMoveSet()[0];
     }
 
     /**
@@ -72,7 +80,7 @@ public class MoveLog {
      * @return
      */
     public Move getBlackLastMove(){
-        return getLastMove()[1];
+        return getLastMoveSet()[1];
     }
 
     /**
@@ -104,9 +112,34 @@ public class MoveLog {
      * @param move
      */
     public void write(Move move){
-        moves.add(move);
+        moves.add(move.clone());
+        //moveLog.add()
         squares.add(move.getStart());
         squares.add(move.getEnd());
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Move[]> getMoveLog() {
+        return moveLog;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Move> getMoves() {
+        return moves;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Square> getSquares() {
+        return squares;
     }
 
     /**

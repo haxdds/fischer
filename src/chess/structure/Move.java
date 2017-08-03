@@ -138,6 +138,17 @@ public class Move {
 
     /**
      *
+     * @return a new Move object with the same properties
+     */
+    public Move clone(){
+        Move clone = new Move();
+        clone.setStart(getStart().clone());
+        clone.setEnd(getEnd().clone());
+        return clone;
+    }
+
+    /**
+     *
      * @return whether the move has been started
      */
     public boolean isStarted(){

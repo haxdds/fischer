@@ -1,5 +1,6 @@
 package chess.gui;
 
+import chess.controller.Controller;
 import chess.structure.Board;
 import chess.structure.Move;
 import chess.structure.Square;
@@ -42,7 +43,10 @@ public class GUI {
 
     Color gsquare = new Color(83, 164, 92);
 
+
+
     public GUI() {
+        //this.controller = controller;
         initializeGui();
 
         JFrame f = new JFrame("Play Some Goddamn Chess");
@@ -221,6 +225,10 @@ public class GUI {
         move(start.getRow(), start.getCol(), end.getRow(), end.getCol());
     }
 
+    public void remove(int row, int col){chessBoardSquares[col][7 - row].setIcon(null);}
+
+    public void remove(Square s){remove(s.getRow(), s.getCol());}
+
 
     public JButton getSquare(int row, int column) {
         return chessBoardSquares[column][7 - row];
@@ -230,9 +238,11 @@ public class GUI {
         return chessBoardSquares[square.getCol()][7 - square.getRow()];
     }
 
-    public void update(Move move){move(move.getStart(), move.getEnd());}
+    public void update(Move move){
+        move(move.getStart(), move.getEnd());
+    }
 
-    public void highlight(ArrayList<Square> moves){
+    public void highlight(Square start, ArrayList<Square> moves, Controller controller){
         for(Square s: moves){
             if(getSquare(s).getBackground() == Color.WHITE){
                 if(s.isOccupied()) {
@@ -247,7 +257,31 @@ public class GUI {
                     getSquare(s).setBackground(new Color(217, 240, 106));
                 }
             }
+            Square enPass = controller.getMoveHandler().hasEnPassanteMove(start, moves);
+            if(enPass != null){
+                highlightRed(enPass);
+            }
         }
+    }
+
+    public void highlightSquare(Square s){
+        if(getSquare(s).getBackground() == Color.WHITE){
+            if(s.isOccupied()) {
+                getSquare(s).setBackground(new Color(210, 70, 0));
+            }else {
+                getSquare(s).setBackground(new Color(217, 240, 106));
+            }
+        }else{
+            if(s.isOccupied()) {
+                getSquare(s).setBackground(new Color(210, 70, 0));
+            }else {
+                getSquare(s).setBackground(new Color(217, 240, 106));
+            }
+        }
+    }
+
+    public void highlightRed(Square s){
+        getSquare(s).setBackground(new Color(210, 70, 0));
     }
 
     public void refreshColor(){

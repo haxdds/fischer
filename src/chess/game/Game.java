@@ -30,6 +30,7 @@ public class Game {
         this.view = new GUI();
         this.controller = new Controller(this, model, view);
         this.log = new MoveLog(this);
+        model.setController(controller);
     }
 
     /**
@@ -168,4 +169,13 @@ public class Game {
      */
     public boolean hasSquare(Square s){return this.log.containsSquare(s);}
 
+    /**
+     *
+     * @return
+     */
+    public MoveLog getLog() {
+        return log;
+    }
+
+    public Move getLastMove(){return this.log.getLastMove();}
 }
