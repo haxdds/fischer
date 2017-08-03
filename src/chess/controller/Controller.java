@@ -91,7 +91,7 @@ public class Controller {
             highlightView();
         }else{
             if(userInput.getStart().equalCoordinate(userInput.getEnd())){
-                userInput.reset();
+                refresh();
                 return;
             }
             authenticateAndUpdate();

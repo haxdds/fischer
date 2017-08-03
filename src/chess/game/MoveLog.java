@@ -35,8 +35,8 @@ public class MoveLog {
 
     /**
      *
-     * @param moveNumber
-     * @return
+     * @param moveNumber the move number of the move to be retrieved
+     * @return the moveNumber'th move
      */
     public Move[] getMove(int moveNumber){
         return moveLog.get(moveNumber - 1);
