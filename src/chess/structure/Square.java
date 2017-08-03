@@ -156,6 +156,12 @@ public class Square {
          return true;
     }
 
+    /**
+     *
+     * @param s the square being compared to
+     * @return whether the two squares have the same
+     * row and column coordinates.
+     */
     public boolean equalCoordinate(Square s){
         if(getRow() == s.getRow() && getCol() == s.getCol()) return true;
         return false;

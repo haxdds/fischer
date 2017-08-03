@@ -71,9 +71,9 @@ public class MoveHandler {
     /**
      * Retrieves the list of all possible moves (legal and illegal) that can be made
      * from a square by the piece on that square.
-     * @param start the square from which
-     * @param board
-     * @return
+     * @param start the square the piece is starting from
+     * @param board the board the game is being played on
+     * @return the list of possible squares that the piece can move to
      */
     public ArrayList<Square> iterateMoves(Square start, Board board) {
         ArrayList<Square> moves = new ArrayList<>();
@@ -91,11 +91,12 @@ public class MoveHandler {
 
     /**
      *
-     * @param t
-     * @param start
-     * @param board
-     * @param signature
-     * @return
+     * @param t the translation being checked
+     * @param start the square the piece is starting from
+     * @param board the board the game is being played on
+     * @param signature the signature of the translation
+     * @return whether that translation is valid on that board
+     * @see Translation#signature
      */
     public boolean checkTranslation(Translation t, Square start, Board board, int[] signature) {
         if (start.translate(t).inBounds()) {
@@ -138,10 +139,10 @@ public class MoveHandler {
     }
 
     /**
-     *
-     * @param start
-     * @param board
-     * @param moves
+     * Filters the list of squares the piece can move to based on checks
+     * @param start the square the piece is starting on
+     * @param board the board the game is being played on
+     * @param moves the list of squares the piece can move to
      * @see MoveHandler#verifyForCheck(Board, Move)
      */
     public void verifyForChecks(Square start, Board board, ArrayList<Square> moves){
@@ -177,10 +178,10 @@ public class MoveHandler {
         return true;
     }
     /**
-     *
-     * @param start
-     * @param board
-     * @param moves
+     * Filters the list of squares a king can move to based on checks
+     * @param start the square the king is starting on
+     * @param board the board the game is being played on
+     * @param moves the list of squares the king can move to
      * @see MoveHandler#adjacentKingsVerification(Square, Board, ArrayList)
      * @see MoveHandler#getVerifiedCastling(Square, Board)
      */
@@ -319,11 +320,15 @@ public class MoveHandler {
 
     /**
      *
-     * @param start
-     * @param board
-     * @param startingRow
-     * @param y
-     * @return
+     * @param start the square the pawn is starting on
+     * @param board the board the game is being played on
+     * @param startingRow the starting row of the pawn at the
+     *                    beginning of the game
+     * @param y the direction the pawn is supposed to move in
+     *          (1 for white and -1 for black)
+     * @return the list of squares the pawn can move to
+     * @see MoveHandler#checkPawnTranslation(Translation, Square, Board, int, int)
+     * @see MoveHandler#getEnPassante(Square, Board)
      */
     private ArrayList<Square> pawnIterate(Square start, Board board, int startingRow, int y){
         ArrayList<Square> moves = new ArrayList<>();
@@ -344,12 +349,14 @@ public class MoveHandler {
 
     /**
      *
-     * @param t
-     * @param start
-     * @param board
-     * @param y
-     * @param startingRow
-     * @return
+     * @param t the translation being checked
+     * @param start the square the pawn is starting from
+     * @param board the board the game is being played on
+     * @param y the direction the pawn is supposed to move in (1 for white
+     *          and -1 for black)
+     * @param startingRow the row that the pawn is placed at the beginning of the
+     *                    game
+     * @return whether that translation is valid for the pawn
      */
     public boolean checkPawnTranslation(Translation t, Square start, Board board, int y, int startingRow){
         if (t.getY() * y < 0) return false; //if move is in opposite direction
@@ -376,9 +383,11 @@ public class MoveHandler {
 
     /**
      *
-     * @param start
-     * @param board
-     * @return
+     * @param start the square which the pawn is on
+     * @param board the board the game is being played on
+     * @return the square the pawn can en passante to. Null is returned
+     * if the pawn cannot en passante.
+     * @see MoveHandler#canEnPassante(int, int)
      */
     public Square getEnPassante(Square start, Board board){
         int row = start.getRow();
@@ -402,9 +411,10 @@ public class MoveHandler {
 
     /**
      *
-     * @param row
-     * @param y
-     * @return
+     * @param row the row on which the pawn is on
+     * @param y the direction the pawn moves in (1 for white, -1 for black)
+     * @return whether the pawn can move en passante
+     * @see Game#getLastMove()
      */
     public boolean canEnPassante(int row, int y){
         if(row != 4 && row != 3) return false;
@@ -448,9 +458,9 @@ public class MoveHandler {
 
     /**
      *
-     * @param s1
-     * @param s2
-     * @return
+     * @param s1 square being compared
+     * @param s2 the other square being compared to
+     * @return whether the given squares are 1 unit apart
      */
     public boolean areWithinRange(Square s1, Square s2){
         int deltaRow = Math.abs(s1.getRow() - s2.getRow());
@@ -459,10 +469,11 @@ public class MoveHandler {
     }
 
     /**
-     *
-     * @param start
-     * @param board
-     * @param moves
+     * filters a list of squares that can be moved to by the king
+     * for squares that are adjacent to the opponent king.
+     * @param start the square the king is on
+     * @param board the board the game is being played on
+     * @param moves the list of squares that can be moved to
      */
     public void adjacentKingsVerification(Square start, Board board, ArrayList<Square> moves){
         if(start.getPiece().getColor() == Color.WHITE){
@@ -473,9 +484,10 @@ public class MoveHandler {
     }
 
     /**
-     *
-     * @param squares
-     * @param key
+     * removes all squares from a list that are 1 unit from the key square
+     * @param squares the list of squares being checked
+     * @param key the square being checked against
+     * @see MoveHandler#areWithinRange(Square, Square)
      */
     public void removeAdjacentSquares(ArrayList<Square> squares, Square key){
         ArrayList<Square> removeList = new ArrayList<>();
@@ -509,9 +521,11 @@ public class MoveHandler {
 
     /**
      *
-     * @param game
-     * @param row
-     * @param castle
+     * @param game the game being played
+     * @param row the row the king is on
+     * @param castle the list of squares that the castling squares
+     *               will be added to
+     * @see Game
      */
     public void addCastlingSquares(Game game, int row, ArrayList<Square> castle){
         Board board = game.getModel();
@@ -562,10 +576,10 @@ public class MoveHandler {
     }
 
     /**
-     *
-     * @param moves
-     * @param board
-     * @param row
+     * Filters a list of castling moves for checks
+     * @param moves the list of squares that can be castled to
+     * @param board the board the game is being played on
+     * @param row the row the king is on
      */
     public void verifyCastlingSquares(ArrayList<Square> moves, Board board, int row){
         Square right = board.getSquare(row, 6);
@@ -617,8 +631,8 @@ public class MoveHandler {
 
     /**
      *
-     * @param m
-     * @return
+     * @param m the move being checked for en passante
+     * @return whether the given move is an en passante move
      */
     public boolean isEnPassanteMove(Move m){
         if(m.getStart().getPiece().getType() != Type.PAWN) return false;
@@ -635,7 +649,12 @@ public class MoveHandler {
 
     /**
      *
-      * @return
+     * @param start the square being started on
+     * @param moves the list of squares that can be moved to
+     *             being checked
+     * @return the square that can be moved to by en passante. Null
+     * is returned if no moves are en passante.
+     * @see MoveHandler#isEnPassanteMove(Move)
      */
     public Square hasEnPassanteMove(Square start, ArrayList<Square> moves){
         for(Square s: moves){

@@ -7,18 +7,27 @@ import java.util.ArrayList;
 
 /**
  * Created by Rahul on 7/31/2017.
+ *
+ * The MoveLog class represents the list of moves
+ * that are played during the game. The list of moves
+ * plays a vital role in determining whether some moves
+ * like en passante or castling are possible. The list of
+ * moves records the history of a game.
+ * @see Game
  */
 public class MoveLog {
     /**
-     *
+     * The list of moves that have been played on the game.
+     * The list of squares that have been involved in
+     * the game.
      */
     private ArrayList<Move[]> moveLog = new ArrayList<>();
     private ArrayList<Move> moves = new ArrayList<>();
     private ArrayList<Square> squares = new ArrayList<>();
 
     /**
-     *
-     * @param game
+     * A constructor for MoveLog objects.
+     * @param game the game that the MoveLog object is recording
      */
     public MoveLog(Game game){
 

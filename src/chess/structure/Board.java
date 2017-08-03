@@ -342,7 +342,7 @@ public class Board {
      * Returns a clone of this Board object.
      *
      * @return
-     * @TODO: TO BE IMPLEMENTED
+     * @TODO: TO BE IMPLEMENTED -- done 7/30/17
      */
     public Board clone() {
         Board clone = new Board();
@@ -357,8 +357,9 @@ public class Board {
     }
 
     /**
-     *
-     * @param clone
+     * Clones and sets the maps and lists of this board to another board.
+     * @param clone the board to whose lists and maps of pieces will be set to
+     *              the cloned maps and lists of this board.
      */
     public void cloneListAndMap(Board clone){
         ArrayList<Piece> clonelist = new ArrayList<>();
@@ -475,8 +476,8 @@ public class Board {
     }
 
     /**
-     *
-     * @param m
+     * Castles the king on the board.
+     * @param m the move of castling king
      */
     public void castle(Move m){
         movePiece(m.getStart(), m.getEnd());
@@ -485,8 +486,9 @@ public class Board {
     }
 
     /**
-     *
-     * @param m
+     * Executes an en passante move on the board, where a pawn captures
+     * an enemy pawn diagonally
+     * @param m the move of the attack pawn
      */
     public void enPassante(Move m){
         movePiece(m.getStart(), m.getEnd());
@@ -495,7 +497,8 @@ public class Board {
 
     /**
      *
-     * @param p
+     * @param p the piece to be added to the list of all
+     *          pieces on the board
      */
     public void addToList(Piece p){
         pieceList.add(p);
@@ -508,7 +511,8 @@ public class Board {
 
     /**
      *
-     * @param p
+     * @param p the white piece to be added to the list of all
+     *         white pieces on the board
      */
     public void addToWhiteList(Piece p){
         whitePieceList.add(p);
@@ -516,7 +520,8 @@ public class Board {
 
     /**
      *
-     * @param p
+     * @param p the black piece to be added to the list of all black
+     *          pieces on the board
      */
     public void addToBlackList(Piece p){
         blackPieceList.add(p);
@@ -524,7 +529,8 @@ public class Board {
 
     /**
      *
-     * @param p
+     * @param p the piece to be removed from the list of all
+     *          pieces on the board
      */
     public void removeFromList(Piece p){
         pieceList.remove(p);
@@ -537,7 +543,8 @@ public class Board {
 
     /**
      *
-     * @param p
+     * @param p the white piece to be removed from the list
+     *          of all white pieces on the board
      */
     public void removeFromWhiteList(Piece p){
         whitePieceList.remove(p);
@@ -545,7 +552,8 @@ public class Board {
 
     /**
      *
-     * @param p
+     * @param p the black piece to be removed from the list of
+     *         all black pieces on the board
      */
     public void removeFromBlackList(Piece p){
         blackPieceList.remove(p);
@@ -553,8 +561,9 @@ public class Board {
 
     /**
      *
-     * @param p
-     * @param s
+     * @param p the piece to be added to the map
+     * @param s the square on the board that the piece
+     *          is on.
      */
     public void addToMap(Piece p, Square s){
         pieceMap.put(p, s);
@@ -562,8 +571,9 @@ public class Board {
 
     /**
      *
-     * @param p
-     * @param s
+     * @param p the piece to be removed from the map
+     * @param s the square on the board from which it
+     *          is to be removed
      */
     public void removeFromMap(Piece p, Square s){
         pieceMap.remove(p, s);
@@ -571,8 +581,8 @@ public class Board {
 
     /**
      *
-     * @param p
-     * @return
+     * @param p the piece to be mapped
+     * @return the square which the piece is on
      */
     public Square mapPiece(Piece p){
         return pieceMap.get(p);
@@ -580,7 +590,7 @@ public class Board {
 
     /**
      *
-     * @return
+     * @return the list of all pieces on the board
      */
     public ArrayList<Piece> getPieceList() {
         return pieceList;
@@ -588,7 +598,7 @@ public class Board {
 
     /**
      *
-     * @return
+     * @return the list of all white pieces on the board
      */
     public ArrayList<Piece> getWhitePieceList() {
         return whitePieceList;
@@ -596,7 +606,7 @@ public class Board {
 
     /**
      *
-     * @return
+     * @return the list of all black pieces on the board
      */
     public ArrayList<Piece> getBlackPieceList() {
         return blackPieceList;
@@ -604,7 +614,7 @@ public class Board {
 
     /**
      *
-     * @return
+     * @return the hashMap which maps pieces to squares on the board
      */
     public HashMap<Piece, Square> getPieceMap() {
         return pieceMap;
@@ -612,7 +622,7 @@ public class Board {
 
     /**
      *
-     * @param pieceList
+     * @param pieceList the list of all pieces on the board
      */
     public void setPieceList(ArrayList<Piece> pieceList) {
         this.pieceList = pieceList;
@@ -620,7 +630,7 @@ public class Board {
 
     /**
      *
-     * @param whitePieceList
+     * @param whitePieceList the list of white pieces on the board
      */
     public void setWhitePieceList(ArrayList<Piece> whitePieceList) {
         this.whitePieceList = whitePieceList;
@@ -628,7 +638,7 @@ public class Board {
 
     /**
      *
-     * @param blackPieceList
+     * @param blackPieceList the list of black pieces on the board
      */
     public void setBlackPieceList(ArrayList<Piece> blackPieceList) {
         this.blackPieceList = blackPieceList;
@@ -636,7 +646,7 @@ public class Board {
 
     /**
      *
-     * @param pieceMap
+     * @param pieceMap the hashMap which maps pieces to squares on the board
      */
     public void setPieceMap(HashMap<Piece, Square> pieceMap) {
         this.pieceMap = pieceMap;
@@ -644,7 +654,7 @@ public class Board {
 
     /**
      *
-     * @param controller
+     * @param controller the controller which will regulate the board
      */
     public void setController(Controller controller) {
         this.controller = controller;
@@ -653,7 +663,8 @@ public class Board {
 
     /**
      *
-     * @return
+     * @return the controller which regulates the board
+     * @throws NullPointerException if controller is null
      */
     public Controller getController(){
         if(this.controller == null) throw new NullPointerException("NULL CONTROLLER");
@@ -673,9 +684,9 @@ public class Board {
     }
 
     /**
-     *
-     * @param m
-     * @return
+     * checks whether a given move is an en passante move
+     * @param m the moved to be checked
+     * @return whether that move is an en passante move
      */
     public boolean isEnPassanteMove(Move m){
         if(m.getStart().getPiece().getType() != Type.PAWN) return false;
@@ -691,7 +702,7 @@ public class Board {
     }
 
     /**
-     * @return stylized string version of board
+     * @return a stylized string version of board
      */
     public String toString() {
         String s = "";

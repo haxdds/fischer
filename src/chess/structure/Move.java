@@ -111,7 +111,6 @@ public class Move {
     /**
      * Resets the move so that it can be reused. Starting and ending squares
      * are both set to null.
-     *
      * @see Square
      */
     public void reset() {
@@ -121,9 +120,10 @@ public class Move {
     }
 
     /**
-     *
-     * @param s
-     * @throws
+     * if the move is not yet mature, sets the next available slot for
+     * a square(start or end) of the move to the input square.
+     * @param s the square which will be added to the move
+     * @throws IllegalArgumentException if the move is mature/full
      */
     public void update(Square s){
         if(isMatured()) throw new IllegalArgumentException("Move is already mature");

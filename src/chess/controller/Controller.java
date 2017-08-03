@@ -191,7 +191,7 @@ public class Controller {
 
     /**
      *
-     * @param s
+     * @param s the square whose piece is to be removed from the view
      */
     public void removePieceFromView(Square s){
         gui.remove(s);
@@ -199,7 +199,7 @@ public class Controller {
 
     /**
      *
-     * @param m
+     * @param m the en passante move to be updated to the board and gui
      */
     public void enPassanteUpdate(Move m){
         Color c = (m.getStart().getColor() == Color.WHITE) ? Color.BLACK : Color.WHITE;
@@ -215,7 +215,7 @@ public class Controller {
 
     /**
      *
-     * @return
+     * @return whether its the user's move
      */
     public boolean isUserMove(){return userMove;}
 
@@ -225,20 +225,20 @@ public class Controller {
     public void startUserMove(){userMove = true;}
     /**
      *
-     *
+     * ends the user's Move
      */
     public void endUserMove(){userMove = false;}
 
     /**
      *
-     * @return
+     * @return whether its the white player's move
      */
     public boolean isWhiteMove() {
         return whiteMove;
     }
 
     /**
-     *
+     * Start's the white players move
      */
     public void startWhiteMove() {
         this.whiteMove = true;
@@ -246,14 +246,16 @@ public class Controller {
 
     /**
      *
-     * @return
+     * @return whether its the black player's move. i.e. not the
+     * white player's move
      */
     public boolean isBlackMove() {
         return whiteMove == false;
     }
 
     /**
-     *
+     *  Starts the move of the black player. i.e. ends the move
+     *  the white player.
      */
     public void startBlackMove() {
         this.whiteMove = false;
@@ -261,7 +263,8 @@ public class Controller {
 
     /**
      *
-     * @return
+     * @return the game which encapsulates the game
+     * @see Game
      */
     public Game getGame() {
         return game;
@@ -269,7 +272,8 @@ public class Controller {
 
     /**
      *
-     * @return
+     * @return the board on which the game is being played and
+     * which the controller object regulates
      */
     public Board getBoard() {
         return board;
@@ -277,7 +281,7 @@ public class Controller {
 
     /**
      *
-     * @return
+     * @return the gui which the board is displayed to
      */
     public GUI getGui() {
         return gui;
@@ -285,7 +289,7 @@ public class Controller {
 
     /**
      *
-     * @return
+     * @return the moveHandler object which regulates moves on the board
      */
     public MoveHandler getMoveHandler() {
         return moveHandler;
@@ -293,7 +297,8 @@ public class Controller {
 
     /**
      *
-     * @return
+     * @return the userInput object which handles user inputs
+     * from the action listener class.
      */
     public Move getUserInput() {
         return userInput;

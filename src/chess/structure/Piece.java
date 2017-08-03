@@ -69,7 +69,8 @@ public class Piece {
 
     /**
      *
-     * @return
+     * @return a new Piece object which shares the properties
+     * of this Piece object.
      */
     public Piece clone() { return new Piece(type, color); }
 
