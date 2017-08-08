@@ -37,6 +37,7 @@ public class Controller {
     private Move userInput = new Move();
     private boolean userMove = true;
     private boolean whiteMove = true;
+    private boolean running = true;
 
 
     /**
@@ -65,11 +66,9 @@ public class Controller {
      * @see Controller#renderUserInput()
      */
     public void pushUserInput(Square square) {
-
+        if(!userMove) return;
         userInput.update(square);
         renderUserInput();
-
-
     }
 
     /**
@@ -146,6 +145,7 @@ public class Controller {
             game.writeMove(userInput);
             update(userInput);
             changeTurn();
+            processTurn();
             refresh();
         }else{
             refresh();
@@ -332,5 +332,71 @@ public class Controller {
      */
     public Move getUserInput() {
         return userInput;
+    }
+
+    /**
+     *
+     * @return whether a player can promote his pawn.
+     */
+    public boolean canPromotePawn(){
+        return getPromotionSquare() != null;
+    }
+
+    /**
+     *
+     * @return the square where the player can promote. Returns null
+     * if the player cannot promote a piece.
+     */
+    public Square getPromotionSquare(){
+        for(int col = 0; col < 8; col++){
+            if(getBoard().hasPiece(0, col)){
+                Piece p = getBoard().getPiece(0, col);
+                if(p.getType() == Type.PAWN && p.getColor() == Color.BLACK){
+                    return getBoard().getSquare(0, col);
+                }
+            }
+            if(getBoard().hasPiece(7, col)){
+                Piece p = getBoard().getPiece(7, col);
+                if(p.getType() == Type.PAWN && p.getColor() == Color.WHITE){
+                    return getBoard().getSquare(7, col);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks if either it is checkmate and the game is over or if
+     * a player can promote his pawn to another piece.
+     */
+    public void processTurn(){
+        if(isCheckMate()){
+            System.out.println("IS CHECKMATE");
+            endGame();
+        }
+        if(canPromotePawn()){
+            System.out.println("CAN PROMOTE PAWN");
+        }
+    }
+
+    public void promote(Type type){
+        if(canPromotePawn()){
+            getBoard().promotePawn(getPromotionSquare(), type);
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isRunning(){
+        return this.running;
+    }
+
+    /**
+     *
+     */
+    public void endGame(){
+        this.running = false;
     }
 }

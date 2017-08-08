@@ -11,4 +11,8 @@ public class Player {
         this.human = human;
     }
 
+    public boolean isHuman(){return this.human;}
+
+
+
 }

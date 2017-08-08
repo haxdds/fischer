@@ -4,6 +4,7 @@ import chess.controller.Controller;
 import chess.structure.Board;
 import chess.structure.Move;
 import chess.structure.Square;
+import chess.structure.Type;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -12,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -42,6 +44,9 @@ public class GUI {
     public static final int BLACK = 0, WHITE = 1;
 
     Color gsquare = new Color(83, 164, 92);
+
+    private JPanel promoteBox;
+    private JButton[] promotionOptions = new JButton[4];
 
 
 
@@ -293,9 +298,87 @@ public class GUI {
                 } else {
                     chessBoardSquares[jj][ii].setBackground(gsquare);
                 }
-
             }
         }
+    }
+
+    public void createPromotionBox(Color color){
+        promoteBox = new JPanel(new GridLayout(0,3));
+        if(color.equals(Color.WHITE)){
+            JButton q = new JButton();
+            q.setBackground(new Color(113, 200, 182));
+            q.setIcon(new ImageIcon(getImage("WhiteQueen")));
+            promotionOptions[0] = q;
+
+            JButton r = new JButton();
+            r.setBackground(new Color(113, 200, 182));
+            r.setIcon(new ImageIcon(getImage("WhiteRook")));
+            promotionOptions[1] = r;
+
+            JButton b = new JButton();
+            b.setBackground(new Color(113, 200, 182));
+            b.setIcon(new ImageIcon(getImage("WhiteBishop")));
+            promotionOptions[2] = b;
+
+            JButton k = new JButton();
+            k.setBackground(new Color(113, 200, 182));
+            k.setIcon(new ImageIcon(getImage("WhiteKnight")));
+            promotionOptions[3] = k;
+        }else if(color.equals(Color.BLACK)){
+            JButton q = new JButton();
+            q.setBackground(new Color(113, 200, 182));
+            q.setIcon(new ImageIcon(getImage("BlackQueen")));
+            promotionOptions[0] = q;
+
+            JButton r = new JButton();
+            r.setBackground(new Color(113, 200, 182));
+            r.setIcon(new ImageIcon(getImage("BlackRook")));
+            promotionOptions[1] = r;
+
+            JButton b = new JButton();
+            b.setBackground(new Color(113, 200, 182));
+            b.setIcon(new ImageIcon(getImage("BlackBishop")));
+            promotionOptions[2] = b;
+
+            JButton k = new JButton();
+            k.setBackground(new Color(113, 200, 182));
+            k.setIcon(new ImageIcon(getImage("BlackKnight")));
+            promotionOptions[3] = k;
+        }
+        addPromotionListeners();
+
+    }
+
+    public void addPromotionListeners(){
+        for(int k = 0; k < 4; k++){
+            final int id = k;
+            promotionOptions[k].addActionListener(new ActionListener() {
+                final int i = id;
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    promote(i);
+                }
+            });
+        }
+    }
+
+    public Type promote(int id){
+        switch(id){
+            case 0:
+                return Type.QUEEN;
+            case 1:
+                return Type.ROOK;
+            case 2:
+                return Type.BISHOP;
+            case 3:
+                return Type.KNIGHT;
+            default:
+                return  Type.QUEEN;
+        }
+    }
+
+    public void getPromotion(Color color){
+        createPromotionBox(color);
     }
 
 

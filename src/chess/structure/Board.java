@@ -326,6 +326,60 @@ public class Board {
     }
 
     /**
+     * replaces a piece on the board with another
+     * @param row the row of the piece to be replaced
+     * @param col the col of the piece to be replaced
+     * @param p the piece which will replace the piece on those
+     *          coordinates
+     * @throws IllegalArgumentException
+     */
+    public void replacePiece(int row, int col, Piece p){
+        if(!hasPiece(row, col)) throw new IllegalArgumentException("Square is not occupied; nothing to replace.");
+        removePiece(row, col);
+        addPiece(row, col, p);
+    }
+
+    /**
+     * replaces a piece on the board with another
+     * @param s the square that the piece to be replaced occupies
+     * @param p the piece which will replace the piece on that square
+     * @see #replacePiece(int, int, Piece)
+     */
+    public void replacePiece(Square s, Piece p){
+        replacePiece(s.getRow(), s.getCol(), p);
+    }
+
+    /**
+     *
+     * @param row the row of pawn to be promoted
+     * @param col the col of the pawn to be promoted
+     * @param type the type of piece the pawn is to be
+     *             promoted to
+     * @throws IllegalArgumentException
+     */
+    public void promotePawn(int row, int col, Type type){
+        if(!hasPiece(row, col))
+            throw new IllegalArgumentException("No piece occupies that location");
+        if(getPiece(row, col).getType() != Type.PAWN)
+            throw new IllegalArgumentException("Only pawns maybe promoted");
+        if(type == Type.KING || type == Type.PAWN)
+            throw new IllegalArgumentException("Promoted types maybe only be: Queen, Rook, Bishop or Knight");
+        Color promotingColor = getPiece(row, col).getColor();
+        Piece promotedPiece = new Piece(type, promotingColor);
+        replacePiece(row, col, promotedPiece);
+    }
+
+    /**
+     *
+     * @param s the square which the pawn to be promoted occupies
+     * @param type the type of the piece the pawn is to be promoted to
+     * @see #promotePawn(int, int, Type)             
+     */
+    public void promotePawn(Square s, Type type){
+        promotePawn(s.getRow(), s.getCol(), type);
+    }
+
+    /**
      * @param board the board that is to replace the current board.
      */
     public void setBoard(Square[][] board) {
@@ -641,7 +695,6 @@ public class Board {
      * @throws NullPointerException if controller is null
      */
     public Controller getController(){
-        //if(this.controller == null) throw new NullPointerException("NULL CONTROLLER");
         return this.controller;
     }
 

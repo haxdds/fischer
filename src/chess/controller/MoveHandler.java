@@ -449,19 +449,29 @@ public class MoveHandler {
      * @return whether there is a checkmate on the board
      */
     public boolean isCheckMate(Board board){
-        if(!isCheck(board)) return false;
+        return getCheckMatedColor(board) != null;
+    }
+
+    /**
+     * The loser of the game on a board
+     * @param board the board to be *checked*
+     * @return the color of the side that is checkmated. Returns null
+     * if no side is checkmated.
+     */
+    public Color getCheckMatedColor(Board board){
+        if(!isCheck(board)) return null;
         Color c = getCheckedColor(board);
         for(int row = 0; row < 7; row++){
             for(int col = 0; col < 7; col++){
                 if(board.hasPiece(row, col)) {
                     if(board.getPiece(row, col).getColor() != c) continue;
                     if (getValidMoves(board.getSquare(row, col), board).size() != 0) {
-                        return false;
+                        return null;
                     }
                 }
             }
         }
-        return true;
+        return c;
     }
 
     /**
