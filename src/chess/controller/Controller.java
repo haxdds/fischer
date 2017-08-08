@@ -4,6 +4,8 @@ import chess.game.Game;
 import chess.gui.GUI;
 import chess.structure.*;
 
+import java.util.Arrays;
+
 /**
  * Created by Rahul on 7/20/2017.
  *
@@ -49,16 +51,10 @@ public class Controller {
         this.board = board;
         this.gui = gui;
         this.moveHandler = new MoveHandler(this);
+        board.setController(this);
         addListeners();
     }
 
-    public Controller(Game game){
-        this.game = game;
-        this.board = new Board(this);
-        this.gui = new GUI();
-        this.moveHandler = new MoveHandler(this);
-        addListeners();
-    }
 
     /**
      * Retrieves user input from the listener objects in
@@ -69,9 +65,11 @@ public class Controller {
      * @see Controller#renderUserInput()
      */
     public void pushUserInput(Square square) {
-        if(!userMove) return;
+
         userInput.update(square);
         renderUserInput();
+
+
     }
 
     /**
@@ -83,19 +81,39 @@ public class Controller {
      * @see Controller#authenticateAndUpdate()
      */
     public void renderUserInput(){
-        if(!userInput.getStart().isOccupied()){
+        if(!authenticateMove()){
             userInput.reset();
             return;
         }
         if(!userInput.isMatured()){
             highlightView();
         }else{
+            long start = System.nanoTime();
             if(userInput.getStart().equalCoordinate(userInput.getEnd())){
                 refresh();
                 return;
             }
             authenticateAndUpdate();
+            long end = System.nanoTime();
+            double runTime = (end - start) / 1000000;
+            System.out.println("RUNTIME FOR MOVE: " + runTime + "  milliseconds.");
         }
+    }
+
+    public boolean authenticateMove(){
+        if(!userInput.getStart().isOccupied()){
+            return false;
+        }
+//        if(isWhiteMove()){
+//            if(userInput.getStart().getPiece().getColor() != Color.WHITE){
+//                return false;
+//            }
+//        }else{
+//            if(userInput.getStart().getPiece().getColor() != Color.BLACK) {
+//                return false;
+//            }
+//        }
+        return true;
     }
 
     /**
@@ -127,6 +145,7 @@ public class Controller {
         if(moveHandler.isValidMove(userInput, board)) {
             game.writeMove(userInput);
             update(userInput);
+            changeTurn();
             refresh();
         }else{
             refresh();
@@ -259,6 +278,17 @@ public class Controller {
      */
     public void startBlackMove() {
         this.whiteMove = false;
+    }
+
+    /**
+     *
+     */
+    public void changeTurn(){
+       if(isWhiteMove()) {
+           startBlackMove();
+       }else{
+           startWhiteMove();
+       }
     }
 
     /**

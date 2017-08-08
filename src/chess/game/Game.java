@@ -41,8 +41,8 @@ public class Game {
         this.model = new Board();
         this.view = new GUI();
         this.controller = new Controller(this, model, view);
-        this.log = new MoveLog(this);
         model.setController(controller);
+        this.log = new MoveLog(this);
     }
 
     /**

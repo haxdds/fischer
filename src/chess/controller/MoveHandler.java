@@ -1,6 +1,7 @@
 package chess.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import chess.game.Game;
@@ -134,7 +135,6 @@ public class MoveHandler {
     public ArrayList<Square> verifyMoves(Square start, ArrayList<Square> moves, Board board) {
         verifyForChecks(start, board, moves);
         verifyKingMoves(start, board, moves);
-       // if(start.getPiece().getType() == Type.PAWN) getEnPassante(start, board, moves);
         return moves;
     }
 
@@ -203,13 +203,17 @@ public class MoveHandler {
      * @return whether that move deals with the check
      */
     public boolean verifyCurrentCheck(Board board, Move move){
-        if(getCheckedColor(board) == move.getStart().getPiece().getColor()) {
-            Board clone = board.clone();
+        Board clone = board.clone();
+        Color c = getCheckedColor(clone);
+        Color pieceColor = move.getStart().getPiece().getColor();
+        if(c == pieceColor) {
             clone.movePiece(move);
             if (isCheck(clone)) {
-                if (getCheckedColor(clone) == move.getStart().getPiece().getColor()) {
+                if (getCheckedColor(clone) == pieceColor) {
                     return false;
-                } else {
+                } else if(concurrentCheck(clone)){
+                    return false;}
+                else {
                     return true;
                 }
             } else {
@@ -260,6 +264,7 @@ public class MoveHandler {
     /**
      * TODO: WTF IS UP WITH THIS METHOD
      * TODO: FIXED THIS SHIT FUCK YEAH 7-31-17
+     * TODO: LOL FIXED IT FOR REAL THIS TIME {@link Board#clone()}
      * Returns the color of the checked player
      * @param board the board to be *checked*
      * @return List of the colors of the players in check. Empty List if no
@@ -269,12 +274,12 @@ public class MoveHandler {
         Square blackKing = board.getBlackKing();
         Square whiteKing = board.getWhiteKing();
         HashSet<Color> checked = new HashSet<>();
-       for(Piece p: board.getWhitePieceList()){
-             if(iterateMoves(board.mapPiece(p), board).contains(blackKing)){
-                 checked.add(Color.BLACK);
-             }
+        for(Piece p: board.getWhitePieceSet()){
+            if(iterateMoves(board.mapPiece(p), board).contains(blackKing)){
+                checked.add(Color.BLACK);
+            }
         }
-        for(Piece p: board.getBlackPieceList()){
+        for(Piece p: board.getBlackPieceSet()){
             if(iterateMoves(board.mapPiece(p), board).contains(whiteKing)){
                 checked.add(Color.WHITE);
             }
@@ -337,7 +342,7 @@ public class MoveHandler {
                 moves.add(board.translateSquare(start, t));
             }
         }
-        if (canEnPassante(start.getRow(), y)) {
+        if (canEnPassante(start.getCol(), start.getRow(), y)) {
            moves.add(getEnPassante(start, board));
         }
         return moves;
@@ -387,7 +392,7 @@ public class MoveHandler {
      * @param board the board the game is being played on
      * @return the square the pawn can en passante to. Null is returned
      * if the pawn cannot en passante.
-     * @see MoveHandler#canEnPassante(int, int)
+     * @see MoveHandler#canEnPassante(int, int, int)
      */
     public Square getEnPassante(Square start, Board board){
         int row = start.getRow();
@@ -397,7 +402,7 @@ public class MoveHandler {
         }else{
             y = -1;
         }
-        if(canEnPassante(row, y)){
+        if(canEnPassante(start.getCol(), row, y)){
             Move last = controller.getGame().getLastMove();
             if(row == 4){
                 return board.getSquare(5, last.getEnd().getCol());
@@ -416,12 +421,15 @@ public class MoveHandler {
      * @return whether the pawn can move en passante
      * @see Game#getLastMove()
      */
-    public boolean canEnPassante(int row, int y){
+    public boolean canEnPassante(int col, int row, int y){
         if(row != 4 && row != 3) return false;
         if(row == 4 && y != 1) return false;
         if(row == 3 && y != -1) return false;
         Move last = controller.getGame().getLastMove();
         if(last.getStart().getPiece().getType() != Type.PAWN) return false;
+        int deltaCol =  Math.abs(col - last.getStart().getCol());
+        if(deltaCol > 1) return false;
+        if(deltaCol == 0) return false;
         if(row == 4){
             if(last.getStart().getPiece().getColor() == Color.WHITE) return false;
             if(last.getEnd() == null) return false;
@@ -636,6 +644,8 @@ public class MoveHandler {
      */
     public boolean isEnPassanteMove(Move m){
         if(m.getStart().getPiece().getType() != Type.PAWN) return false;
+        int deltaCol =  Math.abs(m.getStart().getCol() - m.getEnd().getCol());
+        if(deltaCol > 1) return false;
         if(m.getStart().getPiece().getColor() == Color.WHITE){
             if(m.getStart().getRow() != 4) return false;
             if(m.getStart().getCol() == m.getEnd().getCol()) return false;

@@ -1,9 +1,11 @@
 package chess.structure;
 
 import chess.controller.Controller;
+import chess.controller.MoveHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Created by Rahul on 7/19/2017.
@@ -11,8 +13,10 @@ import java.util.HashMap;
  * This class represents a chess board. A chess board is composed
  * of an array of Squares which can house pieces. These pieces move
  * around the board from square to square. The board, along with
- * the pieces define the chess.structure of what is needed to
+ * the set of pieces define the chess.structure of what is needed to
  * play a game of chess.
+ *
+ * TODO: KEEP TRACK OF MAPS OR GENERATE THEM??
  *
  * @see Square
  * @see Piece
@@ -33,9 +37,9 @@ public class Board {
      */
     private Controller controller;
     private Square[][] board = new Square[8][8];
-    private ArrayList<Piece> pieceList = new ArrayList<>();
-    private ArrayList<Piece> whitePieceList = new ArrayList<>();
-    private ArrayList<Piece> blackPieceList = new ArrayList<>();
+    private HashSet<Piece> pieceSet = new HashSet<>();
+    private HashSet<Piece> whitePieceSet = new HashSet<>();
+    private HashSet<Piece> blackPieceSet = new HashSet<>();
     private HashMap<Piece, Square> pieceMap  = new HashMap<>();
 
     /**
@@ -45,15 +49,6 @@ public class Board {
      * @see Board#setUpBoard()
      */
     public Board() {setUpBoard();}
-
-    /**
-     * A constructor for a board which is linked to a game.
-     * @param controller the game which the board is a part of
-     */
-    public Board(Controller controller) {
-        this.controller = controller;
-        setUpBoard();
-    }
 
     /**
      * Initializes the squares on the board and places the pieces.
@@ -101,8 +96,8 @@ public class Board {
      * in both the appropriate squares on the board and the list of
      * pieces.
      *
-     * @see Board#whitePieceList
-     * @see Board#blackPieceList
+     * @see Board#whitePieceSet
+     * @see Board#blackPieceSet
      */
     public void setPieces() {
         Piece wpawn = new Piece(Type.PAWN, Color.WHITE);
@@ -185,7 +180,6 @@ public class Board {
      * @see Board#movePiece(int, int, int, int)
      */
     public void movePiece(Move m) {
-
         if(isCastlingMove(m)){
            castle(m);
         }else if(isEnPassanteMove(m)){
@@ -214,7 +208,7 @@ public class Board {
      * @see Square#addPiece(Piece)
      */
     public void addPiece(int row, int col, Piece p) {
-        addToList(p);
+        addToSet(p);
         addToMap(p, getSquare(row, col));
         getSquare(row, col).addPiece(p);
     }
@@ -240,7 +234,7 @@ public class Board {
      * @see Square#removePiece()
      */
     public void removePiece(int row, int col) {
-        removeFromList(getPiece(row,col));
+        removeFromSet(getPiece(row,col));
         removeFromMap(getPiece(row, col), getSquare(row, col));
         getSquare(row, col).removePiece();
     }
@@ -343,6 +337,8 @@ public class Board {
      *
      * @return
      * @TODO: TO BE IMPLEMENTED -- done 7/30/17
+     * @TODO: HAD CLONED SEPARATE COPIES TO BOARD AND TO LIST, THIS
+     * @TODO CAUSED THE GLITCH WITH THE CHECKS AND LISTS
      */
     public Board clone() {
         Board clone = new Board();
@@ -350,36 +346,14 @@ public class Board {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 clone.setSquare(getSquare(row, col).clone());
+                if(hasPiece(row, col)) {
+                    clone.addToSet(clone.getPiece(row, col));
+                    clone.addToMap(clone.getPiece(row, col), clone.getSquare(row, col));
+                }
             }
         }
-        cloneListAndMap(clone);
+        clone.setController(getController());
         return clone;
-    }
-
-    /**
-     * Clones and sets the maps and lists of this board to another board.
-     * @param clone the board to whose lists and maps of pieces will be set to
-     *              the cloned maps and lists of this board.
-     */
-    public void cloneListAndMap(Board clone){
-        ArrayList<Piece> clonelist = new ArrayList<>();
-        ArrayList<Piece> clonewhitelist = new ArrayList<>();
-        ArrayList<Piece> cloneblacklist = new ArrayList<>();
-        HashMap<Piece, Square> clonemap = new HashMap<>();
-        for(Piece p: getPieceList()){
-            Piece clonepiece = p.clone();
-            if(clonepiece.getColor() == Color.WHITE){
-                clonewhitelist.add(clonepiece);
-            }else{
-                cloneblacklist.add(clonepiece);
-            }
-            clonelist.add(clonepiece);
-            clonemap.put(clonepiece, mapPiece(p).clone());
-        }
-        clone.setPieceList(clonelist);
-        clone.setBlackPieceList(cloneblacklist);
-        clone.setWhitePieceList(clonewhitelist);
-        clone.setPieceMap(clonemap);
     }
 
     /**
@@ -500,12 +474,12 @@ public class Board {
      * @param p the piece to be added to the list of all
      *          pieces on the board
      */
-    public void addToList(Piece p){
-        pieceList.add(p);
+    public void addToSet(Piece p){
+        pieceSet.add(p);
         if(p.getColor() == Color.WHITE){
-            addToWhiteList(p);
+            addToWhiteSet(p);
         }else{
-            addToBlackList(p);
+            addToBlackSet(p);
         }
     }
 
@@ -514,8 +488,8 @@ public class Board {
      * @param p the white piece to be added to the list of all
      *         white pieces on the board
      */
-    public void addToWhiteList(Piece p){
-        whitePieceList.add(p);
+    public void addToWhiteSet(Piece p){
+        whitePieceSet.add(p);
     }
 
     /**
@@ -523,8 +497,8 @@ public class Board {
      * @param p the black piece to be added to the list of all black
      *          pieces on the board
      */
-    public void addToBlackList(Piece p){
-        blackPieceList.add(p);
+    public void addToBlackSet(Piece p){
+        blackPieceSet.add(p);
     }
 
     /**
@@ -532,31 +506,31 @@ public class Board {
      * @param p the piece to be removed from the list of all
      *          pieces on the board
      */
-    public void removeFromList(Piece p){
-        pieceList.remove(p);
+    public void removeFromSet(Piece p){
         if(p.getColor() == Color.WHITE){
-            removeFromWhiteList(p);
+            removeFromWhiteSet(p);
         }else{
-            removeFromBlackList(p);
+            removeFromBlackSet(p);
         }
+        pieceSet.remove(p);
     }
 
     /**
      *
-     * @param p the white piece to be removed from the list
+     * @param p the white piece to be removed from the set
      *          of all white pieces on the board
      */
-    public void removeFromWhiteList(Piece p){
-        whitePieceList.remove(p);
+    public void removeFromWhiteSet(Piece p){
+        whitePieceSet.remove(p);
     }
 
     /**
      *
-     * @param p the black piece to be removed from the list of
+     * @param p the black piece to be removed from the set of
      *         all black pieces on the board
      */
-    public void removeFromBlackList(Piece p){
-        blackPieceList.remove(p);
+    public void removeFromBlackSet(Piece p){
+        blackPieceSet.remove(p);
     }
 
     /**
@@ -590,26 +564,26 @@ public class Board {
 
     /**
      *
-     * @return the list of all pieces on the board
+     * @return the set of all pieces on the board
      */
-    public ArrayList<Piece> getPieceList() {
-        return pieceList;
+    public HashSet<Piece> getPieceList() {
+        return pieceSet;
     }
 
     /**
      *
-     * @return the list of all white pieces on the board
+     * @return the set of all white pieces on the board
      */
-    public ArrayList<Piece> getWhitePieceList() {
-        return whitePieceList;
+    public HashSet<Piece> getWhitePieceSet() {
+        return whitePieceSet;
     }
 
     /**
      *
-     * @return the list of all black pieces on the board
+     * @return the set of all black pieces on the board
      */
-    public ArrayList<Piece> getBlackPieceList() {
-        return blackPieceList;
+    public HashSet<Piece> getBlackPieceSet() {
+        return blackPieceSet;
     }
 
     /**
@@ -622,26 +596,26 @@ public class Board {
 
     /**
      *
-     * @param pieceList the list of all pieces on the board
+     * @param pieceSet the set of all pieces on the board
      */
-    public void setPieceList(ArrayList<Piece> pieceList) {
-        this.pieceList = pieceList;
+    public void setPieceSet(HashSet<Piece> pieceSet) {
+        this.pieceSet = pieceSet;
     }
 
     /**
      *
-     * @param whitePieceList the list of white pieces on the board
+     * @param whitePieceSet the set of white pieces on the board
      */
-    public void setWhitePieceList(ArrayList<Piece> whitePieceList) {
-        this.whitePieceList = whitePieceList;
+    public void setWhitePieceSet(HashSet<Piece> whitePieceSet) {
+        this.whitePieceSet = whitePieceSet;
     }
 
     /**
      *
-     * @param blackPieceList the list of black pieces on the board
+     * @param blackPieceSet the set of black pieces on the board
      */
-    public void setBlackPieceList(ArrayList<Piece> blackPieceList) {
-        this.blackPieceList = blackPieceList;
+    public void setBlackPieceSet(HashSet<Piece> blackPieceSet) {
+        this.blackPieceSet = blackPieceSet;
     }
 
     /**
@@ -667,7 +641,7 @@ public class Board {
      * @throws NullPointerException if controller is null
      */
     public Controller getController(){
-        if(this.controller == null) throw new NullPointerException("NULL CONTROLLER");
+        //if(this.controller == null) throw new NullPointerException("NULL CONTROLLER");
         return this.controller;
     }
 
@@ -675,30 +649,20 @@ public class Board {
      * Determines if a move is a castling move
      * @param m the move to be checked
      * @return whether the move is a castling move
+     * @see MoveHandler#isCastlingMove(Move)
      */
     public boolean isCastlingMove(Move m){
-        if(m.getStart().getPiece().getType() != Type.KING) return false;
-        int deltaRow = Math.abs(m.getStart().getCol() - m.getEnd().getCol());
-        if(deltaRow != 2) return false;
-        return true;
+        return getController().getMoveHandler().isCastlingMove(m);
     }
 
     /**
      * checks whether a given move is an en passante move
      * @param m the moved to be checked
      * @return whether that move is an en passante move
+     * @see MoveHandler#isEnPassanteMove(Move)
      */
     public boolean isEnPassanteMove(Move m){
-        if(m.getStart().getPiece().getType() != Type.PAWN) return false;
-        if(m.getStart().getPiece().getColor() == Color.WHITE){
-            if(m.getStart().getRow() != 4) return false;
-            if(m.getStart().getCol() == m.getEnd().getCol()) return false;
-            return true;
-        }else{
-            if(m.getStart().getRow() != 3) return false;
-            if(m.getStart().getCol() == m.getEnd().getCol()) return false;
-            return true;
-        }
+        return getController().getMoveHandler().isEnPassanteMove(m);
     }
 
     /**
@@ -717,6 +681,7 @@ public class Board {
         }
         return s;
     }
+
 
 
 }

@@ -1,5 +1,7 @@
 package chess.structure;
 
+import java.util.Random;
+
 /**
  * Created by Rahul on 7/19/2017.
  * <p>
@@ -27,6 +29,7 @@ public class Piece {
     private Color color;
 
 
+
     /**
      * A constructor for Piece objects.
      *
@@ -39,6 +42,7 @@ public class Piece {
     public Piece(Type type, Color color) {
         this.type = type;
         this.color = color;
+
     }
 
     /**
@@ -73,5 +77,13 @@ public class Piece {
      * of this Piece object.
      */
     public Piece clone() { return new Piece(type, color); }
+
+    /**
+     *
+     * @return
+     */
+    public String toString(){return "" + getType() + " " + getColor();}
+
+
 
 }
