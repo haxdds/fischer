@@ -373,7 +373,7 @@ public class Board {
      *
      * @param s the square which the pawn to be promoted occupies
      * @param type the type of the piece the pawn is to be promoted to
-     * @see #promotePawn(int, int, Type)             
+     * @see #promotePawn(int, int, Type)
      */
     public void promotePawn(Square s, Type type){
         promotePawn(s.getRow(), s.getCol(), type);
@@ -620,7 +620,7 @@ public class Board {
      *
      * @return the set of all pieces on the board
      */
-    public HashSet<Piece> getPieceList() {
+    public HashSet<Piece> getPieceSet() {
         return pieceSet;
     }
 

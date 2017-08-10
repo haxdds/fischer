@@ -110,8 +110,10 @@ public class Translation {
 
     /**
      *
-     * @param t
-     * @return
+     * TODO: WHY DOESN'T THIS WORK INSIDE OF FUNCTION {@link chess.controller.MoveHandler#iterateMoves(Square, Board)}
+     * @param t the translation whose signature is to be checked
+     * @return whether the signatures of both translations are equal
+     * @see #signature
      */
     public boolean equalSignatures(Translation t){
         return this.getSignature()[0] == t.getSignature()[0] && this.getSignature()[1] == t.getSignature()[1];
@@ -119,8 +121,10 @@ public class Translation {
 
     /**
      *
-     * @param a
-     * @return
+     * @param a the signature being compared to
+     * @return whether the signature of this translation is equal
+     * to the input signature
+     * @see #signature
      */
     public boolean isSignature(int[] a){
         if(a == null) return false;

@@ -21,6 +21,9 @@ import java.util.ArrayList;
 /**
  * Created by Rahul on 7/20/2017.
  *
+ * This GUI is just for testing. A more spicy and dank
+ * gui will be implemented in the near future. *
+ *
  * FIXME: REWORK GUI TO MAKE IT MORE SIMPLE.
  * TODO: IMPLEMENT CLICK AND DRAG ON PIECE IMAGES
  * TODO: AS OF NOW WE'RE TREATING THE GUI AS A BLACK BOX UNTIL
@@ -48,10 +51,10 @@ public class GUI {
     private JPanel promoteBox;
     private JButton[] promotionOptions = new JButton[4];
 
-
+    private Controller controller;
 
     public GUI() {
-        //this.controller = controller;
+        this.controller = controller;
         initializeGui();
 
         JFrame f = new JFrame("Play Some Goddamn Chess");
@@ -303,82 +306,103 @@ public class GUI {
     }
 
     public void createPromotionBox(Color color){
-        promoteBox = new JPanel(new GridLayout(0,3));
+        promoteBox = new JPanel(new GridLayout(0,4));
+        Color background  = Color.WHITE;
         if(color.equals(Color.WHITE)){
             JButton q = new JButton();
-            q.setBackground(new Color(113, 200, 182));
+            q.setBackground(background);
             q.setIcon(new ImageIcon(getImage("WhiteQueen")));
+            q.setPreferredSize(new Dimension(64,64));
             promotionOptions[0] = q;
 
             JButton r = new JButton();
-            r.setBackground(new Color(113, 200, 182));
+            r.setBackground(background);
             r.setIcon(new ImageIcon(getImage("WhiteRook")));
+            q.setPreferredSize(new Dimension(64,64));
             promotionOptions[1] = r;
 
             JButton b = new JButton();
-            b.setBackground(new Color(113, 200, 182));
+            b.setBackground(background);
             b.setIcon(new ImageIcon(getImage("WhiteBishop")));
+            q.setPreferredSize(new Dimension(64,64));
             promotionOptions[2] = b;
 
             JButton k = new JButton();
-            k.setBackground(new Color(113, 200, 182));
+            k.setBackground(background);
             k.setIcon(new ImageIcon(getImage("WhiteKnight")));
+            q.setPreferredSize(new Dimension(64,64));
             promotionOptions[3] = k;
-        }else if(color.equals(Color.BLACK)){
+        }else if(color.equals(Color.BLACK)) {
             JButton q = new JButton();
-            q.setBackground(new Color(113, 200, 182));
+            q.setBackground(background);
             q.setIcon(new ImageIcon(getImage("BlackQueen")));
             promotionOptions[0] = q;
 
             JButton r = new JButton();
-            r.setBackground(new Color(113, 200, 182));
+            r.setBackground(background);
             r.setIcon(new ImageIcon(getImage("BlackRook")));
             promotionOptions[1] = r;
 
             JButton b = new JButton();
-            b.setBackground(new Color(113, 200, 182));
+            b.setBackground(background);
             b.setIcon(new ImageIcon(getImage("BlackBishop")));
             promotionOptions[2] = b;
 
             JButton k = new JButton();
-            k.setBackground(new Color(113, 200, 182));
+            k.setBackground(background);
             k.setIcon(new ImageIcon(getImage("BlackKnight")));
             promotionOptions[3] = k;
         }
-        addPromotionListeners();
+        promoteBox.add(promotionOptions[0]);
+        promoteBox.add(promotionOptions[1]);
+        promoteBox.add(promotionOptions[2]);
+        promoteBox.add(promotionOptions[3]);
+        JPanel boardConstrain = new JPanel(new BorderLayout());
+        boardConstrain.setBackground(Color.WHITE);
+        boardConstrain.add(promoteBox);
+        boardConstrain.setPreferredSize(new Dimension(500,100));
+        boardConstrain.setLocation(0,0);
+        gui.add(boardConstrain, BorderLayout.NORTH);
 
     }
 
-    public void addPromotionListeners(){
+    public void addPromotionListeners(Controller controller){
         for(int k = 0; k < 4; k++){
             final int id = k;
             promotionOptions[k].addActionListener(new ActionListener() {
                 final int i = id;
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    promote(i);
+                    promote(i, controller);
                 }
             });
         }
     }
 
-    public Type promote(int id){
+    public void promote(int id, Controller controller){
         switch(id){
             case 0:
-                return Type.QUEEN;
+                controller.promote(Type.QUEEN);
             case 1:
-                return Type.ROOK;
+                controller.promote(Type.ROOK);
             case 2:
-                return Type.BISHOP;
+                controller.promote(Type.BISHOP);
             case 3:
-                return Type.KNIGHT;
+                controller.promote(Type.KNIGHT);
             default:
-                return  Type.QUEEN;
+                controller.promote(Type.QUEEN);
         }
     }
 
-    public void getPromotion(Color color){
+    public void getPromotion(Color color, Controller controller){
         createPromotionBox(color);
+        addPromotionListeners(controller);
+    }
+
+    public void removePromotionBox(){
+        gui.remove(promoteBox);
+        gui.invalidate();
+        gui.repaint();
     }
 
 

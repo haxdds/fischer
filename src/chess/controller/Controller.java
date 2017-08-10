@@ -3,7 +3,9 @@ package chess.controller;
 import chess.game.Game;
 import chess.gui.GUI;
 import chess.structure.*;
+import chess.structure.Color;
 
+import java.awt.*;
 import java.util.Arrays;
 
 /**
@@ -66,7 +68,7 @@ public class Controller {
      * @see Controller#renderUserInput()
      */
     public void pushUserInput(Square square) {
-        if(!userMove) return;
+        if(!userMove || !isRunning()) return;
         userInput.update(square);
         renderUserInput();
     }
@@ -87,48 +89,36 @@ public class Controller {
         if(!userInput.isMatured()){
             highlightView();
         }else{
-            long start = System.nanoTime();
             if(userInput.getStart().equalCoordinate(userInput.getEnd())){
                 refresh();
                 return;
             }
             authenticateAndUpdate();
-            long end = System.nanoTime();
-            double runTime = (end - start) / 1000000;
-            System.out.println("RUNTIME FOR MOVE: " + runTime + "  milliseconds.");
         }
     }
 
+    /**
+     * Authenticates the userInput two ways:
+     * 1) the starting square must contain a piece
+     * 2) it must be the correct side's turn
+     * @return whether the userInput is valid
+     */
     public boolean authenticateMove(){
         if(!userInput.getStart().isOccupied()){
             return false;
         }
-//        if(isWhiteMove()){
-//            if(userInput.getStart().getPiece().getColor() != Color.WHITE){
-//                return false;
-//            }
-//        }else{
-//            if(userInput.getStart().getPiece().getColor() != Color.BLACK) {
-//                return false;
-//            }
-//        }
+        if(isWhiteMove()){
+            if(userInput.getStart().getPiece().getColor() != Color.WHITE){
+                return false;
+            }
+        }else{
+            if(userInput.getStart().getPiece().getColor() != Color.BLACK) {
+                return false;
+            }
+        }
         return true;
     }
 
-    /**
-     * Adds Listener objects to the view/gui to retrieve
-     * user input for the game.
-     * @see Listener
-     * @see GUI
-     */
-    public void addListeners(){
-        for(int row = 0; row < 8; row++){
-            for(int col = 0; col < 8; col++){
-                Listener listener = new Listener(board.getSquare(row, col), this);
-                gui.getSquare(row, col).addActionListener(listener);
-            }
-        }
-    }
 
     /**
      * Authenticates the user input move on the model board
@@ -372,16 +362,25 @@ public class Controller {
     public void processTurn(){
         if(isCheckMate()){
             System.out.println("IS CHECKMATE");
-            endGame();
+            //lock();
         }
         if(canPromotePawn()){
             System.out.println("CAN PROMOTE PAWN");
+            lock();
+            getPromotion();
         }
     }
 
+    /**
+     *
+     * @param type
+     */
     public void promote(Type type){
         if(canPromotePawn()){
             getBoard().promotePawn(getPromotionSquare(), type);
+            unlock();
+            System.out.println(getBoard().toString());
+            gui.removePromotionBox();
         }
     }
 
@@ -396,7 +395,42 @@ public class Controller {
     /**
      *
      */
-    public void endGame(){
+    public void lock(){
         this.running = false;
+    }
+
+    /**
+     *
+     */
+    public void unlock(){
+        this.running = true;
+    }
+
+    /**
+     *
+     */
+    public void getPromotion(){
+        Square s = getPromotionSquare();
+        if(s.getPiece().getColor() == Color.WHITE) {
+            gui.getPromotion(java.awt.Color.WHITE, this);
+        }else{
+            gui.getPromotion(java.awt.Color.BLACK, this);
+        }
+    }
+
+
+    /**
+     * Adds Listener objects to the view/gui to retrieve
+     * user input for the game.
+     * @see Listener
+     * @see GUI
+     */
+    public void addListeners(){
+        for(int row = 0; row < 8; row++){
+            for(int col = 0; col < 8; col++){
+                Listener listener = new Listener(board.getSquare(row, col), this);
+                gui.getSquare(row, col).addActionListener(listener);
+            }
+        }
     }
 }

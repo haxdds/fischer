@@ -206,13 +206,29 @@ public class MoveHandler {
         Board clone = board.clone();
         Color c = getCheckedColor(clone);
         Color pieceColor = move.getStart().getPiece().getColor();
+
         if(c == pieceColor) {
+//            if(move.getEnd().isOccupied()) {
+//                if (move.getStart().getPiece().getType() == Type.PAWN
+//                        && move.getEnd().getPiece().getType() == Type.QUEEN) {
+//                    System.out.println("BEFORE:");
+//                    System.out.println(clone.toString());
+//                    clone.movePiece(move);
+//                    System.out.println("AFTER:");
+//                    System.out.println(clone.toString());
+//                    System.out.println("is Check: " + isCheck(clone));
+//
+//                }
+//            }else{
+//                clone.movePiece(move);
+//            }
             clone.movePiece(move);
             if (isCheck(clone)) {
                 if (getCheckedColor(clone) == pieceColor) {
                     return false;
                 } else if(concurrentCheck(clone)){
-                    return false;}
+                    return false;
+                }
                 else {
                     return true;
                 }
@@ -275,11 +291,13 @@ public class MoveHandler {
         Square whiteKing = board.getWhiteKing();
         HashSet<Color> checked = new HashSet<>();
         for(Piece p: board.getWhitePieceSet()){
+            if(p.getType() == Type.KING) continue;
             if(iterateMoves(board.mapPiece(p), board).contains(blackKing)){
                 checked.add(Color.BLACK);
             }
         }
         for(Piece p: board.getBlackPieceSet()){
+            if(p.getType() == Type.KING) continue;
             if(iterateMoves(board.mapPiece(p), board).contains(whiteKing)){
                 checked.add(Color.WHITE);
             }
@@ -461,14 +479,10 @@ public class MoveHandler {
     public Color getCheckMatedColor(Board board){
         if(!isCheck(board)) return null;
         Color c = getCheckedColor(board);
-        for(int row = 0; row < 7; row++){
-            for(int col = 0; col < 7; col++){
-                if(board.hasPiece(row, col)) {
-                    if(board.getPiece(row, col).getColor() != c) continue;
-                    if (getValidMoves(board.getSquare(row, col), board).size() != 0) {
-                        return null;
-                    }
-                }
+        for(Piece p : board.getPieceSet()){
+            if(p.getColor() != c) continue;
+            if(getValidMoves(board.mapPiece(p), board).size() != 0){
+                return null;
             }
         }
         return c;
@@ -653,14 +667,20 @@ public class MoveHandler {
      * @return whether the given move is an en passante move
      */
     public boolean isEnPassanteMove(Move m){
+        Move lastMove = controller.getGame().getLastMove();
+        if(lastMove == null) return false;
+        if(lastMove.getStart().getPiece().getType() != Type.PAWN) return false;
+        if(lastMove.getStart().getPiece().getColor() == m.getStart().getPiece().getColor()) return false;
         if(m.getStart().getPiece().getType() != Type.PAWN) return false;
         int deltaCol =  Math.abs(m.getStart().getCol() - m.getEnd().getCol());
         if(deltaCol > 1) return false;
         if(m.getStart().getPiece().getColor() == Color.WHITE){
+            if(lastMove.getStart().getRow() != 6 || lastMove.getEnd().getRow() != 4) return false;
             if(m.getStart().getRow() != 4) return false;
             if(m.getStart().getCol() == m.getEnd().getCol()) return false;
             return true;
         }else{
+            if(lastMove.getStart().getRow() != 1 || lastMove.getEnd().getRow() != 3) return false;
             if(m.getStart().getRow() != 3) return false;
             if(m.getStart().getCol() == m.getEnd().getCol()) return false;
             return true;
