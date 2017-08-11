@@ -42,6 +42,21 @@ in your command console in the .../Chess/src/chess directory:
 ```
 This should cause the chess gui to pop up. 
 
+### If using bash
+
+in your terminal run
+
+`make`
+
+from this projects root directory.
+then it should be compiled then the gui should show up.
+
+If your on windows checkout:
+
+https://gist.github.com/evanwill/0207876c3243bbb6863e65ec5dc3f058
+
+to install make for git bash.
+
 ## Authors
 
 * **Rahul Chowdhury** - [haxdds](https://github.com/haxdds)
