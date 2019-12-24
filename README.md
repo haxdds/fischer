@@ -60,6 +60,6 @@ to install make for git bash.
 ## Authors
 
 * **Rahul Chowdhury** - [haxdds](https://github.com/haxdds)
-
+* **Stephon Lawrence** - [stephonlawrence](https://github.com/stephonlawrence)
 
 
