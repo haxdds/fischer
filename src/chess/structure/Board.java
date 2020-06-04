@@ -37,9 +37,9 @@ public class Board {
      */
     private Controller controller;
     private Square[][] board = new Square[8][8];
-    private HashSet<Piece> pieceSet = new HashSet<>();
-    private HashSet<Piece> whitePieceSet = new HashSet<>();
-    private HashSet<Piece> blackPieceSet = new HashSet<>();
+    private PieceSet pieceSet = new PieceSet();
+    private PieceSet whitePieceSet = new PieceSet();
+    private PieceSet blackPieceSet = new PieceSet();
     private HashMap<Piece, Square> pieceMap  = new HashMap<>();
 
     /**
@@ -620,7 +620,7 @@ public class Board {
      *
      * @return the set of all pieces on the board
      */
-    public HashSet<Piece> getPieceSet() {
+    public PieceSet getPieceSet() {
         return pieceSet;
     }
 
@@ -628,7 +628,7 @@ public class Board {
      *
      * @return the set of all white pieces on the board
      */
-    public HashSet<Piece> getWhitePieceSet() {
+    public PieceSet getWhitePieceSet() {
         return whitePieceSet;
     }
 
@@ -636,7 +636,7 @@ public class Board {
      *
      * @return the set of all black pieces on the board
      */
-    public HashSet<Piece> getBlackPieceSet() {
+    public PieceSet getBlackPieceSet() {
         return blackPieceSet;
     }
 
@@ -652,7 +652,7 @@ public class Board {
      *
      * @param pieceSet the set of all pieces on the board
      */
-    public void setPieceSet(HashSet<Piece> pieceSet) {
+    public void setPieceSet(PieceSet pieceSet) {
         this.pieceSet = pieceSet;
     }
 
@@ -660,7 +660,7 @@ public class Board {
      *
      * @param whitePieceSet the set of white pieces on the board
      */
-    public void setWhitePieceSet(HashSet<Piece> whitePieceSet) {
+    public void setWhitePieceSet(PieceSet whitePieceSet) {
         this.whitePieceSet = whitePieceSet;
     }
 
@@ -668,7 +668,7 @@ public class Board {
      *
      * @param blackPieceSet the set of black pieces on the board
      */
-    public void setBlackPieceSet(HashSet<Piece> blackPieceSet) {
+    public void setBlackPieceSet(PieceSet blackPieceSet) {
         this.blackPieceSet = blackPieceSet;
     }
 
