@@ -23,6 +23,8 @@ public class MoveLog {
      * the game.
      */
     private ArrayList<Move[]> moveLog = new ArrayList<>();
+    private ArrayList<Move> blackMoves = new ArrayList<>();
+    private ArrayList<Move> whiteMoves = new ArrayList<>();
     private ArrayList<Move> moves = new ArrayList<>();
     private ArrayList<Square> squares = new ArrayList<>();
 
