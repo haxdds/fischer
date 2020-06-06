@@ -26,7 +26,7 @@ networks seems to be the way of attacking this problem.
 * ability to play online
 * a machine learning algorithm  
 
-## Running
+## Getting Started  
 
 ### Cloning
 
@@ -36,6 +36,8 @@ To import this chess software, execute the following line of code in your comman
  git clone https://github.com/haxdds/Chess.git
 ```
 
+### Running  
+
 To run the current version of this chess software, execute the following lines of code
 in your command console in the .../Chess/src/chess directory:
 ```
@@ -44,7 +46,7 @@ in your command console in the .../Chess/src/chess directory:
 ```
 This should cause the chess gui to pop up. 
 
-### If using bash
+**If using bash**
 
 in your terminal run
 
