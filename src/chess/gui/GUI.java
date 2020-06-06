@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * TODO: AS OF NOW WE'RE TREATING THE GUI AS A BLACK BOX UNTIL
  * TODO: THE LOGIC OF THE chess.game.game IS FINISHED.
  */
-public class GUI {
+public class GUI implements BoardGUI{
 
 
     private final JPanel gui = new JPanel(new BorderLayout(3, 3));
@@ -202,7 +202,7 @@ public class GUI {
     /**
      * Initializes the icons of the initial chess boardGUI piece places
      */
-    private final void setupNewGame() {
+    public void setupNewGame() {
         message.setText("Make your move!");
         // set up the black pieces
         for (int ii = 0; ii < STARTING_ROW.length; ii++) {
