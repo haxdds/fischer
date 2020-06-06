@@ -46,7 +46,7 @@ in your command console in the .../Chess/src/chess directory:
 ```
 This should cause the chess gui to pop up. 
 
-**If using bash**
+### If using bash  
 
 in your terminal run
 
