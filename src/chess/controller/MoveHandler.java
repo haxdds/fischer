@@ -101,7 +101,7 @@ public class MoveHandler {
      * @param board the board the game is being played on
      * @param signature the signature of the translation
      * @return whether that translation is valid on that board
-     * @see Translation#signature
+     * @see Translation#getSignature()
      */
     public boolean checkTranslation(Translation t, Square start, Board board, int[] signature) {
         if (start.translate(t).inBounds()) {
@@ -365,7 +365,10 @@ public class MoveHandler {
             }
         }
         if (canEnPassante(start.getCol(), start.getRow(), y)) {
-           moves.add(getEnPassante(start, board));
+           Square end = getEnPassante(start, board);
+           if(end != null){
+              moves.add(end);
+           }
         }
         return moves;
     }
@@ -448,17 +451,17 @@ public class MoveHandler {
         if(row == 4 && y != 1) return false;
         if(row == 3 && y != -1) return false;
         Move last = controller.getLastMove();
-        if(last.getStart().getPiece().getType() != Type.PAWN) return false;
+        if(last.getEnd().getPiece().getType() != Type.PAWN) return false;
         int deltaCol =  Math.abs(col - last.getStart().getCol());
         if(deltaCol > 1) return false;
         if(deltaCol == 0) return false;
         if(row == 4){
-            if(last.getStart().getPiece().getColor() == Color.WHITE) return false;
+            if(last.getEnd().getPiece().getColor() == Color.WHITE) return false;
             if(last.getEnd() == null) return false;
             if(last.getStart().getRow() != 6 && last.getEnd().getRow() != 4) return false;
         }
         if(row == 3){
-            if(last.getStart().getPiece().getColor() == Color.BLACK) return false;
+            if(last.getEnd().getPiece().getColor() == Color.BLACK) return false;
             if(last.getEnd() == null) return false;
             if(last.getStart().getRow() != 1 && last.getEnd().getRow() != 3) return false;
         }
@@ -670,11 +673,11 @@ public class MoveHandler {
     public boolean isEnPassanteMove(Move m){
         Move lastMove = controller.getLastMove();
         if(lastMove == null) return false;
-        if(lastMove.getStart().getPiece().getType() != Type.PAWN) return false;
-        if(lastMove.getStart().getPiece().getColor() == m.getStart().getPiece().getColor()) return false;
+        if(lastMove.getEnd().getPiece().getType() != Type.PAWN) return false;
+        if(lastMove.getEnd().getPiece().getColor() == m.getStart().getPiece().getColor()) return false;
         if(m.getStart().getPiece().getType() != Type.PAWN) return false;
-        int deltaCol =  Math.abs(m.getStart().getCol() - m.getEnd().getCol());
-        if(deltaCol > 1) return false;
+        if(m.getEnd().getCol() != lastMove.getEnd().getCol()) return false;
+
         if(m.getStart().getPiece().getColor() == Color.WHITE){
             if(lastMove.getStart().getRow() != 6 || lastMove.getEnd().getRow() != 4) return false;
             if(m.getStart().getRow() != 4) return false;
