@@ -18,9 +18,9 @@ networks seems to be the way of attacking this problem.
 ### To Be Implemented:
 * ~~castling~~
 * ~~pawn on pawn en passante~~
-* players, ~~clocks~~, ~~movelogs
+* players, ~~clocks~~, ~~movelogs~~
 * pawn promotion
-* ~~player turns
+* ~~player turns~~
 * a brute force engine
 * a more aesthetic gui
 * ability to play online
