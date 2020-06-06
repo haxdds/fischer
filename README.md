@@ -1,7 +1,7 @@
-# Chess
+# Chess [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 A classic game of chess with a hint of artificial intelligence 
  
-[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
+
 
 ### Under Development
 
