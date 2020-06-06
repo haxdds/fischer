@@ -14,6 +14,9 @@ play chess instead of using the traditional brute force method
 of searching a decision tree. As of now, supervised learning by artificial neural
 networks seems to be the way of attacking this problem.
 
+## Goals
+> The primary goal of this project is to create well organized and well documented software.  
+
 ### To Be Implemented:
 * ~~castling~~
 * ~~pawn on pawn en passante~~
@@ -23,11 +26,9 @@ networks seems to be the way of attacking this problem.
 * a brute force engine
 * a more aesthetic gui
 * ability to play online
-* a machine learning algorithm
+* a machine learning algorithm  
 
-## Goals
-> The primary goal of this project is to create well organized and well documented software.
-
+## Running
 
 ### Cloning
 
@@ -36,8 +37,6 @@ To import this chess software, execute the following line of code in your comman
 ```
  git clone https://github.com/haxdds/Chess.git
 ```
-
-## Running
 
 To run the current version of this chess software, execute the following lines of code
 in your command console in the .../Chess/src/chess directory:
