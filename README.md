@@ -1,6 +1,8 @@
 # Chess
-
-**This project is still under development**
+A classic game of chess with a hint of artificial intelligence 
+ 
+[![Build Status][travis-image]][travis-url]
+**Under Development**
 
 This is a *mostly* functional game of chess written in java. The project is being
 developed under the *Model-View-Controller (MVC)* design pattern. There are also
@@ -14,7 +16,7 @@ networks seems to be the way of attacking this problem.
 * ~~pawn on pawn en passante~~
 * players, ~~clocks~~, ~~movelogs
 * pawn promotion
-* player turns
+* ~~player turns
 * a brute force engine
 * a more aesthetic gui
 * ability to play online
@@ -56,6 +58,19 @@ If your on windows checkout:
 https://gist.github.com/evanwill/0207876c3243bbb6863e65ec5dc3f058
 
 to install make for git bash.
+
+## Release History  
+
+* 0.0.1
+    * Work in progress  
+
+## Contributing
+
+1. Fork it (<https://github.com/haxdds/Chess/fork>)
+2. Create your feature branch (`git checkout -b feature/fooBar`)
+3. Commit your changes (`git commit -am 'Add some fooBar'`)
+4. Push to the branch (`git push origin feature/fooBar`)
+5. Create a new Pull Request
 
 ## Authors
 
