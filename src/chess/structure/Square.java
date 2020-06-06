@@ -63,7 +63,7 @@ public class Square {
      */
     public Piece getPiece() {
         if (!isOccupied()) {
-            throw new IllegalArgumentException("Square is not occupied");
+            throw new IllegalArgumentException("Square at "  + this.toString() + " is not occupied");
         }
         return this.piece;
     }

@@ -131,7 +131,6 @@ public class Controller {
      */
     public void authenticateAndUpdate(){
         if(moveHandler.isValidMove(userInput, board)) {
-            writeMove(userInput);
             update(userInput);
             changeTurn();
             processTurn();
@@ -164,6 +163,7 @@ public class Controller {
     public void update(Move move){
         updateModel(move);
         updateView(move);
+        writeMove(move);
     }
 
     /**
@@ -175,6 +175,8 @@ public class Controller {
         if(moveHandler.isCastlingMove(move)){
             updateView(board.getCastlingRookMove(move));
         }else if(moveHandler.isEnPassanteMove(move)){
+            System.out.println(move.toString());
+            System.out.println(board.toString());
             enPassanteUpdate(move);
         }
         board.movePiece(move);
@@ -286,7 +288,7 @@ public class Controller {
      * @see MoveLog#write(Move)
      */
     public void writeMove(Move m){
-        System.out.println(m.toString());
+        //System.out.println(m.toString());
         this.log.write(m);
     }
 
