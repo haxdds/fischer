@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import chess.game.Game;
 import chess.structure.*;
 
 /**
@@ -26,6 +25,9 @@ public class MoveHandler {
      * The game which the movehandler regulates
      */
     private Controller controller;
+    private MoveGenerator generator;
+    private MoveValidator validator;
+
 
     /**
      * A constructor for MoveHandler objects.
@@ -33,6 +35,8 @@ public class MoveHandler {
      */
     public MoveHandler(Controller controller){
         this.controller = controller;
+        generator = new MoveGenerator();
+        validator = new MoveValidator();
     }
 
     /**
@@ -421,7 +425,7 @@ public class MoveHandler {
             y = -1;
         }
         if(canEnPassante(start.getCol(), row, y)){
-            Move last = controller.getGame().getLastMove();
+            Move last = controller.getLastMove();
             if(row == 4){
                 return board.getSquare(5, last.getEnd().getCol());
             }
@@ -437,13 +441,13 @@ public class MoveHandler {
      * @param row the row on which the pawn is on
      * @param y the direction the pawn moves in (1 for white, -1 for black)
      * @return whether the pawn can move en passante
-     * @see Game#getLastMove()
+     * @see Controller#getLastMove()
      */
     public boolean canEnPassante(int col, int row, int y){
         if(row != 4 && row != 3) return false;
         if(row == 4 && y != 1) return false;
         if(row == 3 && y != -1) return false;
-        Move last = controller.getGame().getLastMove();
+        Move last = controller.getLastMove();
         if(last.getStart().getPiece().getType() != Type.PAWN) return false;
         int deltaCol =  Math.abs(col - last.getStart().getCol());
         if(deltaCol > 1) return false;
@@ -535,46 +539,43 @@ public class MoveHandler {
      *
      * @param square the square from which the king will castle
      * @return the list of possible castling squares for that king
-     * @see MoveHandler#addCastlingSquares(Game, int, ArrayList)
+     * @see MoveHandler#addCastlingSquares(int, ArrayList)
      */
     public ArrayList<Square> getCastleSquares(Square square){
-        Game game = controller.getGame();
         if(!square.isOccupied()) throw new IllegalArgumentException("Square must have king.");
         if(square.getPiece().getType() != Type.KING) throw new IllegalArgumentException("Square must have king.");
         Piece king = square.getPiece();
         ArrayList<Square> castle = new ArrayList<>();
         if(king.getColor() == Color.WHITE){
-            addCastlingSquares(game, 0, castle);
+            addCastlingSquares(0, castle);
         }else{
-            addCastlingSquares(game, 7, castle);
+            addCastlingSquares(7, castle);
         }
         return castle;
     }
 
     /**
      *
-     * @param game the game being played
      * @param row the row the king is on
      * @param castle the list of squares that the castling squares
      *               will be added to
-     * @see Game
      */
-    public void addCastlingSquares(Game game, int row, ArrayList<Square> castle){
-        Board board = game.getModel();
+    public void addCastlingSquares(int row, ArrayList<Square> castle){
+        Board board = controller.getBoard();
         Square E = board.getSquare(row, 4);
         Square H = board.getSquare(row, 7);
         Square A = board.getSquare(row, 0);
 
-        if(game.hasSquare(E)){
+        if(controller.hasSquare(E)){
             //king has been moved
             return;
         }else{
-            if(!game.hasSquare(H)
+            if(!controller.hasSquare(H)
                     && !board.getSquare(row,6).isOccupied()
                     && !board.getSquare(row, 5).isOccupied()){
                 castle.add(board.getSquare(row,6));
             }
-            if(!game.hasSquare(A)
+            if(!controller.hasSquare(A)
                     && !board.getSquare(row,1).isOccupied()
                     && !board.getSquare(row, 2).isOccupied()
                     && !board.getSquare(row,3).isOccupied()){
@@ -667,7 +668,7 @@ public class MoveHandler {
      * @return whether the given move is an en passante move
      */
     public boolean isEnPassanteMove(Move m){
-        Move lastMove = controller.getGame().getLastMove();
+        Move lastMove = controller.getLastMove();
         if(lastMove == null) return false;
         if(lastMove.getStart().getPiece().getType() != Type.PAWN) return false;
         if(lastMove.getStart().getPiece().getColor() == m.getStart().getPiece().getColor()) return false;

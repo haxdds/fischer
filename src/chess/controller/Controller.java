@@ -5,9 +5,6 @@ import chess.gui.GUI;
 import chess.structure.*;
 import chess.structure.Color;
 
-import java.awt.*;
-import java.util.Arrays;
-
 /**
  * Created by Rahul on 7/20/2017.
  *
@@ -35,6 +32,7 @@ public class Controller {
     private Game game;
     private Board board;
     private GUI gui;
+    private MoveLog log;
     private MoveHandler moveHandler;
     private Move userInput = new Move();
     private boolean userMove = true;
@@ -53,6 +51,7 @@ public class Controller {
         this.game = game;
         this.board = board;
         this.gui = gui;
+        this.log = new MoveLog(game);
         this.moveHandler = new MoveHandler(this);
         board.setController(this);
         addListeners();
@@ -132,7 +131,7 @@ public class Controller {
      */
     public void authenticateAndUpdate(){
         if(moveHandler.isValidMove(userInput, board)) {
-            game.writeMove(userInput);
+            writeMove(userInput);
             update(userInput);
             changeTurn();
             processTurn();
@@ -280,6 +279,54 @@ public class Controller {
            startWhiteMove();
        }
     }
+
+    /**
+     * Records a move to the game's MoveLog
+     * @param m the move to be recorded to the MoveLog
+     * @see MoveLog#write(Move)
+     */
+    public void writeMove(Move m){
+        System.out.println(m.toString());
+        this.log.write(m);
+    }
+
+    /**
+     *
+     * @param move the move for which to be searched
+     * @return whether that move has been played in this game
+     * @see MoveLog#containsMove(Move)
+     */
+    public boolean hasMove(Move move){
+        return this.log.containsMove(move);
+    }
+
+    /**
+     *
+     * @return the MoveLog which records all moves played
+     * during the game
+     * @see MoveLog
+     */
+    public MoveLog getLog() {
+        return log;
+    }
+
+    /**
+     *
+     * @param s the square to be checked for
+     * @return whether that square has been involved in any
+     * of the moves played during the game.
+     * @see MoveLog#containsSquare(Square)
+     *
+     */
+    public boolean hasSquare(Square s){return this.log.containsSquare(s);}
+
+
+    /**
+     *
+     * @return the last move played in the game
+     * @see MoveLog#getLastMove()
+     */
+    public Move getLastMove(){return this.log.getLastMove();}
 
     /**
      *
