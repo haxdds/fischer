@@ -86,7 +86,7 @@ public class MoveHandler {
         if(p.getType() == Type.PAWN) return pawnIterate(start, board);
         Group g = p.getType().getGroup();
         int[] signature = {0,0};
-        for (Translation t : g.getGroup()) {
+        for (Translation t : g) {
             if(checkTranslation(t, start, board, signature)){
                 moves.add(board.translateSquare(start ,t));
             }
@@ -359,7 +359,7 @@ public class MoveHandler {
      */
     private ArrayList<Square> pawnIterate(Square start, Board board, int startingRow, int y){
         ArrayList<Square> moves = new ArrayList<>();
-        for (Translation t : Type.PAWN.getGroup().getGroup()) {
+        for (Translation t : Type.PAWN.getGroup()) {
             if(checkPawnTranslation(t, start, board, y, startingRow)){
                 moves.add(board.translateSquare(start, t));
             }

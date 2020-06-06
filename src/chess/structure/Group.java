@@ -1,6 +1,7 @@
 package chess.structure;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ import java.util.List;
  *
  * @see Translation
  */
-public class Group {
+public class Group implements Iterable<Translation>{
 
     /**
      * The list of possible translations that define the group.
@@ -101,4 +102,8 @@ public class Group {
     }
 
 
+    @Override
+    public Iterator<Translation> iterator() {
+        return group.iterator();
+    }
 }
