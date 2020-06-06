@@ -1,5 +1,6 @@
-package chess.game;
+package chess.controller;
 
+import chess.game.Game;
 import chess.structure.Move;
 import chess.structure.Square;
 
