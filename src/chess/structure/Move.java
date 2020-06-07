@@ -161,7 +161,7 @@ public class Move {
      */
     public String toString() {
         String s = "";
-        s += getStart().getPiece().getType().getSignature();
+        s += getStart().getPiece().getType().getLabel();
         if(getEnd().isOccupied()) s += " x";
         s += " " + getStart().toString() + " " + getEnd().toString();
         return s;

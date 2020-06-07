@@ -39,20 +39,20 @@ public enum Type {
      *
      * @see Group
      */
-    char signature;
+    char label;
     int value;
     Group group;
 
     /**
      * A constructor for Type objects.
      *
-     * @param signature the character signature of the type.
+     * @param label the character signature of the type.
      * @param value     the value of the type.
      * @param group     the group assoiated with the type.
      * @see Group
      */
-    Type(char signature, int value, Group group) {
-        this.signature = signature;
+    Type(char label, int value, Group group) {
+        this.label = label;
         this.value = value;
         this.group = group;
     }
@@ -61,8 +61,8 @@ public enum Type {
      * @return signature field of the Type.
      */
 
-    public char getSignature() {
-        return signature;
+    public char getLabel() {
+        return label;
     }
 
     /**

@@ -386,7 +386,7 @@ public class Controller {
      * @return the square where the player can promote. Returns null
      * if the player cannot promote a piece.
      */
-    public Square getPromotionSquare(){
+    public Square   getPromotionSquare(){
         for(int col = 0; col < 8; col++){
             if(getBoard().hasPiece(0, col)){
                 Piece p = getBoard().getPiece(0, col);

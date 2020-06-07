@@ -727,7 +727,7 @@ public class Board {
         for (int i = 7; i >= 0; i--) {
             for (int j = 0; j < 8; j++) {
                 s += "|";
-                s += (board[i][j].isOccupied()) ? (board[i][j].getPiece().getType().getSignature()) : " ";
+                s += (board[i][j].isOccupied()) ? (board[i][j].getPiece().getType().getLabel()) : " ";
                 s += "|\t";
             }
             s += "\n";
