@@ -9,8 +9,7 @@ This is a *mostly* functional game of chess written in java. The project is bein
 developed under the *Model-View-Controller (MVC)* design pattern. There are also
 some uses of the *factory* design pattern. The goal is to hopefully use machine learning algorithms to 
 play chess instead of using the traditional brute force method 
-of searching a decision tree. As of now, supervised learning by artificial neural
-networks seems to be the way of attacking this problem.
+of searching a decision tree. 
 
 ## Goals
 > The primary goal of this project is to create well organized and well documented software.  
