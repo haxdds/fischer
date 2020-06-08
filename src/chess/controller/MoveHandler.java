@@ -65,62 +65,14 @@ public class MoveHandler {
      *              searched for
      * @param board the board on which the moves are searched for
      * @return the list of valid moves that can be made
-     * @see MoveHandler#iterateMoves(Square, Board)
+     * @see MoveGenerator#generateMoves(Square, Board)
      * @see MoveHandler#verifyMoves(Square, ArrayList, Board)
      */
     public ArrayList<Square> getValidMoves(Square start, Board board) {
-        ArrayList<Square> moves = iterateMoves(start, board);
+        ArrayList<Square> moves = generator.generateMoves(start, board);
         return verifyMoves(start, moves, board);
     }
 
-    /**
-     * Retrieves the list of all possible moves (legal and illegal) that can be made
-     * from a square by the piece on that square.
-     * @param start the square the piece is starting from
-     * @param board the board the game is being played on
-     * @return the list of possible squares that the piece can move to
-     */
-    public ArrayList<Square> iterateMoves(Square start, Board board) {
-        ArrayList<Square> moves = new ArrayList<>();
-        Piece p = start.getPiece();
-        if(p.getType() == Type.PAWN) return pawnIterate(start, board);
-        Group g = p.getType().getGroup();
-        int[] signature = {0,0};
-        for (Translation t : g) {
-            if(checkTranslation(t, start, board, signature)){
-                moves.add(board.translateSquare(start ,t));
-            }
-        }
-        return moves;
-    }
-
-    /**
-     *
-     * @param t the translation being checked
-     * @param start the square the piece is starting from
-     * @param board the board the game is being played on
-     * @param signature the signature of the translation
-     * @return whether that translation is valid on that board
-     * @see Translation#getSignature()
-     */
-    public boolean checkTranslation(Translation t, Square start, Board board, int[] signature) {
-        if (start.translate(t).inBounds()) {
-            Square s = board.translateSquare(start, t);
-            if (!t.isSignature(signature) || start.getPiece().getType() == Type.KNIGHT) {
-                if (s.isOccupied()) {
-                    signature[0] = t.getSignature()[0];
-                    signature[1] = t.getSignature()[1];
-                    if (s.getPiece().getColor() != start.getPiece().getColor()) {
-                        return true;
-                    }
-
-                } else {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
 
     //TODO: MAKE THIS CODE MODULAR!! -- Done 7/30/17
@@ -296,13 +248,13 @@ public class MoveHandler {
         HashSet<Color> checked = new HashSet<>();
         for(Piece p: board.getWhitePieceSet()){
             if(p.getType() == Type.KING) continue;
-            if(iterateMoves(board.mapPiece(p), board).contains(blackKing)){
+            if(generator.generateMoves(board.mapPiece(p), board).contains(blackKing)){
                 checked.add(Color.BLACK);
             }
         }
         for(Piece p: board.getBlackPieceSet()){
             if(p.getType() == Type.KING) continue;
-            if(iterateMoves(board.mapPiece(p), board).contains(whiteKing)){
+            if(generator.generateMoves(board.mapPiece(p), board).contains(whiteKing)){
                 checked.add(Color.WHITE);
             }
         }
@@ -329,144 +281,6 @@ public class MoveHandler {
      */
     public boolean concurrentCheck(Board board){return getCheckedColors(board).size() == 2;}
 
-
-    /**
-     * Retrieves the list of all possible moves that can be
-     * made by a pawn from the given square on the given board.
-     * @param start the square which houses the pawn
-     * @param board the board on which the game is being played
-     * @return the list of all possible moves for the pawn
-     */
-    public ArrayList<Square> pawnIterate(Square start, Board board) {
-        if(start.getPiece().getColor() == Color.BLACK){
-            return pawnIterate(start,board,6,-1);
-        }else{
-            return pawnIterate(start, board, 1, 1);
-        }
-    }
-
-    /**
-     *
-     * @param start the square the pawn is starting on
-     * @param board the board the game is being played on
-     * @param startingRow the starting row of the pawn at the
-     *                    beginning of the game
-     * @param y the direction the pawn is supposed to move in
-     *          (1 for white and -1 for black)
-     * @return the list of squares the pawn can move to
-     * @see MoveHandler#checkPawnTranslation(Translation, Square, Board, int, int)
-     * @see MoveHandler#getEnPassante(Square, Board)
-     */
-    private ArrayList<Square> pawnIterate(Square start, Board board, int startingRow, int y){
-        ArrayList<Square> moves = new ArrayList<>();
-        for (Translation t : Type.PAWN.getGroup()) {
-            if(checkPawnTranslation(t, start, board, y, startingRow)){
-                moves.add(board.translateSquare(start, t));
-            }
-        }
-        if (canEnPassante(start.getCol(), start.getRow(), y)) {
-           Square end = getEnPassante(start, board);
-           if(end != null){
-              moves.add(end);
-           }
-        }
-        return moves;
-    }
-
-    /**
-     * TODO: MAKE THIS PAWN TRANSLATION CHECKING METHOD EASIER TO UNDERSTAND!
-     */
-
-    /**
-     *
-     * @param t the translation being checked
-     * @param start the square the pawn is starting from
-     * @param board the board the game is being played on
-     * @param y the direction the pawn is supposed to move in (1 for white
-     *          and -1 for black)
-     * @param startingRow the row that the pawn is placed at the beginning of the
-     *                    game
-     * @return whether that translation is valid for the pawn
-     */
-    public boolean checkPawnTranslation(Translation t, Square start, Board board, int y, int startingRow){
-        if (t.getY() * y < 0) return false; //if move is in opposite direction
-        if (start.translate(t).inBounds()) {
-            Square s = board.translateSquare(start, t);
-            if ((t.getY() == y && t.getX() == -1) || (t.getY() == y && t.getX() == 1)) {
-                if (!s.isOccupied()) return false;
-                if (s.getPiece().getColor() == start.getPiece().getColor()) return false;
-                return true;
-            } else if (t.getY() == (2 * y)) {
-                if (start.getRow() == startingRow) {
-                    if (!s.isOccupied()) {
-                        return true;
-                    }
-                }
-            } else {
-                if (!s.isOccupied()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     *
-     * @param start the square which the pawn is on
-     * @param board the board the game is being played on
-     * @return the square the pawn can en passante to. Null is returned
-     * if the pawn cannot en passante.
-     * @see MoveHandler#canEnPassante(int, int, int)
-     */
-    public Square getEnPassante(Square start, Board board){
-        int row = start.getRow();
-        int y;
-        if(start.getPiece().getColor() == Color.WHITE){
-            y = 1;
-        }else{
-            y = -1;
-        }
-        if(canEnPassante(start.getCol(), row, y)){
-            Move last = controller.getLastMove();
-            if(row == 4){
-                return board.getSquare(5, last.getEnd().getCol());
-            }
-            if(row == 3){
-                return board.getSquare(2, last.getEnd().getCol());
-            }
-        }
-        return null;
-    }
-
-    /**
-     *
-     * @param row the row on which the pawn is on
-     * @param y the direction the pawn moves in (1 for white, -1 for black)
-     * @return whether the pawn can move en passante
-     * @see Controller#getLastMove()
-     */
-    public boolean canEnPassante(int col, int row, int y){
-        if(row != 4 && row != 3) return false;
-        if(row == 4 && y != 1) return false;
-        if(row == 3 && y != -1) return false;
-        Move last = controller.getLastMove();
-        if(last.getEnd().getPiece().getType() != Type.PAWN) return false;
-        int deltaCol =  Math.abs(col - last.getStart().getCol());
-        if(deltaCol > 1) return false;
-        if(deltaCol == 0) return false;
-        if(row == 4){
-            if(last.getEnd().getPiece().getColor() == Color.WHITE) return false;
-            if(last.getEnd() == null) return false;
-            if(last.getStart().getRow() != 6 && last.getEnd().getRow() != 4) return false;
-        }
-        if(row == 3){
-            if(last.getEnd().getPiece().getColor() == Color.BLACK) return false;
-            if(last.getEnd() == null) return false;
-            if(last.getStart().getRow() != 1 && last.getEnd().getRow() != 3) return false;
-        }
-        return true;
-    }
 
     /**
      * Determines whether a side on this board is in checkmate.
