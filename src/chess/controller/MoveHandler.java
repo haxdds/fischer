@@ -524,6 +524,42 @@ public class MoveHandler {
 
 
 
+    /**
+     * Retrieves the corresponding rook move for castling for
+     * a given king castling move.
+     * @param start the starting position of king
+     * @param end the ending position of castled king
+     * @return the corresponding rook move for castling
+     */
+    public Move getCastlingRookMove(Square start, Square end){
+        if(end.getCol() == 6){
+            Square s1 = new Square(start.getRow(), 7, null);
+            Square s2 = new Square(start.getRow(), 5, null);
+            Move rookMove = new Move(s1, s2);
+            return rookMove;
+        }else if(end.getCol() == 2){
+            Square s1 = new Square(start.getRow(), 0, null);
+            Square s2 = new Square(start.getRow(), 3, null);
+            Move rookMove = new Move(s1, s2);
+            return rookMove;
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param m the move which castles the king
+     * @return the corresponding rook move for castling
+     * @see MoveHandler#getCastlingRookMove(Square, Square)
+     */
+    public Move getCastlingRookMove(Move m){
+        return getCastlingRookMove(m.getStart(), m.getEnd());
+    }
+
+
+
+
+
 
 }
 

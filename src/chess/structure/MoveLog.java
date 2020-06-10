@@ -1,4 +1,4 @@
-package chess.controller;
+package chess.structure;
 
 import chess.game.Game;
 import chess.structure.Move;

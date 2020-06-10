@@ -180,13 +180,7 @@ public class Board {
      * @see Board#movePiece(int, int, int, int)
      */
     public void movePiece(Move m) {
-        if(isCastlingMove(m)){
-           castle(m);
-        }else if(isEnPassanteMove(m)){
-            enPassante(m);
-        }else{
-            movePiece(m.getStart(), m.getEnd());
-        }
+        movePiece(m.getStart(), m.getEnd());
     }
 
     /**
@@ -469,48 +463,14 @@ public class Board {
         return getSquare(start.getRow() + t.getY(), start.getCol() + t.getX());
     }
 
-
-
-    /**
-     * Retrieves the corresponding rook move for castling for
-     * a given king castling move.
-     * @param start the starting position of king
-     * @param end the ending position of castled king
-     * @return the corresponding rook move for castling
-     */
-    public Move getCastlingRookMove(Square start, Square end){
-        if(end.getCol() == 6){
-            Square s1 = getSquare(start.getRow(), 7);
-            Square s2 = getSquare(start.getRow(), 5);
-            Move rookMove = new Move(s1, s2);
-            return rookMove;
-        }else if(end.getCol() == 2){
-            Square s1 = getSquare(start.getRow(), 0);
-            Square s2 = getSquare(start.getRow(), 3);
-            Move rookMove = new Move(s1, s2);
-            return rookMove;
-        }
-        return null;
-    }
-
-    /**
-     *
-     * @param m the move which castles the king
-     * @return the corresponding rook move for castling
-     * @see Board#getCastlingRookMove(Square, Square)
-     */
-    public Move getCastlingRookMove(Move m){
-        return getCastlingRookMove(m.getStart(), m.getEnd());
-    }
-
     /**
      * Castles the king on the board.
-     * @param m the move of castling king
+     * @param kingMove the move of castling king
+     * @param rookMove the move of the castling rook
      */
-    public void castle(Move m){
-        movePiece(m.getStart(), m.getEnd());
-        Move rookMove = getCastlingRookMove(m);
-        movePiece(rookMove.getStart(), rookMove.getEnd());
+    public void castle(Move kingMove, Move rookMove){
+        movePiece(kingMove);
+        movePiece(rookMove);
     }
 
     /**
@@ -699,26 +659,6 @@ public class Board {
     }
 
     /**
-     * Determines if a move is a castling move
-     * @param m the move to be checked
-     * @return whether the move is a castling move
-     * @see MoveHandler#isCastlingMove(Move)
-     */
-    public boolean isCastlingMove(Move m){
-        return getController().getMoveHandler().isCastlingMove(m);
-    }
-
-    /**
-     * checks whether a given move is an en passante move
-     * @param m the moved to be checked
-     * @return whether that move is an en passante move
-     * @see MoveHandler#isEnPassanteMove(Move)
-     */
-    public boolean isEnPassanteMove(Move m){
-        return getController().getMoveHandler().isEnPassanteMove(m);
-    }
-
-    /**
      * @return a stylized string version of board
      */
     public String toString() {
@@ -734,7 +674,5 @@ public class Board {
         }
         return s;
     }
-
-
 
 }

@@ -173,13 +173,15 @@ public class Controller {
      */
     public void updateModel(Move move){
         if(moveHandler.isCastlingMove(move)){
-            updateView(board.getCastlingRookMove(move));
+            Move rookMove = moveHandler.getCastlingRookMove(move);
+            updateView(rookMove);
+            board.castle(move, rookMove);
         }else if(moveHandler.isEnPassanteMove(move)){
-            System.out.println(move.toString());
-            System.out.println(board.toString());
             enPassanteUpdate(move);
+            board.enPassante(move);
+        }else {
+            board.movePiece(move);
         }
-        board.movePiece(move);
     }
 
     /**
