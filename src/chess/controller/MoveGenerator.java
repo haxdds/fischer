@@ -25,14 +25,14 @@ public class MoveGenerator {
      * @param board the board the game is being played on
      * @return the list of possible squares that the piece can move to
      */
-    public ArrayList<Square> generateMoves(Square start, Board board) {
+    public ArrayList<Square> generateMoves(Board board, Square start) {
         ArrayList<Square> moves = new ArrayList<>();
         Piece p = start.getPiece();
-        if(p.getType() == Type.PAWN) return pawnIterate(start, board);
+        if(p.getType() == Type.PAWN) return pawnIterate(board, start);
         Group g = p.getType().getGroup();
         int[] signature = {0,0};
         for (Translation t : g) {
-            if(checkTranslation(t, start, board, signature)){
+            if(checkTranslation(board, t, start,signature)){
                 moves.add(board.translateSquare(start ,t));
             }
         }
@@ -51,7 +51,7 @@ public class MoveGenerator {
      * @return whether that translation is valid on that board
      * @see Translation#getSignature()
      */
-    public boolean checkTranslation(Translation t, Square start, Board board, int[] signature) {
+    public boolean checkTranslation(Board board, Translation t, Square start,int[] signature) {
         if (start.translate(t).inBounds()) {
             Square s = board.translateSquare(start, t);
             if (!t.isSignature(signature) || start.getPiece().getType() == Type.KNIGHT) {
@@ -84,7 +84,7 @@ public class MoveGenerator {
      * @see MoveGenerator#checkPawnTranslation(Translation, Square, Board, int, int)
      * @see MoveGenerator#getEnPassanteMoves(Square, Board)
      */
-    public ArrayList<Square> pawnIterate(Square start, Board board, int startingRow, int y){
+    public ArrayList<Square> pawnIterate(Board board, Square start,int startingRow, int y){
         ArrayList<Square> moves = new ArrayList<>();
         for (Translation t : Type.PAWN.getGroup()) {
             if(checkPawnTranslation(t, start, board, y, startingRow)){
@@ -103,11 +103,11 @@ public class MoveGenerator {
      * @param board the board on which the game is being played
      * @return the list of all possible moves for the pawn
      */
-    public ArrayList<Square> pawnIterate(Square start, Board board) {
+    public ArrayList<Square> pawnIterate(Board board, Square start) {
         if(start.getPiece().getColor() == Color.BLACK){
-            return pawnIterate(start,board,6,-1);
+            return pawnIterate(board, start, 6,-1);
         }else{
-            return pawnIterate(start, board, 1, 1);
+            return pawnIterate(board, start, 1, 1);
         }
     }
 
