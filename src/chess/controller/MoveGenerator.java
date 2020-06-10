@@ -159,7 +159,7 @@ public class MoveGenerator {
      * @param row the row on which the pawn is on
      * @param y the direction the pawn moves in (1 for white, -1 for black)
      * @return whether the pawn can move en passante
-     * @see Controller#getLastMove()
+     * @see Board#getLastMove()
      */
     public boolean canEnPassante(int col, int row, int y, Move last){
         if(row != 4 && row != 3) return false;
@@ -199,7 +199,7 @@ public class MoveGenerator {
         }else{
             y = -1;
         }
-        Move last = board.getController().getLastMove();
+        Move last = board.getLastMove();
         if(canEnPassante(start.getCol(), row, y, last)){
             if(row == 4){
                 enpassantMoves.add(board.getSquare(5, last.getEnd().getCol()));

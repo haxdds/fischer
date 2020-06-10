@@ -383,16 +383,16 @@ public class MoveHandler {
         Square H = board.getSquare(row, 7);
         Square A = board.getSquare(row, 0);
 
-        if(controller.hasSquare(E)){
+        if(board.getLog().containsSquare(E)){
             //king has been moved
             return;
         }else{
-            if(!controller.hasSquare(H)
+            if(!board.getLog().containsSquare(H)
                     && !board.getSquare(row,6).isOccupied()
                     && !board.getSquare(row, 5).isOccupied()){
                 castle.add(board.getSquare(row,6));
             }
-            if(!controller.hasSquare(A)
+            if(!board.getLog().containsSquare(A)
                     && !board.getSquare(row,1).isOccupied()
                     && !board.getSquare(row, 2).isOccupied()
                     && !board.getSquare(row,3).isOccupied()){
@@ -484,8 +484,8 @@ public class MoveHandler {
      * @param m the move being checked for en passante
      * @return whether the given move is an en passante move
      */
-    public boolean isEnPassanteMove(Move m){
-        Move lastMove = controller.getLastMove();
+    public boolean isEnPassanteMove(Board board, Move m){
+        Move lastMove = board.getLastMove();
         if(lastMove == null) return false;
         if(lastMove.getEnd().getPiece().getType() != Type.PAWN) return false;
         if(lastMove.getEnd().getPiece().getColor() == m.getStart().getPiece().getColor()) return false;
@@ -512,11 +512,11 @@ public class MoveHandler {
      *             being checked
      * @return the square that can be moved to by en passante. Null
      * is returned if no moves are en passante.
-     * @see MoveHandler#isEnPassanteMove(Move)
+     * @see MoveHandler#isEnPassanteMove(Board, Move)
      */
-    public Square hasEnPassanteMove(Square start, ArrayList<Square> moves){
+    public Square hasEnPassanteMove(Board board, Square start, ArrayList<Square> moves){
         for(Square s: moves){
-            if(isEnPassanteMove(new Move(start, s))) return s;
+            if(isEnPassanteMove(board, new Move(start, s))) return s;
         }
         return null;
     }

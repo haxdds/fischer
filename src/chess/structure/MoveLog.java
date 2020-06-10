@@ -30,9 +30,8 @@ public class MoveLog {
 
     /**
      * A constructor for MoveLog objects.
-     * @param game the game that the MoveLog object is recording
      */
-    public MoveLog(Game game){
+    public MoveLog(){
 
     }
 
