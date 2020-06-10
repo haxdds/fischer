@@ -35,12 +35,13 @@ public class Board {
      * @see Square
      * @see Piece
      */
-    private Controller controller;
+
     private Square[][] board = new Square[8][8];
     private PieceSet pieceSet = new PieceSet();
     private PieceSet whitePieceSet = new PieceSet();
     private PieceSet blackPieceSet = new PieceSet();
     private HashMap<Piece, Square> pieceMap  = new HashMap<>();
+    private MoveLog log = new MoveLog();
 
     /**
      * A constructor for a board. It takes no arguments.
@@ -181,6 +182,7 @@ public class Board {
      */
     public void movePiece(Move m) {
         movePiece(m.getStart(), m.getEnd());
+        writeMove(m);
     }
 
     /**
@@ -400,7 +402,6 @@ public class Board {
                 }
             }
         }
-        clone.setController(getController());
         return clone;
     }
 
@@ -479,7 +480,7 @@ public class Board {
      * @param m the move of the attack pawn
      */
     public void enPassante(Move m){
-        movePiece(m.getStart(), m.getEnd());
+        movePiece(m);
         removePiece(m.getStart().getRow(), m.getEnd().getCol());
     }
 
@@ -640,23 +641,43 @@ public class Board {
         this.pieceMap = pieceMap;
     }
 
-    /**
-     *
-     * @param controller the controller which will regulate the board
-     */
-    public void setController(Controller controller) {
-        this.controller = controller;
 
+    /**
+     * Records a move to the game's MoveLog
+     * @param m the move to be recorded to the MoveLog
+     * @see MoveLog#write(Move)
+     */
+    public void writeMove(Move m){
+        this.log.write(m);
     }
 
     /**
      *
-     * @return the controller which regulates the board
-     * @throws NullPointerException if controller is null
+     * @param move the move for which to be searched
+     * @return whether that move has been played in this game
+     * @see MoveLog#containsMove(Move)
      */
-    public Controller getController(){
-        return this.controller;
+    public boolean hasPlayedMove(Move move){
+        return this.log.containsMove(move);
     }
+
+    /**
+     *
+     * @return the MoveLog which records all moves played
+     * during the game
+     * @see MoveLog
+     */
+    public MoveLog getLog() {
+        return log;
+    }
+
+
+    /**
+     *
+     * @return the last move played in the game
+     * @see MoveLog#getLastMove()
+     */
+    public Move getLastMove(){return this.log.getLastMove();}
 
     /**
      * @return a stylized string version of board

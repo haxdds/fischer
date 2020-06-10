@@ -31,7 +31,7 @@ public class Group implements Iterable<Translation>{
      * shouldn't be called directly, instead objects of the Group class should be created
      * with the GroupFactory Interface.
      *
-     * @see GroupFactory
+     * @see ChessGroupFactory
      */
     public Group() {
     }

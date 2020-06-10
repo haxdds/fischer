@@ -12,7 +12,7 @@ package chess.structure;
  *
  * @see Group
  */
-public interface GroupFactory {
+public interface ChessGroupFactory {
     /**
      * @return a Group object which defines the translations available to pawns.
      */

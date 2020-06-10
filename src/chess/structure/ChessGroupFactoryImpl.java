@@ -9,10 +9,10 @@ package chess.structure;
  * <p>
  * Dependencies:
  *
- * @see GroupFactory
+ * @see ChessGroupFactory
  * @see Group
  */
-public class GroupFactoryImpl implements GroupFactory {
+public class ChessGroupFactoryImpl implements ChessGroupFactory {
 
     /**
      * Creates group of translations which define a bishop:

@@ -32,8 +32,8 @@ public class Controller {
     private Game game;
     private Board board;
     private GUI gui;
-    private MoveLog log;
-    private MoveHandler moveHandler;
+
+    private MoveHandler moveHandler = new MoveHandler();;
     private Move userInput = new Move();
     private boolean userMove = true;
     private boolean whiteMove = true;
@@ -51,9 +51,6 @@ public class Controller {
         this.game = game;
         this.board = board;
         this.gui = gui;
-        this.log = new MoveLog(game);
-        this.moveHandler = new MoveHandler(this);
-        board.setController(this);
         addListeners();
     }
 
@@ -163,7 +160,6 @@ public class Controller {
     public void update(Move move){
         updateModel(move);
         updateView(move);
-        writeMove(move);
     }
 
     /**
@@ -176,7 +172,7 @@ public class Controller {
             Move rookMove = moveHandler.getCastlingRookMove(move);
             updateView(rookMove);
             board.castle(move, rookMove);
-        }else if(moveHandler.isEnPassanteMove(move)){
+        }else if(moveHandler.isEnPassanteMove(board, move)){
             enPassanteUpdate(move);
             board.enPassante(move);
         }else {
@@ -284,53 +280,7 @@ public class Controller {
        }
     }
 
-    /**
-     * Records a move to the game's MoveLog
-     * @param m the move to be recorded to the MoveLog
-     * @see MoveLog#write(Move)
-     */
-    public void writeMove(Move m){
-        //System.out.println(m.toString());
-        this.log.write(m);
-    }
 
-    /**
-     *
-     * @param move the move for which to be searched
-     * @return whether that move has been played in this game
-     * @see MoveLog#containsMove(Move)
-     */
-    public boolean hasMove(Move move){
-        return this.log.containsMove(move);
-    }
-
-    /**
-     *
-     * @return the MoveLog which records all moves played
-     * during the game
-     * @see MoveLog
-     */
-    public MoveLog getLog() {
-        return log;
-    }
-
-    /**
-     *
-     * @param s the square to be checked for
-     * @return whether that square has been involved in any
-     * of the moves played during the game.
-     * @see MoveLog#containsSquare(Square)
-     *
-     */
-    public boolean hasSquare(Square s){return this.log.containsSquare(s);}
-
-
-    /**
-     *
-     * @return the last move played in the game
-     * @see MoveLog#getLastMove()
-     */
-    public Move getLastMove(){return this.log.getLastMove();}
 
     /**
      *
@@ -388,7 +338,7 @@ public class Controller {
      * @return the square where the player can promote. Returns null
      * if the player cannot promote a piece.
      */
-    public Square   getPromotionSquare(){
+    public Square getPromotionSquare(){
         for(int col = 0; col < 8; col++){
             if(getBoard().hasPiece(0, col)){
                 Piece p = getBoard().getPiece(0, col);
