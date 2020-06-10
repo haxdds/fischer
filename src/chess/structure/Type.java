@@ -19,16 +19,16 @@ public enum Type {
      * in chess move logs. The assigned values are the typical values associated with each piece.
      *
      * @see Group
-     * @see GroupFactory
-     * @see GroupFactoryImpl
+     * @see ChessGroupFactory
+     * @see ChessGroupFactoryImpl
      */
 
-    PAWN('p', 1, new GroupFactoryImpl().createPawnGroup()),
-    KNIGHT('N', 3, new GroupFactoryImpl().createKnightGroup()),
-    BISHOP('B', 3, new GroupFactoryImpl().createBishopGroup()),
-    ROOK('R', 5, new GroupFactoryImpl().createRookGroup()),
-    QUEEN('Q', 9, new GroupFactoryImpl().createQueenGroup()),
-    KING('K', -1, new GroupFactoryImpl().createKingGroup());
+    PAWN('p', 1, new ChessGroupFactoryImpl().createPawnGroup()),
+    KNIGHT('N', 3, new ChessGroupFactoryImpl().createKnightGroup()),
+    BISHOP('B', 3, new ChessGroupFactoryImpl().createBishopGroup()),
+    ROOK('R', 5, new ChessGroupFactoryImpl().createRookGroup()),
+    QUEEN('Q', 9, new ChessGroupFactoryImpl().createQueenGroup()),
+    KING('K', -1, new ChessGroupFactoryImpl().createKingGroup());
 
 
     /**
@@ -47,8 +47,8 @@ public enum Type {
      * A constructor for Type objects.
      *
      * @param label the character signature of the type.
-     * @param value     the value of the type.
-     * @param group     the group assoiated with the type.
+     * @param value the value of the type.
+     * @param group the group assoiated with the type.
      * @see Group
      */
     Type(char label, int value, Group group) {
