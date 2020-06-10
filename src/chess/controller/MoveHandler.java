@@ -49,10 +49,10 @@ public class MoveHandler {
      * @return whether the move is legal
      * @see Board
      * @see Move
-     * @see MoveHandler#getValidMoves(Square, Board)
+     * @see MoveHandler#getValidMoves(Board, Square)
      */
     public boolean isValidMove(Move move, Board board) {
-        return getValidMoves(move.getStart(), board).contains(move.getEnd());
+        return getValidMoves(board, move.getStart()).contains(move.getEnd());
     }
 
     /**
@@ -64,11 +64,11 @@ public class MoveHandler {
      *              searched for
      * @param board the board on which the moves are searched for
      * @return the list of valid moves that can be made
-     * @see MoveGenerator#generateMoves(Square, Board)
+     * @see MoveGenerator#generateMoves(Board, Square)
      * @see MoveHandler#verifyMoves(Board, Square, ArrayList)
      */
-    public ArrayList<Square> getValidMoves(Square start, Board board) {
-        ArrayList<Square> moves = generator.generateMoves(start, board);
+    public ArrayList<Square> getValidMoves(Board board, Square start) {
+        ArrayList<Square> moves = generator.generateMoves(board, start);
         return verifyMoves(board, start, moves);
     }
 
@@ -233,13 +233,13 @@ public class MoveHandler {
         HashSet<Color> checked = new HashSet<>();
         for(Piece p: board.getWhitePieceSet()){
             if(p.getType() == Type.KING) continue;
-            if(generator.generateMoves(board.mapPiece(p), board).contains(blackKing)){
+            if(generator.generateMoves(board, board.mapPiece(p)).contains(blackKing)){
                 checked.add(Color.BLACK);
             }
         }
         for(Piece p: board.getBlackPieceSet()){
             if(p.getType() == Type.KING) continue;
-            if(generator.generateMoves(board.mapPiece(p), board).contains(whiteKing)){
+            if(generator.generateMoves(board, board.mapPiece(p)).contains(whiteKing)){
                 checked.add(Color.WHITE);
             }
         }
@@ -287,7 +287,7 @@ public class MoveHandler {
         Color c = getCheckedColor(board);
         for(Piece p : board.getPieceSet()){
             if(p.getColor() != c) continue;
-            if(getValidMoves(board.mapPiece(p), board).size() != 0){
+            if(getValidMoves(board, board.mapPiece(p)).size() != 0){
                 return null;
             }
         }
