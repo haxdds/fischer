@@ -33,7 +33,7 @@ public class Controller {
     private Board board;
     private GUI gui;
 
-    private MoveHandler moveHandler;
+    private MoveHandler moveHandler = new MoveHandler();;
     private Move userInput = new Move();
     private boolean userMove = true;
     private boolean whiteMove = true;
@@ -51,8 +51,6 @@ public class Controller {
         this.game = game;
         this.board = board;
         this.gui = gui;
-
-        this.moveHandler = new MoveHandler(this);
         addListeners();
     }
 
