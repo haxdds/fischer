@@ -11,6 +11,9 @@ some uses of the *factory* design pattern. The goal is to hopefully use machine 
 play chess instead of using the traditional brute force method 
 of searching a decision tree. 
 
+### Currrent Structure
+![UML](Chess UML.png)
+
 ## Goals
 > The primary goal of this project is to create well organized and well documented software.  
 
