@@ -12,7 +12,7 @@ play chess instead of using the traditional brute force method
 of searching a decision tree. 
 
 ### Currrent Structure
-![UML](Chess UML.png)
+![UML](Chess UML.png?raw=true "Title")
 
 ## Goals
 > The primary goal of this project is to create well organized and well documented software.  
