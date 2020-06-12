@@ -265,7 +265,7 @@ public class GUI implements BoardGUI{
                     getSquare(s).setBackground(new Color(217, 240, 106));
                 }
             }
-            Square enPass = controller.getMoveHandler().hasEnPassanteMove(start, moves);
+            Square enPass = controller.getMoveHandler().hasEnPassanteMove(controller.getBoard(), start, moves);
             if(enPass != null){
                 highlightRed(enPass);
             }
