@@ -82,7 +82,7 @@ public class MoveGenerator {
      *          (1 for white and -1 for black)
      * @return the list of squares the pawn can move to
      * @see MoveGenerator#checkPawnTranslation(Translation, Square, Board, int, int)
-     * @see MoveGenerator#getEnPassanteMoves(Square, Board)
+     * @see MoveGenerator#getEnPassanteMoves(Board, Square)
      */
     public ArrayList<Square> pawnIterate(Board board, Square start,int startingRow, int y){
         ArrayList<Square> moves = new ArrayList<>();
@@ -91,7 +91,8 @@ public class MoveGenerator {
                 moves.add(board.translateSquare(start, t));
             }
         }
-        moves.addAll(getEnPassanteMoves(start, board));
+
+        moves.addAll(getEnPassanteMoves(board, start));
 
         return moves;
     }
@@ -165,6 +166,8 @@ public class MoveGenerator {
         if(row != 4 && row != 3) return false;
         if(row == 4 && y != 1) return false;
         if(row == 3 && y != -1) return false;
+        //System.out.println("last: " + last);
+        //System.out.println("piece: " + last.getStart().getPiece().toString());
         if(last.getEnd().getPiece().getType() != Type.PAWN) return false;
         int deltaCol =  Math.abs(col - last.getStart().getCol());
         if(deltaCol > 1) return false;
@@ -190,7 +193,7 @@ public class MoveGenerator {
      * if the pawn cannot en passante.
      * @see MoveGenerator#canEnPassante(int, int, int, Move)
      */
-    public ArrayList<Square> getEnPassanteMoves(Square start, Board board){
+    public ArrayList<Square> getEnPassanteMoves(Board board, Square start){
         ArrayList<Square> enpassantMoves = new ArrayList<>();
         int row = start.getRow();
         int y;
@@ -200,6 +203,7 @@ public class MoveGenerator {
             y = -1;
         }
         Move last = board.getLastMove();
+        System.out.println(last + "\n=====" + board);
         if(canEnPassante(start.getCol(), row, y, last)){
             if(row == 4){
                 enpassantMoves.add(board.getSquare(5, last.getEnd().getCol()));

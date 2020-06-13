@@ -124,7 +124,7 @@ public class MoveLog {
      * @param move
      */
     public void write(Move move){
-        moves.add(move.clone());
+        moves.add(move);
         //moveLog.add()
         squares.add(move.getStart());
         squares.add(move.getEnd());
@@ -160,6 +160,15 @@ public class MoveLog {
      */
     public String toString(){
         return null;
+    }
+
+
+    public MoveLog clone(){
+        MoveLog clone = new MoveLog();
+        for(Move m : moves){
+            clone.write(m);
+        }
+        return clone;
     }
 
 

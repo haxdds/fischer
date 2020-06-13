@@ -191,6 +191,7 @@ public class MoveHandler {
     public boolean verifyFutureChecks(Board board, Move move){
         Board clone = board.clone();
         clone.movePiece(move);
+        System.out.println("CHECK: " + clone.getLog() + " ----\n----" + clone);
         if (isCheck(clone)) {
             Color checkedColor = getCheckedColor(clone);
             if (checkedColor == move.getStart().getPiece().getColor()) {
@@ -235,12 +236,14 @@ public class MoveHandler {
             if(p.getType() == Type.KING) continue;
             if(generator.generateMoves(board, board.mapPiece(p)).contains(blackKing)){
                 checked.add(Color.BLACK);
+                break;
             }
         }
         for(Piece p: board.getBlackPieceSet()){
             if(p.getType() == Type.KING) continue;
             if(generator.generateMoves(board, board.mapPiece(p)).contains(whiteKing)){
                 checked.add(Color.WHITE);
+                break;
             }
         }
         return new ArrayList<>(checked);

@@ -392,7 +392,10 @@ public class Board {
      */
     public Board clone() {
         Board clone = new Board();
-        clone.setUpSquares();
+        clone.setUpBoard();
+//        for(Move m : log.getMoves()){
+//
+//        }
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 clone.setSquare(getSquare(row, col).clone());
@@ -402,6 +405,8 @@ public class Board {
                 }
             }
         }
+        MoveLog cloneLog = log.clone();
+        clone.setLog(cloneLog);
         return clone;
     }
 
@@ -648,7 +653,10 @@ public class Board {
      * @see MoveLog#write(Move)
      */
     public void writeMove(Move m){
-        this.log.write(m);
+        Square start = getSquare(m.getStart());
+        Square end = getSquare(m.getEnd());
+        Move move = new Move(start, end);
+        this.log.write(move);
     }
 
     /**
@@ -671,6 +679,11 @@ public class Board {
         return log;
     }
 
+    /**
+     *
+     * @param log
+     */
+    public void setLog(MoveLog log){this.log = log;}
 
     /**
      *
