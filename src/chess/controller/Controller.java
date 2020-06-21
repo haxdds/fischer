@@ -131,10 +131,8 @@ public class Controller {
             update(userInput);
             changeTurn();
             processTurn();
-            refresh();
-        }else{
-            refresh();
         }
+        refresh();
     }
 
     /**\

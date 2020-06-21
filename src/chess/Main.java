@@ -10,7 +10,7 @@ import java.util.HashMap;
 /**
  * Created by Rahul on 7/19/2017.
  */
-public class Test {
+public class Main {
     public static void main(String[] args) {
          Game g = new Game();
     }
