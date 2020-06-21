@@ -80,9 +80,9 @@ public class Piece {
 
     /**
      *
-     * @return
+     * @return string representation of piece
      */
-    public String toString(){return "" + getType() + " " + getColor();}
+    public String toString(){return "" + getColor() + " " + getType();}
 
 
 
