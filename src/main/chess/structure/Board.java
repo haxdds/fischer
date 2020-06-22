@@ -183,6 +183,16 @@ public class Board {
     }
 
     /**
+     *
+     * @param m
+     */
+    public void movePiece(String m){
+        Square start = getSquare(m.substring(0, 2));
+        Square end = getSquare(m.substring(2));
+        movePiece(new Move(start, end));
+    }
+
+    /**
      * Moves piece backwards according to the specifications of an input move.
      *
      * @param m the move to be undone
