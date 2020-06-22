@@ -88,9 +88,7 @@ public class MoveGenerator {
                 moves.add(board.translateSquare(start, t));
             }
         }
-
         moves.addAll(getEnPassanteMoves(board, start));
-
         return moves;
     }
 
