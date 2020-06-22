@@ -70,11 +70,7 @@ to install make for git bash.
 
 ## Contributing
 
-1. Fork it (<https://github.com/haxdds/Chess/fork>)
-2. Create your feature branch (`git checkout -b feature/fooBar`)
-3. Commit your changes (`git commit -am 'Add some fooBar'`)
-4. Push to the branch (`git push origin feature/fooBar`)
-5. Create a new Pull Request
+[see CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Authors
 
