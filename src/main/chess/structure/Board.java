@@ -42,11 +42,11 @@ public class Board {
 
     /**
      * A constructor for a board. It takes no arguments.
-     * The setUpBoard() method is called on construction.     *
+     * The setUpBoard() method is called on construction.
      *
-     * @see Board#setUpBoard()
+     * @see Board#InitializeBoard()
      */
-    public Board() {setUpBoard();}
+    public Board() {InitializeBoard();}
 
     /**
      * Initializes the squares on the board and places the pieces.
@@ -54,7 +54,7 @@ public class Board {
      * @see Board#setUpSquares()
      * @see Board#setPieces()
      */
-    public void setUpBoard() {
+    public void InitializeBoard() {
         setUpSquares();
         setPieces();
     }
@@ -410,7 +410,7 @@ public class Board {
      */
     public Board clone() {
         Board clone = new Board();
-        clone.setUpBoard();
+
 //        for(Move m : log.getMoves()){
 //
 //        }

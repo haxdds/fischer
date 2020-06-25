@@ -24,7 +24,7 @@ public class Group implements Iterable<Translation>{
      * @see Translation
      */
 
-    List<Translation> group = new ArrayList<>();
+    private final List<Translation> group = new ArrayList<>();
 
     /**
      * A constructor for groups. No parameters are taken. This constructor generally

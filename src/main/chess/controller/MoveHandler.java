@@ -190,7 +190,7 @@ public class MoveHandler {
     public boolean verifyFutureChecks(Board board, Move move){
         Board clone = board.clone();
         clone.movePiece(move);
-        System.out.println("CHECK: " + clone.getLog() + " ----\n----" + clone);
+        //System.out.println("CHECK: " + clone.getLog() + " ----\n----" + clone);
         if (isCheck(clone)) {
             Color checkedColor = getCheckedColor(clone);
             if (checkedColor == move.getStart().getPiece().getColor()) {

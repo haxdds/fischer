@@ -7,6 +7,7 @@ package main.chess.structure;
  * We use our own concept of abstract color instead of the java.awt.Color package.
  */
 public enum Color {
+
     /**
      * The two colors involved in a chess game: Black and White.
      */
