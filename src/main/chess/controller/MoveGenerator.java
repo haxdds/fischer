@@ -58,7 +58,7 @@ public class MoveGenerator {
      * @return whether that translation is valid on that board
      * @see TranslationSignatureKey
      */
-    public boolean checkTranslation(Board board, Translation t, Square start, HashMap<TranslationSignatureKey, Boolean> directionBlocked) {
+    public boolean checkTranslation(Board board, Translation t, Square start, HashMap<TranslationSignatureKey, Boolean> directionBlocked){
 
         // if resulting square after translation is out of bounds
         if(!start.translate(t).inBounds()) return false;
@@ -67,8 +67,8 @@ public class MoveGenerator {
         // direction has not been explored yet
         directionBlocked.putIfAbsent(signatureKey, false);
 
-        // if that direction is blocked
-        if(directionBlocked.get(signatureKey) == true) return false;
+        // if that direction is blocked by piece -- doesn't apply to knights.
+        if(directionBlocked.get(signatureKey) == true && start.getPiece().getType() != Type.KNIGHT) return false;
 
         Square s = board.translateSquare(start, t);
         if (s.isOccupied()) {
