@@ -17,33 +17,32 @@ import java.util.HashMap;
 public class MoveGenerator {
 
 
-
-
     /**
      * Retrieves the list of all possible moves (legal and illegal) that can be made
      * from a square by the piece on that square.
      * @param start the square the piece is starting from
      * @param board the board the game is being played on
      * @return the list of possible squares that the piece can move to
+     * @see MoveGenerator#generatePawnMoves(Board, Square)
      */
     public ArrayList<Square> generateMoves(Board board, Square start) {
-        ArrayList<Square> moves = new ArrayList<>();
+
         Piece p = start.getPiece();
-        if(p.getType() == Type.PAWN) return pawnIterate(board, start);
+        // pawns are tricky
+        if(p.getType() == Type.PAWN) return generatePawnMoves(board, start);
+
+        ArrayList<Square> moves = new ArrayList<>();
         Group g = p.getType().getGroup();
 
-        HashMap<int[], Boolean> directionBlocked = new HashMap<>();
+        // map to track if direction given by signature is blocked
+        HashMap<TranslationSignatureKey, Boolean> directionBlocked = new HashMap<>();
 
         for (Translation t : g) {
-
-            int[] signature = t.getSignature();
-            directionBlocked.putIfAbsent(signature, false);
-            if(directionBlocked.get(signature)) continue;
-
             if(checkTranslation(board, t, start, directionBlocked)){
                 moves.add(board.translateSquare(start ,t));
             }
         }
+
         return moves;
     }
 
@@ -57,16 +56,24 @@ public class MoveGenerator {
      * @param directionBlocked map that tracks whether that move direction
      * has been blocked by a piece
      * @return whether that translation is valid on that board
-     * @see Translation#getSignature()
+     * @see TranslationSignatureKey
      */
-    public boolean checkTranslation(Board board, Translation t, Square start, HashMap<int[], Boolean> directionBlocked) {
+    public boolean checkTranslation(Board board, Translation t, Square start, HashMap<TranslationSignatureKey, Boolean> directionBlocked) {
 
+        // if resulting square after translation is out of bounds
         if(!start.translate(t).inBounds()) return false;
 
-        Square s = board.translateSquare(start, t);
+        TranslationSignatureKey signatureKey = new TranslationSignatureKey(t);
+        // direction has not been explored yet
+        directionBlocked.putIfAbsent(signatureKey, false);
 
+        // if that direction is blocked
+        if(directionBlocked.get(signatureKey) == true) return false;
+
+        Square s = board.translateSquare(start, t);
         if (s.isOccupied()) {
-            directionBlocked.replace(t.getSignature(), true);
+            // mark that the direction is blocked
+            directionBlocked.replace(signatureKey, true);
             if (s.getPiece().getColor() == start.getPiece().getColor()) {
                 return false;
             }
@@ -75,24 +82,23 @@ public class MoveGenerator {
     }
 
 
-
     /**
      *
      * @param start the square the pawn is starting on
      * @param board the board the game is being played on
      * @return the list of squares the pawn can move to
      * @see MoveGenerator#checkPawnTranslation(Board, Square,Translation)
-     * @see MoveGenerator#getEnPassanteMoves(Board, Square)
+     * @see MoveGenerator#getEnPassantMoves(Board, Square)
      */
-    public ArrayList<Square> pawnIterate(Board board, Square start){
+    public ArrayList<Square> generatePawnMoves(Board board, Square start){
         ArrayList<Square> moves = new ArrayList<>();
         for (Translation t : Type.PAWN.getGroup()) {
-            if(!start.translate(t).inBounds()) continue;
             if(checkPawnTranslation(board, start, t)){
                 moves.add(board.translateSquare(start, t));
             }
         }
-        moves.addAll(getEnPassanteMoves(board, start));
+        // add all en passant moves if possible
+        moves.addAll(getEnPassantMoves(board, start));
         return moves;
     }
 
@@ -109,6 +115,9 @@ public class MoveGenerator {
      * @return whether that translation is valid for the pawn
      */
     public boolean checkPawnTranslation(Board board, Square start, Translation t){
+        // if square after translation is out of bounds
+        if(!start.translate(t).inBounds()) return false;
+
         Square end = board.translateSquare(start, t);
         // row pawn is initialized
         int startingRow = start.getPiece().getColor() == Color.WHITE? 1 : 6;
@@ -116,7 +125,7 @@ public class MoveGenerator {
         int y = start.getPiece().getColor() == Color.WHITE? 1 : -1;
 
         // not correct direction
-        if(t.getSignature()[1] != y) return false;
+        if(t.getY() * y < 0) return false;
 
         // if 1 square move
         if(t.getY() == 1 * y){
@@ -144,9 +153,9 @@ public class MoveGenerator {
      *
      * @param start the square which the pawn in question is on
      * @param last the last move on the board
-     * @return whether the pawn on the given square can en passante     *
+     * @return whether the pawn on the given square can en passant
      */
-    public boolean canEnPassante(Square start, Move last){
+    public boolean canEnPassant(Square start, Move last){
         // if first move of game
         if(last == null) return false;
         // if last move is not a pawn move
@@ -176,15 +185,15 @@ public class MoveGenerator {
      *
      * @param start the square which the pawn is on
      * @param board the board the game is being played on
-     * @return the square the pawn can en passante to. Null is returned
-     * if the pawn cannot en passante.
-     * @see MoveGenerator#canEnPassante(Square, Move)
+     * @return the square the pawn can en passant to. Null is returned
+     * if the pawn cannot en passant.
+     * @see MoveGenerator#canEnPassant(Square, Move)
      */
-    public ArrayList<Square> getEnPassanteMoves(Board board, Square start){
+    public ArrayList<Square> getEnPassantMoves(Board board, Square start){
         ArrayList<Square> enpassantMoves = new ArrayList<>();
         Move last = board.getLastMove();
         // if can en passant
-        if(canEnPassante(start, last)){
+        if(canEnPassant(start, last)){
             // move on to the same column
             int endCol = last.getEnd().getCol();
             // move between last pawn move start row and end row
@@ -194,4 +203,43 @@ public class MoveGenerator {
         return enpassantMoves;
     }
 
+
+    /**
+     * Helper Class: Translation Signature
+     *
+     * The signature of a translation defines the direction of motion of the translation.
+     * i.e. a translation where (x,y) = (2,2) moves in the same direction as
+     * a translation defined by (x,y) = (5,5); both moves upwards and rightwards in the
+     * positive y and x directions.
+     * so a signature of [1,1] is defined for both these translations.
+     * @see MoveGenerator#generateMoves(Board, Square)
+     */
+    private class TranslationSignatureKey {
+
+        /**
+         * x and y components of signature
+         */
+        private final int x;
+        private final int y;
+
+        public TranslationSignatureKey(Translation t) {
+            // 0 if 0 else -1 or 1
+            this.x = t.getX() == 0 ? 0 : t.getX() / Math.abs(t.getX());
+            this.y = t.getY() == 0 ? 0 : t.getY() / Math.abs(t.getY());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof TranslationSignatureKey)) return false;
+            TranslationSignatureKey key = (TranslationSignatureKey) o;
+            return x == key.x && y == key.y;
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * x + y; // 31 arbitrary, (x, y) pair must be unique hash
+        }
+
+    }
 }

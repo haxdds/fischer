@@ -191,7 +191,7 @@ public class Controller {
      */
     public void highlightView(){
        gui.highlight(userInput.getStart(),
-               moveHandler.getValidMoves(board, userInput.getStart()), this);
+               moveHandler. getValidMoves(board, userInput.getStart()), this);
     }
 
     /**
