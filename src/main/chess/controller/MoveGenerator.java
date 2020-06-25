@@ -3,6 +3,7 @@ package main.chess.controller;
 import main.chess.structure.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *  Created by Rahul: 06/07/2020
@@ -30,9 +31,16 @@ public class MoveGenerator {
         Piece p = start.getPiece();
         if(p.getType() == Type.PAWN) return pawnIterate(board, start);
         Group g = p.getType().getGroup();
-        int[] signature = {0,0};
+
+        HashMap<int[], Boolean> directionBlocked = new HashMap<>();
+
         for (Translation t : g) {
-            if(checkTranslation(board, t, start,signature)){
+
+            int[] signature = t.getSignature();
+            directionBlocked.putIfAbsent(signature, false);
+            if(directionBlocked.get(signature)) continue;
+
+            if(checkTranslation(board, t, start, directionBlocked)){
                 moves.add(board.translateSquare(start ,t));
             }
         }
@@ -41,33 +49,29 @@ public class MoveGenerator {
 
 
 
-
     /**
      *
      * @param t the translation being checked
      * @param start the square the piece is starting from
      * @param board the board the game is being played on
-     * @param signature the signature of the translation
+     * @param directionBlocked map that tracks whether that move direction
+     * has been blocked by a piece
      * @return whether that translation is valid on that board
      * @see Translation#getSignature()
      */
-    public boolean checkTranslation(Board board, Translation t, Square start, int[] signature) {
-        if (start.translate(t).inBounds()) {
-            Square s = board.translateSquare(start, t);
-            if (!t.isSignature(signature) || start.getPiece().getType() == Type.KNIGHT) {
-                if (s.isOccupied()) {
-                    signature[0] = t.getSignature()[0];
-                    signature[1] = t.getSignature()[1];
-                    if (s.getPiece().getColor() != start.getPiece().getColor()) {
-                        return true;
-                    }
+    public boolean checkTranslation(Board board, Translation t, Square start, HashMap<int[], Boolean> directionBlocked) {
 
-                } else {
-                    return true;
-                }
+        if(!start.translate(t).inBounds()) return false;
+
+        Square s = board.translateSquare(start, t);
+
+        if (s.isOccupied()) {
+            directionBlocked.replace(t.getSignature(), true);
+            if (s.getPiece().getColor() == start.getPiece().getColor()) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
 
