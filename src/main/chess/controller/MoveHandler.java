@@ -71,7 +71,7 @@ public class MoveHandler {
         return verifyMoves(board, start, moves);
     }
 
-
+    
 
     //TODO: MAKE THIS CODE MODULAR!! -- Done 7/30/17
 

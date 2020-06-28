@@ -35,7 +35,7 @@ public class MoveGenerator {
         Group g = p.getType().getGroup();
 
         // map to track if direction given by signature is blocked
-        HashMap<TranslationSignatureKey, Boolean> directionBlocked = new HashMap<>();
+        HashMap<TranslationSignature, Boolean> directionBlocked = new HashMap<>();
 
         for (Translation t : g) {
             if(checkTranslation(board, t, start, directionBlocked)){
@@ -56,14 +56,14 @@ public class MoveGenerator {
      * @param directionBlocked map that tracks whether that move direction
      * has been blocked by a piece
      * @return whether that translation is valid on that board
-     * @see TranslationSignatureKey
+     * @see TranslationSignature
      */
-    public boolean checkTranslation(Board board, Translation t, Square start, HashMap<TranslationSignatureKey, Boolean> directionBlocked){
+    public boolean checkTranslation(Board board, Translation t, Square start, HashMap<TranslationSignature, Boolean> directionBlocked){
 
         // if resulting square after translation is out of bounds
         if(!start.translate(t).inBounds()) return false;
 
-        TranslationSignatureKey signatureKey = new TranslationSignatureKey(t);
+        TranslationSignature signatureKey = new TranslationSignature(t);
         // direction has not been explored yet
         directionBlocked.putIfAbsent(signatureKey, false);
 
@@ -204,42 +204,5 @@ public class MoveGenerator {
     }
 
 
-    /**
-     * Helper Class: Translation Signature
-     *
-     * The signature of a translation defines the direction of motion of the translation.
-     * i.e. a translation where (x,y) = (2,2) moves in the same direction as
-     * a translation defined by (x,y) = (5,5); both moves upwards and rightwards in the
-     * positive y and x directions.
-     * so a signature of [1,1] is defined for both these translations.
-     * @see MoveGenerator#generateMoves(Board, Square)
-     */
-    private class TranslationSignatureKey {
 
-        /**
-         * x and y components of signature
-         */
-        private final int x;
-        private final int y;
-
-        public TranslationSignatureKey(Translation t) {
-            // 0 if 0 else -1 or 1
-            this.x = t.getX() == 0 ? 0 : t.getX() / Math.abs(t.getX());
-            this.y = t.getY() == 0 ? 0 : t.getY() / Math.abs(t.getY());
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof TranslationSignatureKey)) return false;
-            TranslationSignatureKey key = (TranslationSignatureKey) o;
-            return x == key.x && y == key.y;
-        }
-
-        @Override
-        public int hashCode() {
-            return 31 * x + y; // 31 arbitrary, (x, y) pair must be unique hash
-        }
-
-    }
 }
