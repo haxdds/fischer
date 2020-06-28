@@ -61,17 +61,27 @@ public class PositionValidator {
                 Piece p = end.getPiece();
                 // mark that the direction is blocked
                 directionBlocked.replace(signatureKey, true);
-                if (p.getColor() != square.getPiece().getColor()) {
-                    if(dangerousPieces.contains(p.getType())){
-                        if(p.getType() == Type.PAWN || p.getType() == Type.KING){
+                if (p.getColor() != square.getPiece().getColor() && dangerousPieces.contains(p.getType())) {
+                        if(p.getType() == Type.KING){
+                            // if squares are adjacent
                             if(Math.abs(square.getRow() - end.getRow()) <= 1 && Math.abs(square.getCol() - end.getCol()) <= 1){
                                 return false;
+                            }
+                        }else if(p.getType() == Type.PAWN){
+                            if(Math.abs(square.getCol() - end.getCol()) == 1){
+                                if(square.getPiece().getColor() == Color.BLACK){
+                                    if(square.getRow() - end.getRow() == 1){
+                                        return false;
+                                    }
+                                }else{
+                                    if(square.getRow() - end.getRow() == -1){
+                                        return false;
+                                    }
+                                }
                             }
                         }else{
                             return false;
                         }
-
-                    }
                 }
             }
 
