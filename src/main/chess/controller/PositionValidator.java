@@ -14,7 +14,7 @@ public class PositionValidator {
             Square blackKing = board.getBlackKing();
         }
 
-
+        return false;
     }
 
     public boolean isSafe(Board board, Square square){
@@ -58,11 +58,19 @@ public class PositionValidator {
 
             Square end = board.translateSquare(square, t);
             if (end.isOccupied()) {
+                Piece p = end.getPiece();
                 // mark that the direction is blocked
                 directionBlocked.replace(signatureKey, true);
-                if (end.getPiece().getColor() != square.getPiece().getColor()) {
-                    if(dangerousPieces.contains(end.getPiece().getType())){
-                        return false;
+                if (p.getColor() != square.getPiece().getColor()) {
+                    if(dangerousPieces.contains(p.getType())){
+                        if(p.getType() == Type.PAWN || p.getType() == Type.KING){
+                            if(Math.abs(square.getRow() - end.getRow()) <= 1 && Math.abs(square.getCol() - end.getCol()) <= 1){
+                                return false;
+                            }
+                        }else{
+                            return false;
+                        }
+
                     }
                 }
             }
