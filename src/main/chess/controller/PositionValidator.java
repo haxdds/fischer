@@ -12,9 +12,11 @@ public class PositionValidator {
         Color toMove = movesPlayed % 2 == 0? Color.WHITE : Color.BLACK;
         if(toMove == Color.WHITE){
             Square blackKing = board.getBlackKing();
+            return isSafe(board, blackKing);
+        }else{
+            Square whiteKing = board.getWhiteKing();
+            return isSafe(board, whiteKing);
         }
-
-        return false;
     }
 
     public boolean isSafe(Board board, Square square){

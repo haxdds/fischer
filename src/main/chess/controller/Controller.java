@@ -4,6 +4,10 @@ import main.chess.game.Game;
 import main.chess.gui.GUI;
 import main.chess.structure.*;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by Rahul on 7/20/2017.
  *
@@ -32,6 +36,8 @@ public class Controller {
     private Board board;
     private GUI gui;
 
+    private LinkedList<List<Move>> validMoveHistory = new LinkedList<>();
+
     private MoveHandler moveHandler = new MoveHandler();;
     private Move userInput = new Move();
     private boolean userMove = true;
@@ -51,6 +57,7 @@ public class Controller {
         this.board = board;
         this.gui = gui;
         addListeners();
+        validMoveHistory.add(moveHandler.generateAllValidMoves(board));
     }
 
 
@@ -63,11 +70,11 @@ public class Controller {
      * @see Controller#renderUserInput()
      */
     public void pushUserInput(Square square) {
-        if(!userMove || !isRunning()) return;
+        if(!userMove) return;
         userInput.update(square);
         renderUserInput();
     }
-
+//
     /**
      * Processes the userInput move object and
      * updates the gui accordingly. If the move
@@ -120,20 +127,35 @@ public class Controller {
      * by using MoveHandler.
      * @ATTENTION order of writeMove and update shouldn't be
      * changed or bad things will happen.
-     * @see MoveHandler#isValidMove(Move, Board)
+     * @see Controller#isValidMove(Move, Board)
      * @see Controller#update(Move)
      * @see GUI#refreshColor()
      * @see Move#reset()
      */
     public void authenticateAndUpdate(){
-        if(moveHandler.isValidMove(userInput, board)) {
+        if(isValidMove(userInput, board)) {
+            System.out.println("HELLO");
             update(userInput);
             changeTurn();
             processTurn();
+            validMoveHistory.add(moveHandler.generateAllValidMoves(board));
         }
+        System.out.println("HI");
+
         refresh();
     }
 
+
+    public boolean isValidMove(Move m, Board b){
+        for(Move mv : validMoveHistory.get(validMoveHistory.size()-1)) {
+
+            if (mv.equals(m)) {
+                System.out.println(mv.toString());
+            }
+        }
+        System.out.println(validMoveHistory.get(validMoveHistory.size() - 1).contains(m));
+        return validMoveHistory.get(validMoveHistory.size() - 1).contains(m);
+    }
     /**\
      * Resets the userInput Move object and refreshes the GUI
      * @see GUI#refreshColor()
@@ -165,16 +187,17 @@ public class Controller {
      * @FIXME INCORRECT ORDER FUCKS IT UP BECAUSE PIECE IS MOVED BEFORE CHECKING
      */
     public void updateModel(Move move){
-        if(moveHandler.isCastlingMove(move)){
-            Move rookMove = moveHandler.getCastlingRookMove(move);
-            updateView(rookMove);
-            board.castle(move, rookMove);
-        }else if(moveHandler.isEnPassanteMove(board, move)){
-            enPassanteUpdate(move);
-            board.enPassante(move);
-        }else {
+//        if(moveHandler.isCastlingMove(move)){
+//            Move rookMove = moveHandler.getCastlingRookMove(move);
+//            updateView(rookMove);
+//            board.castle(move, rookMove);
+//        }else if(moveHandler.isEnPassanteMove(board, move)){
+//            enPassanteUpdate(move);
+//            board.enPassante(move);
+//        }else {
             board.movePiece(move);
-        }
+//        }
+        System.out.println(board.toString());
     }
 
     /**
@@ -191,49 +214,65 @@ public class Controller {
      */
     public void highlightView(){
        gui.highlight(userInput.getStart(),
-               moveHandler. getValidMoves(board, userInput.getStart()), this);
+               getValidMoves(board, userInput.getStart()), this);
     }
 
-    /**
-     *
-     * @param s the square whose piece is to be removed from the view
-     */
-    public void removePieceFromView(Square s){
-        gui.remove(s);
+
+    public ArrayList<Square> getValidMoves(Board b, Square s){
+        List<Move> validMoves = validMoveHistory.get(validMoveHistory.size()-1);
+        return getMovesFromSquare(b, s, validMoves);
     }
 
-    /**
-     *
-     * @param m the en passante move to be updated to the board and gui
-     */
-    public void enPassanteUpdate(Move m){
-        Color c = (m.getStart().getColor() == Color.WHITE) ? Color.BLACK : Color.WHITE;
-        Square remove = new Square(m.getStart().getRow(), m.getEnd().getCol(), c);
-        removePieceFromView(remove);
+    public ArrayList<Square> getMovesFromSquare(Board b, Square s, List<Move> moves){
+        ArrayList<Square> end = new ArrayList<>();
+        for(Move m : moves){
+            if(m.getStart().equals(s)){
+                end.add(m.getEnd());
+            }
+        }
+        return end;
     }
-
-    /**
-     *
-     * @return whether there is a checkmate on the board
-     */
-    public boolean isCheckMate(){return moveHandler.isCheckMate(board);}
-
-    /**
-     *
-     * @return whether its the user's move
-     */
-    public boolean isUserMove(){return userMove;}
-
-    /**
-     * Starts userMove by setting it to true.
-     */
-    public void startUserMove(){userMove = true;}
-    /**
-     *
-     * ends the user's Move
-     */
-    public void endUserMove(){userMove = false;}
-
+//
+//    /**
+//     *
+//     * @param s the square whose piece is to be removed from the view
+//     */
+//    public void removePieceFromView(Square s){
+//        gui.remove(s);
+//    }
+//
+//    /**
+//     *
+//     * @param m the en passante move to be updated to the board and gui
+//     */
+//    public void enPassanteUpdate(Move m){
+//        Color c = (m.getStart().getColor() == Color.WHITE) ? Color.BLACK : Color.WHITE;
+//        Square remove = new Square(m.getStart().getRow(), m.getEnd().getCol(), c);
+//        removePieceFromView(remove);
+//    }
+//
+//    /**
+//     *
+//     * @return whether there is a checkmate on the board
+//     */
+//    public boolean isCheckMate(){return moveHandler.isCheckMate(board);}
+//
+//    /**
+//     *
+//     * @return whether its the user's move
+//     */
+//    public boolean isUserMove(){return userMove;}
+//
+//    /**
+//     * Starts userMove by setting it to true.
+//     */
+//    public void startUserMove(){userMove = true;}
+//    /**
+//     *
+//     * ends the user's Move
+//     */
+//    public void endUserMove(){userMove = false;}
+//
     /**
      *
      * @return whether its the white player's move
@@ -358,10 +397,10 @@ public class Controller {
      * a player can promote his pawn to another piece.
      */
     public void processTurn(){
-        if(isCheckMate()){
-            System.out.println("IS CHECKMATE");
-            //lock();
-        }
+//        if(isCheckMate()){
+//            System.out.println("IS CHECKMATE");
+//            //lock();
+//        }
         if(canPromotePawn()){
             System.out.println("CAN PROMOTE PAWN");
             lock();

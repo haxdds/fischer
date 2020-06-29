@@ -1,6 +1,7 @@
 package main.chess.structure;
 
 
+import main.chess.controller.TranslationSignature;
 
 /**
  * Created by Rahul on 7/19/2017.
@@ -67,12 +68,21 @@ public class Move {
      * Determines whether the called move and the input move are equal.
      * Two moves are equal if their starting and ending squares are equal.
      *
-     * @param m the move being compared to
+     * @param o the move being compared to
      * @return state boolean of whether moves are equal.
      * @see Square#equals(Object)
      */
-    public boolean equals(Move m) {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Move)) return false;
+        Move m = (Move) o;
         return this.getStart().equals(m.getStart()) && this.getEnd().equals(m.getEnd());
+    }
+
+    @Override
+    public int hashCode(){
+        return this.getStart().getRow() + this.getEnd().getCol();
     }
 
     /**

@@ -34,10 +34,9 @@ public class Board {
      */
 
     private Square[][] board = new Square[8][8];
-    private PieceSet pieceSet = new PieceSet();
     private PieceSet whitePieceSet = new PieceSet();
     private PieceSet blackPieceSet = new PieceSet();
-    private HashMap<Piece, Square> pieceMap  = new HashMap<>();
+
     private MoveLog log = new MoveLog();
 
     /**
@@ -211,8 +210,7 @@ public class Board {
      * @see Square#addPiece(Piece)
      */
     public void addPiece(int row, int col, Piece p) {
-        addToSet(p);
-        addToMap(p, getSquare(row, col));
+        addToSet(p, getSquare(row, col));
         getSquare(row, col).addPiece(p);
     }
 
@@ -237,8 +235,7 @@ public class Board {
      * @see Square#removePiece()
      */
     public void removePiece(int row, int col) {
-        removeFromSet(getPiece(row,col));
-        removeFromMap(getPiece(row, col), getSquare(row, col));
+        removeFromSet(getPiece(row,col), getSquare(row, col));
         getSquare(row, col).removePiece();
     }
 
@@ -418,8 +415,7 @@ public class Board {
             for (int col = 0; col < 8; col++) {
                 clone.setSquare(getSquare(row, col).clone());
                 if(hasPiece(row, col)) {
-                    clone.addToSet(clone.getPiece(row, col));
-                    clone.addToMap(clone.getPiece(row, col), clone.getSquare(row, col));
+                    clone.addToSet(clone.getPiece(row, col), clone.getSquare(row, col));
                 }
             }
         }
@@ -512,12 +508,11 @@ public class Board {
      * @param p the piece to be added to the list of all
      *          pieces on the board
      */
-    public void addToSet(Piece p){
-        pieceSet.add(p);
+    public void addToSet(Piece p, Square s){
         if(p.getColor() == Color.WHITE){
-            addToWhiteSet(p);
+            addToWhiteSet(p, s);
         }else{
-            addToBlackSet(p);
+            addToBlackSet(p, s);
         }
     }
 
@@ -526,8 +521,8 @@ public class Board {
      * @param p the white piece to be added to the list of all
      *         white pieces on the board
      */
-    public void addToWhiteSet(Piece p){
-        whitePieceSet.add(p);
+    public void addToWhiteSet(Piece p, Square s){
+        whitePieceSet.add(p, s);
     }
 
     /**
@@ -535,8 +530,8 @@ public class Board {
      * @param p the black piece to be added to the list of all black
      *          pieces on the board
      */
-    public void addToBlackSet(Piece p){
-        blackPieceSet.add(p);
+    public void addToBlackSet(Piece p, Square s){
+        blackPieceSet.add(p, s);
     }
 
     /**
@@ -544,13 +539,12 @@ public class Board {
      * @param p the piece to be removed from the list of all
      *          pieces on the board
      */
-    public void removeFromSet(Piece p){
+    public void removeFromSet(Piece p, Square s){
         if(p.getColor() == Color.WHITE){
-            removeFromWhiteSet(p);
+            removeFromWhiteSet(p, s);
         }else{
-            removeFromBlackSet(p);
+            removeFromBlackSet(p, s);
         }
-        pieceSet.remove(p);
     }
 
     /**
@@ -558,8 +552,8 @@ public class Board {
      * @param p the white piece to be removed from the set
      *          of all white pieces on the board
      */
-    public void removeFromWhiteSet(Piece p){
-        whitePieceSet.remove(p);
+    public void removeFromWhiteSet(Piece p, Square s){
+        whitePieceSet.remove(p, s);
     }
 
     /**
@@ -567,46 +561,10 @@ public class Board {
      * @param p the black piece to be removed from the set of
      *         all black pieces on the board
      */
-    public void removeFromBlackSet(Piece p){
-        blackPieceSet.remove(p);
+    public void removeFromBlackSet(Piece p, Square s){
+        blackPieceSet.remove(p, s);
     }
 
-    /**
-     *
-     * @param p the piece to be added to the map
-     * @param s the square on the board that the piece
-     *          is on.
-     */
-    public void addToMap(Piece p, Square s){
-        pieceMap.put(p, s);
-    }
-
-    /**
-     *
-     * @param p the piece to be removed from the map
-     * @param s the square on the board from which it
-     *          is to be removed
-     */
-    public void removeFromMap(Piece p, Square s){
-        pieceMap.remove(p, s);
-    }
-
-    /**
-     *
-     * @param p the piece to be mapped
-     * @return the square which the piece is on
-     */
-    public Square mapPiece(Piece p){
-        return pieceMap.get(p);
-    }
-
-    /**
-     *
-     * @return the set of all pieces on the board
-     */
-    public PieceSet getPieceSet() {
-        return pieceSet;
-    }
 
     /**
      *
@@ -626,22 +584,6 @@ public class Board {
 
     /**
      *
-     * @return the hashMap which maps pieces to squares on the board
-     */
-    public HashMap<Piece, Square> getPieceMap() {
-        return pieceMap;
-    }
-
-    /**
-     *
-     * @param pieceSet the set of all pieces on the board
-     */
-    public void setPieceSet(PieceSet pieceSet) {
-        this.pieceSet = pieceSet;
-    }
-
-    /**
-     *
      * @param whitePieceSet the set of white pieces on the board
      */
     public void setWhitePieceSet(PieceSet whitePieceSet) {
@@ -656,13 +598,6 @@ public class Board {
         this.blackPieceSet = blackPieceSet;
     }
 
-    /**
-     *
-     * @param pieceMap the hashMap which maps pieces to squares on the board
-     */
-    public void setPieceMap(HashMap<Piece, Square> pieceMap) {
-        this.pieceMap = pieceMap;
-    }
 
 
     /**

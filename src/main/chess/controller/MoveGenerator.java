@@ -25,13 +25,13 @@ public class MoveGenerator {
      * @return the list of possible squares that the piece can move to
      * @see MoveGenerator#generatePawnMoves(Board, Square)
      */
-    public ArrayList<Square> generateMoves(Board board, Square start) {
+    public ArrayList<Move> generateMoves(Board board, Square start) {
 
         Piece p = start.getPiece();
         // pawns are tricky
         if(p.getType() == Type.PAWN) return generatePawnMoves(board, start);
 
-        ArrayList<Square> moves = new ArrayList<>();
+        ArrayList<Move> moves = new ArrayList<>();
         Group g = p.getType().getGroup();
 
         // map to track if direction given by signature is blocked
@@ -39,7 +39,7 @@ public class MoveGenerator {
 
         for (Translation t : g) {
             if(checkTranslation(board, t, start, directionBlocked)){
-                moves.add(board.translateSquare(start ,t));
+                moves.add(new Move(start, board.translateSquare(start ,t)));
             }
         }
 
@@ -90,11 +90,11 @@ public class MoveGenerator {
      * @see MoveGenerator#checkPawnTranslation(Board, Square,Translation)
      * @see MoveGenerator#getEnPassantMoves(Board, Square)
      */
-    public ArrayList<Square> generatePawnMoves(Board board, Square start){
-        ArrayList<Square> moves = new ArrayList<>();
+    public ArrayList<Move> generatePawnMoves(Board board, Square start){
+        ArrayList<Move> moves = new ArrayList<>();
         for (Translation t : Type.PAWN.getGroup()) {
             if(checkPawnTranslation(board, start, t)){
-                moves.add(board.translateSquare(start, t));
+                moves.add(new Move(start,board.translateSquare(start, t)));
             }
         }
         // add all en passant moves if possible
@@ -189,8 +189,8 @@ public class MoveGenerator {
      * if the pawn cannot en passant.
      * @see MoveGenerator#canEnPassant(Square, Move)
      */
-    public ArrayList<Square> getEnPassantMoves(Board board, Square start){
-        ArrayList<Square> enpassantMoves = new ArrayList<>();
+    public ArrayList<Move> getEnPassantMoves(Board board, Square start){
+        ArrayList<Move> enpassantMoves = new ArrayList<>();
         Move last = board.getLastMove();
         // if can en passant
         if(canEnPassant(start, last)){
@@ -198,7 +198,7 @@ public class MoveGenerator {
             int endCol = last.getEnd().getCol();
             // move between last pawn move start row and end row
             int endRow = (last.getStart().getRow() + last.getEnd().getRow())/2;
-            enpassantMoves.add(board.getSquare(endRow, endCol));
+            enpassantMoves.add(new Move(start, board.getSquare(endRow, endCol)));
         }
         return enpassantMoves;
     }
