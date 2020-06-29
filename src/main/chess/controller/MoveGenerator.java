@@ -3,7 +3,9 @@ package main.chess.controller;
 import main.chess.structure.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  *  Created by Rahul: 06/07/2020
@@ -45,7 +47,6 @@ public class MoveGenerator {
 
         return moves;
     }
-
 
 
     /**
@@ -202,7 +203,6 @@ public class MoveGenerator {
         }
         return enpassantMoves;
     }
-
 
 
 }

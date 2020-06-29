@@ -152,6 +152,10 @@ public class MoveLog {
         return squares;
     }
 
+    /**
+     *
+     * @return the total number of moves made
+     */
     public int size(){
         return moves.size();
     }

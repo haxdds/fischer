@@ -72,6 +72,8 @@ public class MoveHandler {
         }
 
         allMoves.removeAll(invalidMoves);
+
+
         return allMoves;
     }
 

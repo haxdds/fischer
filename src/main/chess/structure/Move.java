@@ -110,7 +110,6 @@ public class Move {
         return this.getStart().getRow() + this.getEnd().getCol();
     }
 
-
     /**
      * @return string containing move log
      * @TODO FINISH IMPLEMENTING COLUMNS AS LETTERS SHOULD BE IN FORM K F2, N C3, etc.

@@ -2,7 +2,6 @@ package main.chess.controller;
 
 import main.chess.structure.*;
 
-import javax.swing.tree.TreeNode;
 import java.util.*;
 
 public class PositionValidator {
@@ -12,14 +11,14 @@ public class PositionValidator {
         Color toMove = movesPlayed % 2 == 0? Color.WHITE : Color.BLACK;
         if(toMove == Color.WHITE){
             Square blackKing = board.getBlackKing();
-            return isSafe(board, blackKing);
+            return isSafeSquare(board, blackKing);
         }else{
             Square whiteKing = board.getWhiteKing();
-            return isSafe(board, whiteKing);
+            return isSafeSquare(board, whiteKing);
         }
     }
 
-    public boolean isSafe(Board board, Square square){
+    public boolean isSafeSquare(Board board, Square square){
         Group diagonal = new ChessGroupFactoryImpl().createBishopGroup();
         Group lateral = new ChessGroupFactoryImpl().createRookGroup();
         Group knight = new ChessGroupFactoryImpl().createKnightGroup();
@@ -39,12 +38,12 @@ public class PositionValidator {
         knightDangerousPieces.add(Type.KNIGHT);
 
         // all directions safe
-        return isSafeGroup(board, square, diagonal, diagonalDangerousPieces) &&
-                isSafeGroup(board,square, lateral, lateralDangerousPieces) &&
-                    isSafeGroup(board, square, knight, knightDangerousPieces);
+        return safeFromGroup(board, square, diagonal, diagonalDangerousPieces) &&
+                safeFromGroup(board,square, lateral, lateralDangerousPieces) &&
+                    safeFromGroup(board, square, knight, knightDangerousPieces);
     }
 
-    public boolean isSafeGroup(Board board, Square square, Group g, Set<Type> dangerousPieces){
+    public boolean safeFromGroup(Board board, Square square, Group g, Set<Type> dangerousPieces){
         HashMap<TranslationSignature, Boolean> directionBlocked = new HashMap<>();
         for(Translation t: g) {
 

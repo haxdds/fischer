@@ -38,7 +38,7 @@ public class TranslationSignature {
 
     @Override
     public int hashCode() {
-        return 31 * x + y; // 31 arbitrary, (x, y) pair must be unique hash
+        return 31 * x + y; // 31 arbitrary prime, (x, y) pair must be unique hash
     }
 
 }

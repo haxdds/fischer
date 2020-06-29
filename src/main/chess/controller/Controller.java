@@ -66,7 +66,7 @@ public class Controller {
      * the view/gui, verifies and updates the board.
      * @param square the square where the user clicked
      * @see Listener
-     * @see Move#update(Square)
+     * @see Controller#updateUserInput(Square)
      * @see Controller#renderUserInput()
      */
     public void pushUserInput(Square square) {
@@ -85,18 +85,17 @@ public class Controller {
             userInput.setEnd(s);
         }
     }
-//
+
     /**
      * Processes the userInput move object and
-     * updates the gui accordingly. If the move
-     * is matured {@link Move#isMatured()}
-     * @see Move#reset()
+     * updates the gui accordingly.
+     * @see Controller#resetUserInput() ()
      * @see Controller#highlightView()
      * @see Controller#authenticateAndUpdate()
      */
     public void renderUserInput(){
         if(!authenticateMove()){
-            userInput.reset();
+            resetUserInput();
             return;
         }
         if(!userInputIsMatured()){
@@ -145,7 +144,7 @@ public class Controller {
      * @see Controller#isValidMove(Move, Board)
      * @see Controller#update(Move)
      * @see GUI#refreshColor()
-     * @see Move#reset()
+     * @see Controller#resetUserInput()
      */
     public void authenticateAndUpdate(){
         if(isValidMove(userInput, board)) {
@@ -160,7 +159,12 @@ public class Controller {
         refresh();
     }
 
-
+    /**
+     *
+     * @param m
+     * @param b
+     * @return
+     */
     public boolean isValidMove(Move m, Board b){
         for(Move mv : validMoveHistory.get(validMoveHistory.size()-1)) {
 
