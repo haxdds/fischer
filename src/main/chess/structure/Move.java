@@ -13,6 +13,7 @@ import main.chess.controller.TranslationSignature;
  * @see Square
  */
 public class Move {
+
     /**
      * Properties of a Move object:
      * start: the starting square of a move.
@@ -25,20 +26,9 @@ public class Move {
      */
     private Square start;
     private Square end;
-    private boolean matured = false;
 
     /**
-     * A constructor for a Move object which is not mature.
-     *
-     * @param start the starting square of the move.
-     * @see Square
-     */
-    public Move(Square start) {
-        this.start = start;
-    }
-
-    /**
-     * A constructor for a Move object which is mature.
+     * A constructor for a Move object which is ready to be executed.
      *
      * @param start the starting square of the move.
      * @param end   the ending square of the move.
@@ -47,7 +37,6 @@ public class Move {
     public Move(Square start, Square end) {
         this.start = start;
         this.end = end;
-        this.matured = true;
     }
 
     /**
@@ -56,34 +45,6 @@ public class Move {
      */
     public Move(){}
 
-    /**
-     * @return whether the move is ready to be executed, i.e. whether
-     * both the start and end squares are defined.
-     */
-    public boolean isMatured() {
-        return getEnd() != null;
-    }
-
-    /**
-     * Determines whether the called move and the input move are equal.
-     * Two moves are equal if their starting and ending squares are equal.
-     *
-     * @param o the move being compared to
-     * @return state boolean of whether moves are equal.
-     * @see Square#equals(Object)
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Move)) return false;
-        Move m = (Move) o;
-        return this.getStart().equals(m.getStart()) && this.getEnd().equals(m.getEnd());
-    }
-
-    @Override
-    public int hashCode(){
-        return this.getStart().getRow() + this.getEnd().getCol();
-    }
 
     /**
      * @return the starting square of the move.
@@ -115,35 +76,6 @@ public class Move {
      */
     public void setEnd(Square end) {
         this.end = end;
-        this.matured = true;
-    }
-
-    /**
-     * Resets the move so that it can be reused. Starting and ending squares
-     * are both set to null.
-     * @see Square
-     */
-    public void reset() {
-        this.setStart(null);
-        this.setEnd(null);
-        this.matured = false;
-    }
-
-    /**
-     * if the move is not yet mature, sets the next available slot for
-     * a square(start or end) of the move to the input square.
-     * @param s the square which will be added to the move
-     * @throws IllegalArgumentException if the move is mature/full
-     */
-    public void update(Square s){
-        if(isMatured()) throw new IllegalArgumentException("Move is already mature");
-        if(getStart() == null){
-            setStart(s);
-            return;
-        }
-        if(getEnd() == null){
-            setEnd(s);
-        }
     }
 
     /**
@@ -158,12 +90,26 @@ public class Move {
     }
 
     /**
+     * Determines whether the called move and the input move are equal.
+     * Two moves are equal if their starting and ending squares are equal.
      *
-     * @return whether the move has been started
+     * @param o the move being compared to
+     * @return state boolean of whether moves are equal.
+     * @see Square#equals(Object)
      */
-    public boolean isStarted(){
-        return getStart() != null;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Move)) return false;
+        Move m = (Move) o;
+        return this.getStart().equals(m.getStart()) && this.getEnd().equals(m.getEnd());
     }
+
+    @Override
+    public int hashCode(){
+        return this.getStart().getRow() + this.getEnd().getCol();
+    }
+
 
     /**
      * @return string containing move log

@@ -71,8 +71,19 @@ public class Controller {
      */
     public void pushUserInput(Square square) {
         if(!userMove) return;
-        userInput.update(square);
+        updateUserInput(square);
         renderUserInput();
+    }
+
+    private void updateUserInput(Square s) {
+        if(userInputIsMatured()) throw new IllegalArgumentException("Move is already mature");
+        if(userInput.getStart() == null){
+            userInput.setStart(s);
+            return;
+        }
+        if(userInput.getEnd() == null){
+            userInput.setEnd(s);
+        }
     }
 //
     /**
@@ -88,7 +99,7 @@ public class Controller {
             userInput.reset();
             return;
         }
-        if(!userInput.isMatured()){
+        if(!userInputIsMatured()){
             highlightView();
         }else{
             if(userInput.getStart().equalCoordinate(userInput.getEnd())){
@@ -97,6 +108,10 @@ public class Controller {
             }
             authenticateAndUpdate();
         }
+    }
+
+    private boolean userInputIsMatured() {
+        return userInput.getStart() != null && userInput.getEnd() != null;
     }
 
     /**
@@ -161,8 +176,13 @@ public class Controller {
      * @see GUI#refreshColor()
      */
     public void refresh(){
-        userInput.reset();
+        resetUserInput();
         gui.refreshColor();
+    }
+
+    private void resetUserInput() {
+        userInput.setStart(null);
+        userInput.setEnd(null);
     }
 
     /**
