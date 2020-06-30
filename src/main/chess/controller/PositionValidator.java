@@ -58,32 +58,30 @@ public class PositionValidator {
             if(directionBlocked.get(signatureKey) == true) continue;
 
             Square end = board.translateSquare(square, t);
-            if (end.isOccupied()) {
-                Piece p = end.getPiece();
-                // mark that the direction is blocked
-                directionBlocked.replace(signatureKey, true);
-                if (p.getColor() != square.getPiece().getColor() && dangerousPieces.contains(p.getType())) {
-                        if(p.getType() == Type.KING){
-                            // if squares are adjacent
-                            if(Math.abs(square.getRow() - end.getRow()) <= 1 && Math.abs(square.getCol() - end.getCol()) <= 1){
-                                return false;
-                            }
-                        }else if(p.getType() == Type.PAWN){
-                            if(Math.abs(square.getCol() - end.getCol()) == 1){
-                                if(square.getPiece().getColor() == Color.BLACK){
-                                    if(square.getRow() - end.getRow() == 1){
-                                        return false;
-                                    }
-                                }else{
-                                    if(square.getRow() - end.getRow() == -1){
-                                        return false;
-                                    }
-                                }
-                            }
-                        }else{
-                            return false;
-                        }
-                }
+            if (!end.isOccupied()) continue;
+
+            Piece p = end.getPiece();
+            // mark that the direction is blocked
+            directionBlocked.replace(signatureKey, true);
+            if (p.getColor() == square.getPiece().getColor() || !dangerousPieces.contains(p.getType())) continue;
+
+            // deadly square
+            if(p.getType() != Type.KING || p.getType() != Type.PAWN) return false;
+
+            int deltaRow = square.getRow() - end.getRow();
+            int deltaCol = square.getCol() - end.getCol();
+
+            // if kings are adjacent
+            if(p.getType() == Type.KING && Math.abs(deltaRow) <= 1 || Math.abs(deltaCol) <= 1) return false;
+
+
+            if(p.getType() == Type.PAWN){
+                if(Math.abs(deltaCol) == 1) continue;
+
+                if(square.getPiece().getColor() == Color.BLACK && deltaRow == 1) return false;
+
+                if(square.getPiece().getColor() == Color.WHITE && deltaRow == -1)  return false;              
+
             }
 
         }
