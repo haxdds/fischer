@@ -444,7 +444,7 @@ public class Board {
      */
     public void castle(Move kingMove, Move rookMove){
         movePiece(kingMove);
-        movePiece(rookMove);
+        movePiece(rookMove.getStart(), rookMove.getEnd());
     }
 
     /**

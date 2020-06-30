@@ -167,10 +167,10 @@ public class Controller {
      */
     public boolean isValidMove(Move m, Board b){
         for(Move mv : validMoveHistory.get(validMoveHistory.size()-1)) {
-
-            if (mv.equals(m)) {
-                System.out.println(mv.toString());
-            }
+            System.out.println(mv);
+//            if (mv.equals(m)) {
+//                System.out.println(mv.toString());
+//            }
         }
         System.out.println(validMoveHistory.get(validMoveHistory.size() - 1).contains(m));
         return validMoveHistory.get(validMoveHistory.size() - 1).contains(m);
@@ -275,11 +275,11 @@ public class Controller {
         removePieceFromView(remove);
     }
 //
-//    /**
-//     *
-//     * @return whether there is a checkmate on the board
-//     */
-//    public boolean isCheckMate(){return moveHandler.isCheckMate(board);}
+    /**
+     *
+     * @return whether there is a checkmate on the board
+     */
+    public boolean isCheckMate(){return validMoveHistory.get(validMoveHistory.size() - 1).size() == 0;}
 //
 //    /**
 //     *
@@ -421,10 +421,10 @@ public class Controller {
      * a player can promote his pawn to another piece.
      */
     public void processTurn(){
-//        if(isCheckMate()){
-//            System.out.println("IS CHECKMATE");
-//            //lock();
-//        }
+        if(isCheckMate()){
+            System.out.println("IS CHECKMATE");
+            lock();
+        }
         if(canPromotePawn()){
             System.out.println("CAN PROMOTE PAWN");
             lock();
