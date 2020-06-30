@@ -11,14 +11,14 @@ public class PositionValidator {
         Color toMove = movesPlayed % 2 == 0? Color.WHITE : Color.BLACK;
         if(toMove == Color.WHITE){
             Square blackKing = board.getBlackKing();
-            return isSafeSquare(board, blackKing);
+            return isSafeSquare(board, blackKing, Color.WHITE);
         }else{
             Square whiteKing = board.getWhiteKing();
-            return isSafeSquare(board, whiteKing);
+            return isSafeSquare(board, whiteKing, Color.BLACK);
         }
     }
 
-    public boolean isSafeSquare(Board board, Square square){
+    public boolean isSafeSquare(Board board, Square square, Color enemyColor){
         Group diagonal = new ChessGroupFactoryImpl().createBishopGroup();
         Group lateral = new ChessGroupFactoryImpl().createRookGroup();
         Group knight = new ChessGroupFactoryImpl().createKnightGroup();
@@ -38,12 +38,12 @@ public class PositionValidator {
         knightDangerousPieces.add(Type.KNIGHT);
 
         // all directions safe
-        return safeFromGroup(board, square, diagonal, diagonalDangerousPieces) &&
-                safeFromGroup(board,square, lateral, lateralDangerousPieces) &&
-                    safeFromGroup(board, square, knight, knightDangerousPieces);
+        return safeFromGroup(board, square, enemyColor, diagonal, diagonalDangerousPieces) &&
+                safeFromGroup(board,square, enemyColor, lateral, lateralDangerousPieces) &&
+                    safeFromGroup(board, square, enemyColor, knight, knightDangerousPieces);
     }
 
-    public boolean safeFromGroup(Board board, Square square, Group g, Set<Type> dangerousPieces){
+    public boolean safeFromGroup(Board board, Square square, Color enemyColor, Group g, Set<Type> dangerousPieces){
         HashMap<TranslationSignature, Boolean> directionBlocked = new HashMap<>();
         for(Translation t: g) {
 
@@ -60,30 +60,27 @@ public class PositionValidator {
             Square end = board.translateSquare(square, t);
             if (!end.isOccupied()) continue;
 
-            Piece p = end.getPiece();
+            Piece enemyPiece = end.getPiece();
             // mark that the direction is blocked
             directionBlocked.replace(signatureKey, true);
-            if (p.getColor() == square.getPiece().getColor() || !dangerousPieces.contains(p.getType())) continue;
+            if (enemyPiece.getColor() != enemyColor || !dangerousPieces.contains(enemyPiece.getType())) continue;
 
             // deadly square
-            if(p.getType() != Type.KING || p.getType() != Type.PAWN) return false;
+            if(enemyPiece.getType() != Type.KING || enemyPiece.getType() != Type.PAWN) return false;
 
             int deltaRow = square.getRow() - end.getRow();
             int deltaCol = square.getCol() - end.getCol();
 
             // if kings are adjacent
-            if(p.getType() == Type.KING && Math.abs(deltaRow) <= 1 || Math.abs(deltaCol) <= 1) return false;
+            if(enemyPiece.getType() == Type.KING && Math.abs(deltaRow) <= 1 || Math.abs(deltaCol) <= 1) return false;
 
+            if(enemyPiece.getType() == Type.PAWN){
+                if(Math.abs(deltaCol) != 1) continue;
 
-            if(p.getType() == Type.PAWN){
-                if(Math.abs(deltaCol) == 1) continue;
+                if(enemyColor == Color.WHITE && deltaRow == 1) return false;
 
-                if(square.getPiece().getColor() == Color.BLACK && deltaRow == 1) return false;
-
-                if(square.getPiece().getColor() == Color.WHITE && deltaRow == -1)  return false;              
-
+                if(enemyColor == Color.BLACK && deltaRow == -1)  return false;
             }
-
         }
         return true;
     }

@@ -192,7 +192,7 @@ public class MoveGenerator {
      */
     public ArrayList<Move> getEnPassantMoves(Board board, Square start){
         ArrayList<Move> enpassantMoves = new ArrayList<>();
-        Move last = board.getLastMove();
+        Move last = board.getLog().getLastMove();
         // if can en passant
         if(canEnPassant(start, last)){
             // move on to the same column

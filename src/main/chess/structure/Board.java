@@ -191,13 +191,6 @@ public class Board {
         movePiece(new Move(start, end));
     }
 
-    /**
-     * Moves piece backwards according to the specifications of an input move.
-     *
-     * @param m the move to be undone
-     * @see Board#movePiece(Move)
-     */
-    public void moveBack(Move m) {movePiece(m.getEnd(), m.getStart());}
 
     /**
      * Adds a given piece to the square on the board with the given coordinates.
@@ -214,16 +207,6 @@ public class Board {
         getSquare(row, col).addPiece(p);
     }
 
-    /**
-     * Adds a given piece to the given square on the board
-     *
-     * @param s the square where the piece is to be added
-     * @param p the piece to be added.
-     * @see Board#addPiece(int, int, Piece)
-     */
-    public void addPiece(Square s, Piece p) {
-        addPiece(s.getRow(), s.getCol(), p);
-    }
 
     /**
      * Removes the piece that occupies the square on the board with the given coordinates.
@@ -239,15 +222,6 @@ public class Board {
         getSquare(row, col).removePiece();
     }
 
-    /**
-     * Removes the piece that occupies the given square on the board.
-     *
-     * @param s the square on the board whose piece is to be removed.
-     * @see Board#removePiece(int, int)
-     */
-    public void removePiece(Square s) {
-        removePiece(s.getRow(), s.getCol());
-    }
 
     /**
      * Returns the piece which occupies the square on the board with the given coordinates.
@@ -261,16 +235,6 @@ public class Board {
         return getSquare(row, col).getPiece();
     }
 
-    /**
-     * Returns the piece which occupies the given square on the board.
-     *
-     * @param s the square whose piece is to be retrieved.
-     * @return the piece on that square.
-     * @see Board#getPiece(int, int)
-     */
-    public Piece getPiece(Square s) {
-        return getPiece(s.getRow(), s.getCol());
-    }
 
     /**
      * Determines whether the square with the given coordinates is occupied
@@ -285,16 +249,6 @@ public class Board {
         return getSquare(row, col).isOccupied();
     }
 
-    /**
-     * Determines whether a given square is occupied by a piece.
-     *
-     * @param s the square to be checked
-     * @return whether that square has a piece.
-     * @see Board#hasPiece(int, int)
-     */
-    public boolean hasPiece(Square s) {
-        return hasPiece(s.getRow(), s.getCol());
-    }
 
     /**
      * @return the 2-dimensional square array which defines the board.
@@ -582,23 +536,6 @@ public class Board {
         return blackPieceSet;
     }
 
-    /**
-     *
-     * @param whitePieceSet the set of white pieces on the board
-     */
-    public void setWhitePieceSet(PieceSet whitePieceSet) {
-        this.whitePieceSet = whitePieceSet;
-    }
-
-    /**
-     *
-     * @param blackPieceSet the set of black pieces on the board
-     */
-    public void setBlackPieceSet(PieceSet blackPieceSet) {
-        this.blackPieceSet = blackPieceSet;
-    }
-
-
 
     /**
      * Records a move to the game's MoveLog
@@ -610,16 +547,6 @@ public class Board {
         Square end = getSquare(m.getEnd());
         Move move = new Move(start, end);
         this.log.write(move);
-    }
-
-    /**
-     *
-     * @param move the move for which to be searched
-     * @return whether that move has been played in this game
-     * @see MoveLog#containsMove(Move)
-     */
-    public boolean hasPlayedMove(Move move){
-        return this.log.containsMove(move);
     }
 
     /**
@@ -638,12 +565,6 @@ public class Board {
      */
     public void setLog(MoveLog log){this.log = log;}
 
-    /**
-     *
-     * @return the last move played in the game
-     * @see MoveLog#getLastMove()
-     */
-    public Move getLastMove(){return this.log.getLastMove();}
 
     /**
      * @return a stylized string version of board

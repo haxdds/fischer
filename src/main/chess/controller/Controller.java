@@ -211,16 +211,16 @@ public class Controller {
      * @FIXME INCORRECT ORDER FUCKS IT UP BECAUSE PIECE IS MOVED BEFORE CHECKING
      */
     public void updateModel(Move move){
-//        if(moveHandler.isCastlingMove(move)){
-//            Move rookMove = moveHandler.getCastlingRookMove(move);
-//            updateView(rookMove);
-//            board.castle(move, rookMove);
-//        }else if(moveHandler.isEnPassanteMove(board, move)){
-//            enPassanteUpdate(move);
-//            board.enPassante(move);
-//        }else {
+        if(moveHandler.isCastlingMove(move)){
+            Move rookMove = moveHandler.getCastlingRookMove(move);
+            updateView(rookMove);
+            board.castle(move, rookMove);
+        }else if(moveHandler.isEnPassantMove(move)){
+            enPassanteUpdate(move);
+            board.enPassante(move);
+        }else {
             board.movePiece(move);
-//        }
+       }
         System.out.println(board.toString());
     }
 
@@ -256,24 +256,24 @@ public class Controller {
         }
         return end;
     }
-//
-//    /**
-//     *
-//     * @param s the square whose piece is to be removed from the view
-//     */
-//    public void removePieceFromView(Square s){
-//        gui.remove(s);
-//    }
-//
-//    /**
-//     *
-//     * @param m the en passante move to be updated to the board and gui
-//     */
-//    public void enPassanteUpdate(Move m){
-//        Color c = (m.getStart().getColor() == Color.WHITE) ? Color.BLACK : Color.WHITE;
-//        Square remove = new Square(m.getStart().getRow(), m.getEnd().getCol(), c);
-//        removePieceFromView(remove);
-//    }
+
+    /**
+     *
+     * @param s the square whose piece is to be removed from the view
+     */
+    public void removePieceFromView(Square s){
+        gui.remove(s);
+    }
+
+    /**
+     *
+     * @param m the en passante move to be updated to the board and gui
+     */
+    public void enPassanteUpdate(Move m){
+        Color c = (m.getStart().getColor() == Color.WHITE) ? Color.BLACK : Color.WHITE;
+        Square remove = new Square(m.getStart().getRow(), m.getEnd().getCol(), c);
+        removePieceFromView(remove);
+    }
 //
 //    /**
 //     *

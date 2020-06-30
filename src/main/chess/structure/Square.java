@@ -27,7 +27,6 @@ public class Square {
     private int col;
     private Color color;
     private Piece piece;
-    private boolean occupied = false;
 
     /**
      * A constructor for Square objects.
@@ -54,7 +53,6 @@ public class Square {
             throw new IllegalArgumentException("Square is already occupied");
         }
         this.piece = p;
-        this.occupied = true;
     }
 
     /**
@@ -172,35 +170,8 @@ public class Square {
      * @return a stylized string version of the square object
      */
     public String toString(){
-        String s = null;
-        switch(col){
-            case 0:
-                s = "A";
-                break;
-            case 1:
-                s = "B";
-                break;
-            case 2:
-                s = "C";
-                break;
-            case 3:
-                s = "D";
-                break;
-            case 4:
-                s = "E";
-                break;
-            case 5:
-                s = "F";
-                break;
-            case 6:
-                s = "G";
-                break;
-            case 7:
-                s = "H";
-                break;
-
-        }
-        return  s + "" + (row + 1);
+        char column = (char) ('A' + col);
+        return  column + "" + (row + 1);
     }
 
 
