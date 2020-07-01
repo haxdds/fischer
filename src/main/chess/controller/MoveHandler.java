@@ -73,7 +73,7 @@ public class MoveHandler {
      */
     public List<Move> generateAllValidMoves(Board board){
         List<Move> allMoves = generateAllMoves(board);
-
+        for(Move m : allMoves) System.out.println(m);
         // filter out invalid moves
         List<Move> invalidMoves = new ArrayList<>();
         for(Move m : allMoves){

@@ -95,7 +95,7 @@ public class PositionValidator {
             int deltaCol = square.getCol() - end.getCol();
 
             // if kings are adjacent
-            if(enemyPiece.getType() == Type.KING && Math.abs(deltaRow) <= 1 || Math.abs(deltaCol) <= 1) return false;
+            if(enemyPiece.getType() == Type.KING && Math.abs(deltaRow) <= 1 && Math.abs(deltaCol) <= 1) return false;
 
             if(enemyPiece.getType() == Type.PAWN){
                 if(Math.abs(deltaCol) != 1) continue;
