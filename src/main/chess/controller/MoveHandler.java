@@ -113,16 +113,15 @@ public class MoveHandler {
         Square DFile = board.getSquare(row, 3);
         Square CFile = board.getSquare(row, 2);
 
-        if(log.containsSquare(king) || log.containsSquare(AFileRook)
-                || log.containsSquare(HFileRook)) return castlingMoves;
+        if(log.containsSquare(king)) return castlingMoves;
 
         if(!positionValidator.isSafeSquare(board, king, enemyColor)) return castlingMoves;
 
-        if(!DFile.isOccupied() && positionValidator.isSafeSquare(board, DFile, enemyColor) &&
+        if(!log.containsSquare(AFileRook) && !DFile.isOccupied() && positionValidator.isSafeSquare(board, DFile, enemyColor) &&
             !CFile.isOccupied() && positionValidator.isSafeSquare(board, CFile, enemyColor))
                 castlingMoves.add(new Move(king, CFile));
 
-        if(!FFile.isOccupied() && positionValidator.isSafeSquare(board, FFile, enemyColor) &&
+        if(!log.containsSquare(HFileRook) && !FFile.isOccupied() && positionValidator.isSafeSquare(board, FFile, enemyColor) &&
                 !GFile.isOccupied() && positionValidator.isSafeSquare(board, GFile, enemyColor))
             castlingMoves.add(new Move(king, GFile));
 
