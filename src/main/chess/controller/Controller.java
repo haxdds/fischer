@@ -4,6 +4,10 @@ import main.chess.game.Game;
 import main.chess.gui.GUI;
 import main.chess.structure.*;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by Rahul on 7/20/2017.
  *
@@ -32,6 +36,8 @@ public class Controller {
     private Board board;
     private GUI gui;
 
+    private LinkedList<List<Move>> validMoveHistory = new LinkedList<>();
+
     private MoveHandler moveHandler = new MoveHandler();;
     private Move userInput = new Move();
     private boolean userMove = true;
@@ -51,6 +57,7 @@ public class Controller {
         this.board = board;
         this.gui = gui;
         addListeners();
+        validMoveHistory.add(moveHandler.generateAllValidMoves(board));
     }
 
 
@@ -59,29 +66,39 @@ public class Controller {
      * the view/gui, verifies and updates the board.
      * @param square the square where the user clicked
      * @see Listener
-     * @see Move#update(Square)
+     * @see Controller#updateUserInput(Square)
      * @see Controller#renderUserInput()
      */
     public void pushUserInput(Square square) {
-        if(!userMove || !isRunning()) return;
-        userInput.update(square);
+        if(!userMove) return;
+        updateUserInput(square);
         renderUserInput();
+    }
+
+    private void updateUserInput(Square s) {
+        if(userInputIsMatured()) throw new IllegalArgumentException("Move is already mature");
+        if(userInput.getStart() == null){
+            userInput.setStart(s);
+            return;
+        }
+        if(userInput.getEnd() == null){
+            userInput.setEnd(s);
+        }
     }
 
     /**
      * Processes the userInput move object and
-     * updates the gui accordingly. If the move
-     * is matured {@link Move#isMatured()}
-     * @see Move#reset()
+     * updates the gui accordingly.
+     * @see Controller#resetUserInput() ()
      * @see Controller#highlightView()
      * @see Controller#authenticateAndUpdate()
      */
     public void renderUserInput(){
         if(!authenticateMove()){
-            userInput.reset();
+            resetUserInput();
             return;
         }
-        if(!userInput.isMatured()){
+        if(!userInputIsMatured()){
             highlightView();
         }else{
             if(userInput.getStart().equalCoordinate(userInput.getEnd())){
@@ -90,6 +107,10 @@ public class Controller {
             }
             authenticateAndUpdate();
         }
+    }
+
+    private boolean userInputIsMatured() {
+        return userInput.getStart() != null && userInput.getEnd() != null;
     }
 
     /**
@@ -120,27 +141,52 @@ public class Controller {
      * by using MoveHandler.
      * @ATTENTION order of writeMove and update shouldn't be
      * changed or bad things will happen.
-     * @see MoveHandler#isValidMove(Move, Board)
+     * @see Controller#isValidMove(Move, Board)
      * @see Controller#update(Move)
      * @see GUI#refreshColor()
-     * @see Move#reset()
+     * @see Controller#resetUserInput()
      */
     public void authenticateAndUpdate(){
-        if(moveHandler.isValidMove(userInput, board)) {
+        if(isValidMove(userInput, board)) {
+            System.out.println("HELLO");
             update(userInput);
             changeTurn();
             processTurn();
+            validMoveHistory.add(moveHandler.generateAllValidMoves(board));
         }
+        System.out.println("HI");
+
         refresh();
     }
 
+    /**
+     *
+     * @param m
+     * @param b
+     * @return
+     */
+    public boolean isValidMove(Move m, Board b){
+//        for(Move mv : validMoveHistory.get(validMoveHistory.size()-1)) {
+//            System.out.println(mv);
+////            if (mv.equals(m)) {
+////                System.out.println(mv.toString());
+////            }
+//        }
+        System.out.println(validMoveHistory.get(validMoveHistory.size() - 1).contains(m));
+        return validMoveHistory.get(validMoveHistory.size() - 1).contains(m);
+    }
     /**\
      * Resets the userInput Move object and refreshes the GUI
      * @see GUI#refreshColor()
      */
     public void refresh(){
-        userInput.reset();
+        resetUserInput();
         gui.refreshColor();
+    }
+
+    private void resetUserInput() {
+        userInput.setStart(null);
+        userInput.setEnd(null);
     }
 
     /**
@@ -169,12 +215,13 @@ public class Controller {
             Move rookMove = moveHandler.getCastlingRookMove(move);
             updateView(rookMove);
             board.castle(move, rookMove);
-        }else if(moveHandler.isEnPassanteMove(board, move)){
+        }else if(moveHandler.isEnPassantMove(move)){
             enPassanteUpdate(move);
-            board.enPassante(move);
+            board.enPassant(move);
         }else {
             board.movePiece(move);
-        }
+       }
+        System.out.println(board.toString());
     }
 
     /**
@@ -191,7 +238,23 @@ public class Controller {
      */
     public void highlightView(){
        gui.highlight(userInput.getStart(),
-               moveHandler. getValidMoves(board, userInput.getStart()), this);
+               getValidMoves(board, userInput.getStart()), this);
+    }
+
+
+    public ArrayList<Square> getValidMoves(Board b, Square s){
+        List<Move> validMoves = validMoveHistory.get(validMoveHistory.size()-1);
+        return getMovesFromSquare(b, s, validMoves);
+    }
+
+    public ArrayList<Square> getMovesFromSquare(Board b, Square s, List<Move> moves){
+        ArrayList<Square> end = new ArrayList<>();
+        for(Move m : moves){
+            if(m.getStart().equals(s)){
+                end.add(m.getEnd());
+            }
+        }
+        return end;
     }
 
     /**
@@ -211,29 +274,29 @@ public class Controller {
         Square remove = new Square(m.getStart().getRow(), m.getEnd().getCol(), c);
         removePieceFromView(remove);
     }
-
+//
     /**
      *
      * @return whether there is a checkmate on the board
      */
-    public boolean isCheckMate(){return moveHandler.isCheckMate(board);}
-
-    /**
-     *
-     * @return whether its the user's move
-     */
-    public boolean isUserMove(){return userMove;}
-
-    /**
-     * Starts userMove by setting it to true.
-     */
-    public void startUserMove(){userMove = true;}
-    /**
-     *
-     * ends the user's Move
-     */
-    public void endUserMove(){userMove = false;}
-
+    public boolean isCheckMate(){return validMoveHistory.get(validMoveHistory.size() - 1).size() == 0;}
+//
+//    /**
+//     *
+//     * @return whether its the user's move
+//     */
+//    public boolean isUserMove(){return userMove;}
+//
+//    /**
+//     * Starts userMove by setting it to true.
+//     */
+//    public void startUserMove(){userMove = true;}
+//    /**
+//     *
+//     * ends the user's Move
+//     */
+//    public void endUserMove(){userMove = false;}
+//
     /**
      *
      * @return whether its the white player's move
@@ -360,7 +423,7 @@ public class Controller {
     public void processTurn(){
         if(isCheckMate()){
             System.out.println("IS CHECKMATE");
-            //lock();
+            lock();
         }
         if(canPromotePawn()){
             System.out.println("CAN PROMOTE PAWN");

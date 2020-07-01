@@ -154,6 +154,14 @@ public class MoveLog {
 
     /**
      *
+     * @return the total number of moves made
+     */
+    public int size(){
+        return moves.size();
+    }
+
+    /**
+     *
      * @return
      */
     public String toString(){

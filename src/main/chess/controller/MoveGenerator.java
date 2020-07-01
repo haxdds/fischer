@@ -3,7 +3,9 @@ package main.chess.controller;
 import main.chess.structure.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  *  Created by Rahul: 06/07/2020
@@ -25,27 +27,26 @@ public class MoveGenerator {
      * @return the list of possible squares that the piece can move to
      * @see MoveGenerator#generatePawnMoves(Board, Square)
      */
-    public ArrayList<Square> generateMoves(Board board, Square start) {
+    public ArrayList<Move> generateMoves(Board board, Square start) {
 
         Piece p = start.getPiece();
         // pawns are tricky
         if(p.getType() == Type.PAWN) return generatePawnMoves(board, start);
 
-        ArrayList<Square> moves = new ArrayList<>();
+        ArrayList<Move> moves = new ArrayList<>();
         Group g = p.getType().getGroup();
 
         // map to track if direction given by signature is blocked
-        HashMap<TranslationSignatureKey, Boolean> directionBlocked = new HashMap<>();
+        HashMap<TranslationSignature, Boolean> directionBlocked = new HashMap<>();
 
         for (Translation t : g) {
             if(checkTranslation(board, t, start, directionBlocked)){
-                moves.add(board.translateSquare(start ,t));
+                moves.add(new Move(start, board.translateSquare(start ,t)));
             }
         }
 
         return moves;
     }
-
 
 
     /**
@@ -56,14 +57,14 @@ public class MoveGenerator {
      * @param directionBlocked map that tracks whether that move direction
      * has been blocked by a piece
      * @return whether that translation is valid on that board
-     * @see TranslationSignatureKey
+     * @see TranslationSignature
      */
-    public boolean checkTranslation(Board board, Translation t, Square start, HashMap<TranslationSignatureKey, Boolean> directionBlocked){
+    public boolean checkTranslation(Board board, Translation t, Square start, HashMap<TranslationSignature, Boolean> directionBlocked){
 
         // if resulting square after translation is out of bounds
         if(!start.translate(t).inBounds()) return false;
 
-        TranslationSignatureKey signatureKey = new TranslationSignatureKey(t);
+        TranslationSignature signatureKey = new TranslationSignature(t);
         // direction has not been explored yet
         directionBlocked.putIfAbsent(signatureKey, false);
 
@@ -90,11 +91,11 @@ public class MoveGenerator {
      * @see MoveGenerator#checkPawnTranslation(Board, Square,Translation)
      * @see MoveGenerator#getEnPassantMoves(Board, Square)
      */
-    public ArrayList<Square> generatePawnMoves(Board board, Square start){
-        ArrayList<Square> moves = new ArrayList<>();
+    public ArrayList<Move> generatePawnMoves(Board board, Square start){
+        ArrayList<Move> moves = new ArrayList<>();
         for (Translation t : Type.PAWN.getGroup()) {
             if(checkPawnTranslation(board, start, t)){
-                moves.add(board.translateSquare(start, t));
+                moves.add(new Move(start,board.translateSquare(start, t)));
             }
         }
         // add all en passant moves if possible
@@ -189,57 +190,19 @@ public class MoveGenerator {
      * if the pawn cannot en passant.
      * @see MoveGenerator#canEnPassant(Square, Move)
      */
-    public ArrayList<Square> getEnPassantMoves(Board board, Square start){
-        ArrayList<Square> enpassantMoves = new ArrayList<>();
-        Move last = board.getLastMove();
+    public ArrayList<Move> getEnPassantMoves(Board board, Square start){
+        ArrayList<Move> enpassantMoves = new ArrayList<>();
+        Move last = board.getLog().getLastMove();
         // if can en passant
         if(canEnPassant(start, last)){
             // move on to the same column
             int endCol = last.getEnd().getCol();
             // move between last pawn move start row and end row
             int endRow = (last.getStart().getRow() + last.getEnd().getRow())/2;
-            enpassantMoves.add(board.getSquare(endRow, endCol));
+            enpassantMoves.add(new Move(start, board.getSquare(endRow, endCol)));
         }
         return enpassantMoves;
     }
 
 
-    /**
-     * Helper Class: Translation Signature
-     *
-     * The signature of a translation defines the direction of motion of the translation.
-     * i.e. a translation where (x,y) = (2,2) moves in the same direction as
-     * a translation defined by (x,y) = (5,5); both moves upwards and rightwards in the
-     * positive y and x directions.
-     * so a signature of [1,1] is defined for both these translations.
-     * @see MoveGenerator#generateMoves(Board, Square)
-     */
-    private class TranslationSignatureKey {
-
-        /**
-         * x and y components of signature
-         */
-        private final int x;
-        private final int y;
-
-        public TranslationSignatureKey(Translation t) {
-            // 0 if 0 else -1 or 1
-            this.x = t.getX() == 0 ? 0 : t.getX() / Math.abs(t.getX());
-            this.y = t.getY() == 0 ? 0 : t.getY() / Math.abs(t.getY());
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof TranslationSignatureKey)) return false;
-            TranslationSignatureKey key = (TranslationSignatureKey) o;
-            return x == key.x && y == key.y;
-        }
-
-        @Override
-        public int hashCode() {
-            return 31 * x + y; // 31 arbitrary, (x, y) pair must be unique hash
-        }
-
-    }
 }

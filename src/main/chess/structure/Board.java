@@ -34,10 +34,9 @@ public class Board {
      */
 
     private Square[][] board = new Square[8][8];
-    private PieceSet pieceSet = new PieceSet();
     private PieceSet whitePieceSet = new PieceSet();
     private PieceSet blackPieceSet = new PieceSet();
-    private HashMap<Piece, Square> pieceMap  = new HashMap<>();
+
     private MoveLog log = new MoveLog();
 
     /**
@@ -86,7 +85,7 @@ public class Board {
      * @param s the square that will replace the old square.
      */
     public void setSquare(Square s) {
-        getBoard()[s.getRow()][s.getCol()] = s;
+        board[s.getRow()][s.getCol()] = s;
     }
 
     /**
@@ -192,13 +191,6 @@ public class Board {
         movePiece(new Move(start, end));
     }
 
-    /**
-     * Moves piece backwards according to the specifications of an input move.
-     *
-     * @param m the move to be undone
-     * @see Board#movePiece(Move)
-     */
-    public void moveBack(Move m) {movePiece(m.getEnd(), m.getStart());}
 
     /**
      * Adds a given piece to the square on the board with the given coordinates.
@@ -211,21 +203,10 @@ public class Board {
      * @see Square#addPiece(Piece)
      */
     public void addPiece(int row, int col, Piece p) {
-        addToSet(p);
-        addToMap(p, getSquare(row, col));
+        addToSet(p, getSquare(row, col));
         getSquare(row, col).addPiece(p);
     }
 
-    /**
-     * Adds a given piece to the given square on the board
-     *
-     * @param s the square where the piece is to be added
-     * @param p the piece to be added.
-     * @see Board#addPiece(int, int, Piece)
-     */
-    public void addPiece(Square s, Piece p) {
-        addPiece(s.getRow(), s.getCol(), p);
-    }
 
     /**
      * Removes the piece that occupies the square on the board with the given coordinates.
@@ -237,20 +218,10 @@ public class Board {
      * @see Square#removePiece()
      */
     public void removePiece(int row, int col) {
-        removeFromSet(getPiece(row,col));
-        removeFromMap(getPiece(row, col), getSquare(row, col));
+        removeFromSet(getPiece(row,col), getSquare(row, col));
         getSquare(row, col).removePiece();
     }
 
-    /**
-     * Removes the piece that occupies the given square on the board.
-     *
-     * @param s the square on the board whose piece is to be removed.
-     * @see Board#removePiece(int, int)
-     */
-    public void removePiece(Square s) {
-        removePiece(s.getRow(), s.getCol());
-    }
 
     /**
      * Returns the piece which occupies the square on the board with the given coordinates.
@@ -264,16 +235,6 @@ public class Board {
         return getSquare(row, col).getPiece();
     }
 
-    /**
-     * Returns the piece which occupies the given square on the board.
-     *
-     * @param s the square whose piece is to be retrieved.
-     * @return the piece on that square.
-     * @see Board#getPiece(int, int)
-     */
-    public Piece getPiece(Square s) {
-        return getPiece(s.getRow(), s.getCol());
-    }
 
     /**
      * Determines whether the square with the given coordinates is occupied
@@ -288,34 +249,16 @@ public class Board {
         return getSquare(row, col).isOccupied();
     }
 
-    /**
-     * Determines whether a given square is occupied by a piece.
-     *
-     * @param s the square to be checked
-     * @return whether that square has a piece.
-     * @see Board#hasPiece(int, int)
-     */
-    public boolean hasPiece(Square s) {
-        return hasPiece(s.getRow(), s.getCol());
-    }
-
-    /**
-     * @return the 2-dimensional square array which defines the board.
-     */
-    public Square[][] getBoard() {
-        return this.board;
-    }
 
     /**
      * Retrieves the square on the board with give coordinates.
      *
      * @param row the row coordinate of the square to be retrieved.
      * @param col the column coordinate of the square to be retrieved.
-     * @return the square on the board with the given coordinates.
-     * @see Board#getBoard()
+     * @return the square on the board with the given coordinates.     *
      */
     public Square getSquare(int row, int col) {
-        return getBoard()[row][col];
+        return board[row][col];
     }
 
     /**
@@ -375,7 +318,7 @@ public class Board {
         if(!hasPiece(row, col))
             throw new IllegalArgumentException("No piece occupies that location");
         if(getPiece(row, col).getType() != Type.PAWN)
-            throw new IllegalArgumentException("Only pawns maybe promoted");
+            throw new IllegalArgumentException("Only pawns may be promoted");
         if(type == Type.KING || type == Type.PAWN)
             throw new IllegalArgumentException("Promoted types maybe only be: Queen, Rook, Bishop or Knight");
         Color promotingColor = getPiece(row, col).getColor();
@@ -400,48 +343,7 @@ public class Board {
         this.board = board;
     }
 
-    /**
-     * Returns a clone of this Board object.
-     *
-     * @return
-     * @TODO: TO BE IMPLEMENTED -- done 7/30/17
-     * @TODO: HAD CLONED SEPARATE COPIES TO BOARD AND TO LIST, THIS
-     * @TODO CAUSED THE GLITCH WITH THE CHECKS AND LISTS
-     */
-    public Board clone() {
-        Board clone = new Board();
 
-//        for(Move m : log.getMoves()){
-//
-//        }
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                clone.setSquare(getSquare(row, col).clone());
-                if(hasPiece(row, col)) {
-                    clone.addToSet(clone.getPiece(row, col));
-                    clone.addToMap(clone.getPiece(row, col), clone.getSquare(row, col));
-                }
-            }
-        }
-        MoveLog cloneLog = log.clone();
-        clone.setLog(cloneLog);
-        return clone;
-    }
-
-    /**
-     * @param b board to be compared to
-     * @return whether to boards are equal
-     */
-    public boolean equals(Board b) {
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                if (!getSquare(row, col).equals(b.getSquare(row, col))) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
     /**
      * @return square on board which contains the white king.
@@ -494,7 +396,7 @@ public class Board {
      */
     public void castle(Move kingMove, Move rookMove){
         movePiece(kingMove);
-        movePiece(rookMove);
+        movePiece(rookMove.getStart(), rookMove.getEnd());
     }
 
     /**
@@ -502,7 +404,7 @@ public class Board {
      * an enemy pawn diagonally
      * @param m the move of the attack pawn
      */
-    public void enPassante(Move m){
+    public void enPassant(Move m){
         movePiece(m);
         removePiece(m.getStart().getRow(), m.getEnd().getCol());
     }
@@ -512,12 +414,11 @@ public class Board {
      * @param p the piece to be added to the list of all
      *          pieces on the board
      */
-    public void addToSet(Piece p){
-        pieceSet.add(p);
+    public void addToSet(Piece p, Square s){
         if(p.getColor() == Color.WHITE){
-            addToWhiteSet(p);
+            addToWhiteSet(p, s);
         }else{
-            addToBlackSet(p);
+            addToBlackSet(p, s);
         }
     }
 
@@ -526,8 +427,8 @@ public class Board {
      * @param p the white piece to be added to the list of all
      *         white pieces on the board
      */
-    public void addToWhiteSet(Piece p){
-        whitePieceSet.add(p);
+    public void addToWhiteSet(Piece p, Square s){
+        whitePieceSet.add(p, s);
     }
 
     /**
@@ -535,8 +436,8 @@ public class Board {
      * @param p the black piece to be added to the list of all black
      *          pieces on the board
      */
-    public void addToBlackSet(Piece p){
-        blackPieceSet.add(p);
+    public void addToBlackSet(Piece p, Square s){
+        blackPieceSet.add(p, s);
     }
 
     /**
@@ -544,13 +445,12 @@ public class Board {
      * @param p the piece to be removed from the list of all
      *          pieces on the board
      */
-    public void removeFromSet(Piece p){
+    public void removeFromSet(Piece p, Square s){
         if(p.getColor() == Color.WHITE){
-            removeFromWhiteSet(p);
+            removeFromWhiteSet(p, s);
         }else{
-            removeFromBlackSet(p);
+            removeFromBlackSet(p, s);
         }
-        pieceSet.remove(p);
     }
 
     /**
@@ -558,8 +458,8 @@ public class Board {
      * @param p the white piece to be removed from the set
      *          of all white pieces on the board
      */
-    public void removeFromWhiteSet(Piece p){
-        whitePieceSet.remove(p);
+    public void removeFromWhiteSet(Piece p, Square s){
+        whitePieceSet.remove(p, s);
     }
 
     /**
@@ -567,46 +467,10 @@ public class Board {
      * @param p the black piece to be removed from the set of
      *         all black pieces on the board
      */
-    public void removeFromBlackSet(Piece p){
-        blackPieceSet.remove(p);
+    public void removeFromBlackSet(Piece p, Square s){
+        blackPieceSet.remove(p, s);
     }
 
-    /**
-     *
-     * @param p the piece to be added to the map
-     * @param s the square on the board that the piece
-     *          is on.
-     */
-    public void addToMap(Piece p, Square s){
-        pieceMap.put(p, s);
-    }
-
-    /**
-     *
-     * @param p the piece to be removed from the map
-     * @param s the square on the board from which it
-     *          is to be removed
-     */
-    public void removeFromMap(Piece p, Square s){
-        pieceMap.remove(p, s);
-    }
-
-    /**
-     *
-     * @param p the piece to be mapped
-     * @return the square which the piece is on
-     */
-    public Square mapPiece(Piece p){
-        return pieceMap.get(p);
-    }
-
-    /**
-     *
-     * @return the set of all pieces on the board
-     */
-    public PieceSet getPieceSet() {
-        return pieceSet;
-    }
 
     /**
      *
@@ -624,46 +488,6 @@ public class Board {
         return blackPieceSet;
     }
 
-    /**
-     *
-     * @return the hashMap which maps pieces to squares on the board
-     */
-    public HashMap<Piece, Square> getPieceMap() {
-        return pieceMap;
-    }
-
-    /**
-     *
-     * @param pieceSet the set of all pieces on the board
-     */
-    public void setPieceSet(PieceSet pieceSet) {
-        this.pieceSet = pieceSet;
-    }
-
-    /**
-     *
-     * @param whitePieceSet the set of white pieces on the board
-     */
-    public void setWhitePieceSet(PieceSet whitePieceSet) {
-        this.whitePieceSet = whitePieceSet;
-    }
-
-    /**
-     *
-     * @param blackPieceSet the set of black pieces on the board
-     */
-    public void setBlackPieceSet(PieceSet blackPieceSet) {
-        this.blackPieceSet = blackPieceSet;
-    }
-
-    /**
-     *
-     * @param pieceMap the hashMap which maps pieces to squares on the board
-     */
-    public void setPieceMap(HashMap<Piece, Square> pieceMap) {
-        this.pieceMap = pieceMap;
-    }
-
 
     /**
      * Records a move to the game's MoveLog
@@ -675,16 +499,6 @@ public class Board {
         Square end = getSquare(m.getEnd());
         Move move = new Move(start, end);
         this.log.write(move);
-    }
-
-    /**
-     *
-     * @param move the move for which to be searched
-     * @return whether that move has been played in this game
-     * @see MoveLog#containsMove(Move)
-     */
-    public boolean hasPlayedMove(Move move){
-        return this.log.containsMove(move);
     }
 
     /**
@@ -703,12 +517,48 @@ public class Board {
      */
     public void setLog(MoveLog log){this.log = log;}
 
+
     /**
+     * Returns a clone of this Board object.
      *
-     * @return the last move played in the game
-     * @see MoveLog#getLastMove()
+     * @return
+     * @TODO: TO BE IMPLEMENTED -- done 7/30/17
+     * @TODO: HAD CLONED SEPARATE COPIES TO BOARD AND TO LIST, THIS
+     * @TODO CAUSED THE GLITCH WITH THE CHECKS AND LISTS
      */
-    public Move getLastMove(){return this.log.getLastMove();}
+    public Board clone() {
+        Board clone = new Board();
+
+//        for(Move m : log.getMoves()){
+//
+//        }
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                clone.board[row][col] = (getSquare(row, col).clone());
+                if(hasPiece(row, col)) {
+                    clone.addToSet(clone.getPiece(row, col), clone.getSquare(row, col));
+                }
+            }
+        }
+        MoveLog cloneLog = log.clone();
+        clone.setLog(cloneLog);
+        return clone;
+    }
+
+    /**
+     * @param b board to be compared to
+     * @return whether to boards are equal
+     */
+    public boolean equals(Board b) {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                if (!getSquare(row, col).equals(b.getSquare(row, col))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     /**
      * @return a stylized string version of board

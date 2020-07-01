@@ -137,7 +137,6 @@ public class ChessGroupFactoryImpl implements ChessGroupFactory {
      * @FIXME switching the order of groups creates the weirdest bug. Bug causes some squares
      * @FIXME to not be iterated.
      * @UPDATED: THE BUG WAS CAUSED BY MY CHOICE OF SIGNATURE. COMPONENTS OF 0 HAS 0 SIGNATURE NOW.
-     * @see Translation#getSignature()
      */
     @Override
     public Group createQueenGroup() {
@@ -165,6 +164,7 @@ public class ChessGroupFactoryImpl implements ChessGroupFactory {
 
     @Override
     public Group createKingGroup() {
+        // basic king translations, castling handled in move generation
         Translation t1 = new Translation(0, 1);
         Translation t2 = new Translation(0, -1);
         Translation t3 = new Translation(-1, 0);
