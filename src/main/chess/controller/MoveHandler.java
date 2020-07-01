@@ -41,27 +41,40 @@ public class MoveHandler {
         positionValidator = new PositionValidator();
     }
 
-
+    /**
+     *  Generates all the possible piece translations on a given board. 
+     *  The side to move is taken into consideration.
+     * @param board The board for which we want to generate moves
+     * @return A list of all possible unverified translations that can be made
+     * on the board
+     * @see MoveGenerator#generateMoves(Board, Square) 
+     */
     public List<Move> generateAllMoves(Board board){
+        // even number of moves played imply white to move else black
         Color toMove = board.getLog().size() % 2 == 0? Color.WHITE : Color.BLACK;
-        List<Move> allMoves = new ArrayList<Move>();
-        if(toMove == Color.WHITE){
-            Collection<Square> whitePieces = board.getWhitePieceSet().getOccupiedSquares();
-            for(Square start : whitePieces) {
-                allMoves.addAll(generator.generateMoves(board, start));
-            }
-        }else{
-            Collection<Square> blackPieces = board.getBlackPieceSet().getOccupiedSquares();
-            for(Square start : blackPieces) {
-                allMoves.addAll(generator.generateMoves(board, start));
-            }
+        
+        List<Move> allMoves = new ArrayList<>();
+        
+         Collection<Square> piecePositions = toMove == Color.WHITE ?  board.getWhitePieceSet().getOccupiedSquares() :
+                 board.getBlackPieceSet().getOccupiedSquares();
+        
+        for(Square start : piecePositions) {
+            allMoves.addAll(generator.generateMoves(board, start));
         }
+        
         return allMoves;
     }
 
+    /**
+     * Returns all valid moves that can be made on a given board
+     * verified for checks and castling conditions
+     * @param board The board for which we want to generate moves
+     * @return the list of all valid moves that can be made on that board
+     */
     public List<Move> generateAllValidMoves(Board board){
         List<Move> allMoves = generateAllMoves(board);
 
+        // filter out invalid moves
         List<Move> invalidMoves = new ArrayList<>();
         for(Move m : allMoves){
             Board dummy = board.clone();
@@ -71,13 +84,21 @@ public class MoveHandler {
             }
         }
 
+        // remove invalid moves
         allMoves.removeAll(invalidMoves);
 
+        // add any valid castling king moves
         allMoves.addAll(generateCastlingMoves(board));
 
         return allMoves;
     }
 
+    /**
+     * Returns a list of possible castling moves that can be
+     * made by the king
+     * @param board the board on which we want to castle
+     * @return the possible castling moves
+     */
     public List<Move> generateCastlingMoves(Board board){
         MoveLog log = board.getLog();
         int row = log.size() % 2 == 0? 0 : 7;
@@ -108,27 +129,36 @@ public class MoveHandler {
         return castlingMoves;
     }
 
+    /**
+     * Returns whether the given move is a castling move
+     * @param m the move we want to examine
+     * @return whether the given move is a castling move
+     */
     public boolean isCastlingMove(Move m){
         return m.getStart().getPiece().getType() == Type.KING && Math.abs(m.getStart().getCol() - m.getEnd().getCol()) == 2;
     }
 
+    /**
+     * Returns whether the given move is an en passant move
+     * @param m the move we want to examine
+     * @return whether the given move is an en passant move
+     */
     public boolean isEnPassantMove(Move m){
         return m.getStart().getPiece().getType() == Type.PAWN && m.getStart().getCol() != m.getEnd().getCol() &&
                 !m.getEnd().isOccupied();
     }
 
+    /**
+     * Returns the corresponding rook move for a given king castling move
+     * @param kingMove the king castling move
+     * @return the corresponding rook move
+     */
     public Move getCastlingRookMove(Move kingMove){
         int rookRow = kingMove.getStart().getRow();
         return kingMove.getEnd().getCol() - kingMove.getStart().getCol() > 0 ?
                 new Move(new Square(rookRow, 7, Color.WHITE), new Square(rookRow, 5, Color.WHITE)) :
                 new Move(new Square(rookRow, 0, Color.WHITE), new Square(rookRow, 4, Color.WHITE));
     }
-
-
-
-
-
-
 
 }
 

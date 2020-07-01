@@ -85,7 +85,7 @@ public class Board {
      * @param s the square that will replace the old square.
      */
     public void setSquare(Square s) {
-        getBoard()[s.getRow()][s.getCol()] = s;
+        board[s.getRow()][s.getCol()] = s;
     }
 
     /**
@@ -251,22 +251,14 @@ public class Board {
 
 
     /**
-     * @return the 2-dimensional square array which defines the board.
-     */
-    public Square[][] getBoard() {
-        return this.board;
-    }
-
-    /**
      * Retrieves the square on the board with give coordinates.
      *
      * @param row the row coordinate of the square to be retrieved.
      * @param col the column coordinate of the square to be retrieved.
-     * @return the square on the board with the given coordinates.
-     * @see Board#getBoard()
+     * @return the square on the board with the given coordinates.     *
      */
     public Square getSquare(int row, int col) {
-        return getBoard()[row][col];
+        return board[row][col];
     }
 
     /**
@@ -326,7 +318,7 @@ public class Board {
         if(!hasPiece(row, col))
             throw new IllegalArgumentException("No piece occupies that location");
         if(getPiece(row, col).getType() != Type.PAWN)
-            throw new IllegalArgumentException("Only pawns maybe promoted");
+            throw new IllegalArgumentException("Only pawns may be promoted");
         if(type == Type.KING || type == Type.PAWN)
             throw new IllegalArgumentException("Promoted types maybe only be: Queen, Rook, Bishop or Knight");
         Color promotingColor = getPiece(row, col).getColor();
@@ -351,47 +343,7 @@ public class Board {
         this.board = board;
     }
 
-    /**
-     * Returns a clone of this Board object.
-     *
-     * @return
-     * @TODO: TO BE IMPLEMENTED -- done 7/30/17
-     * @TODO: HAD CLONED SEPARATE COPIES TO BOARD AND TO LIST, THIS
-     * @TODO CAUSED THE GLITCH WITH THE CHECKS AND LISTS
-     */
-    public Board clone() {
-        Board clone = new Board();
 
-//        for(Move m : log.getMoves()){
-//
-//        }
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                clone.setSquare(getSquare(row, col).clone());
-                if(hasPiece(row, col)) {
-                    clone.addToSet(clone.getPiece(row, col), clone.getSquare(row, col));
-                }
-            }
-        }
-        MoveLog cloneLog = log.clone();
-        clone.setLog(cloneLog);
-        return clone;
-    }
-
-    /**
-     * @param b board to be compared to
-     * @return whether to boards are equal
-     */
-    public boolean equals(Board b) {
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                if (!getSquare(row, col).equals(b.getSquare(row, col))) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
     /**
      * @return square on board which contains the white king.
@@ -452,7 +404,7 @@ public class Board {
      * an enemy pawn diagonally
      * @param m the move of the attack pawn
      */
-    public void enPassante(Move m){
+    public void enPassant(Move m){
         movePiece(m);
         removePiece(m.getStart().getRow(), m.getEnd().getCol());
     }
@@ -565,6 +517,48 @@ public class Board {
      */
     public void setLog(MoveLog log){this.log = log;}
 
+
+    /**
+     * Returns a clone of this Board object.
+     *
+     * @return
+     * @TODO: TO BE IMPLEMENTED -- done 7/30/17
+     * @TODO: HAD CLONED SEPARATE COPIES TO BOARD AND TO LIST, THIS
+     * @TODO CAUSED THE GLITCH WITH THE CHECKS AND LISTS
+     */
+    public Board clone() {
+        Board clone = new Board();
+
+//        for(Move m : log.getMoves()){
+//
+//        }
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                clone.board[row][col] = (getSquare(row, col).clone());
+                if(hasPiece(row, col)) {
+                    clone.addToSet(clone.getPiece(row, col), clone.getSquare(row, col));
+                }
+            }
+        }
+        MoveLog cloneLog = log.clone();
+        clone.setLog(cloneLog);
+        return clone;
+    }
+
+    /**
+     * @param b board to be compared to
+     * @return whether to boards are equal
+     */
+    public boolean equals(Board b) {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                if (!getSquare(row, col).equals(b.getSquare(row, col))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     /**
      * @return a stylized string version of board

@@ -217,7 +217,7 @@ public class Controller {
             board.castle(move, rookMove);
         }else if(moveHandler.isEnPassantMove(move)){
             enPassanteUpdate(move);
-            board.enPassante(move);
+            board.enPassant(move);
         }else {
             board.movePiece(move);
        }

@@ -4,8 +4,15 @@ import main.chess.structure.*;
 
 import java.util.*;
 
+/**
+ *
+ */
 public class PositionValidator {
-
+    /**
+     *
+     * @param board
+     * @return
+     */
     public boolean isValidPosition(Board board){
         int movesPlayed = board.getLog().size();
         Color toMove = movesPlayed % 2 == 0? Color.WHITE : Color.BLACK;
@@ -18,6 +25,13 @@ public class PositionValidator {
         }
     }
 
+    /**
+     *
+     * @param board
+     * @param square
+     * @param enemyColor
+     * @return
+     */
     public boolean isSafeSquare(Board board, Square square, Color enemyColor){
         Group diagonal = new ChessGroupFactoryImpl().createBishopGroup();
         Group lateral = new ChessGroupFactoryImpl().createRookGroup();
@@ -43,6 +57,15 @@ public class PositionValidator {
                     safeFromGroup(board, square, enemyColor, knight, knightDangerousPieces);
     }
 
+    /**
+     *
+     * @param board
+     * @param square
+     * @param enemyColor
+     * @param g
+     * @param dangerousPieces
+     * @return
+     */
     public boolean safeFromGroup(Board board, Square square, Color enemyColor, Group g, Set<Type> dangerousPieces){
         HashMap<TranslationSignature, Boolean> directionBlocked = new HashMap<>();
         for(Translation t: g) {
