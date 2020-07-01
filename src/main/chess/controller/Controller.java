@@ -166,13 +166,6 @@ public class Controller {
      * @return
      */
     public boolean isValidMove(Move m, Board b){
-//        for(Move mv : validMoveHistory.get(validMoveHistory.size()-1)) {
-//            System.out.println(mv);
-////            if (mv.equals(m)) {
-////                System.out.println(mv.toString());
-////            }
-//        }
-        System.out.println(validMoveHistory.get(validMoveHistory.size() - 1).contains(m));
         return validMoveHistory.get(validMoveHistory.size() - 1).contains(m);
     }
     /**\

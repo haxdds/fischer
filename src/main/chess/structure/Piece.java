@@ -27,7 +27,6 @@ public class Piece {
     private Color color;
 
 
-
     /**
      * A constructor for Piece objects.
      *
@@ -81,7 +80,5 @@ public class Piece {
      * @return string representation of piece
      */
     public String toString(){return "" + getColor() + " " + getType();}
-
-
 
 }

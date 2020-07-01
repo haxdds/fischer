@@ -28,15 +28,14 @@ public class Board {
      * blackPieceSet is a list of all black colored pieces on the board.
      * TODO: {The game field links the board object to a game.}
      * TODO: IS LINKING NECESSARY? SEE CASTLING
-     * @see Controller
      * @see Square
-     * @see Piece
+     * @see PieceSet
+     * @see MoveLog
      */
 
     private Square[][] board = new Square[8][8];
     private PieceSet whitePieceSet = new PieceSet();
     private PieceSet blackPieceSet = new PieceSet();
-
     private MoveLog log = new MoveLog();
 
     /**
@@ -56,84 +55,6 @@ public class Board {
     public void InitializeBoard() {
         setUpSquares();
         setPieces();
-    }
-
-    /**
-     * Initializes the square on the board by creating
-     * appropriate square objects and placing adding them to the
-     * board array.
-     *
-     * @see Board#board
-     */
-    public void setUpSquares() {
-        for (int row = 0; row <= 7; row++) {
-            for (int column = 0; column <= 7; column++) {
-                if ((row + column) % 2 == 0) {
-                    Square sq = new Square(row, column, Color.BLACK);
-                    board[row][column] = sq;
-                } else {
-                    Square sq = new Square(row, column, Color.WHITE);
-                    board[row][column] = sq;
-                }
-            }
-        }
-    }
-
-    /**
-     * Sets square on board with the given square.
-     *
-     * @param s the square that will replace the old square.
-     */
-    public void setSquare(Square s) {
-        board[s.getRow()][s.getCol()] = s;
-    }
-
-    /**
-     * Creates appropriate pieces for each color and places them
-     * in both the appropriate squares on the board and the list of
-     * pieces.
-     *
-     * @see Board#whitePieceSet
-     * @see Board#blackPieceSet
-     */
-    public void setPieces() {
-        Piece wpawn = new Piece(Type.PAWN, Color.WHITE);
-        Piece wknight = new Piece(Type.KNIGHT, Color.WHITE);
-        Piece wbishop = new Piece(Type.BISHOP, Color.WHITE);
-        Piece wrook = new Piece(Type.ROOK, Color.WHITE);
-        Piece wqueen = new Piece(Type.QUEEN, Color.WHITE);
-        Piece wking = new Piece(Type.KING, Color.WHITE);
-
-        Piece bpawn = new Piece(Type.PAWN, Color.BLACK);
-        Piece bknight = new Piece(Type.KNIGHT, Color.BLACK);
-        Piece bbishop = new Piece(Type.BISHOP, Color.BLACK);
-        Piece brook = new Piece(Type.ROOK, Color.BLACK);
-        Piece bqueen = new Piece(Type.QUEEN, Color.BLACK);
-        Piece bking = new Piece(Type.KING, Color.BLACK);
-
-        for (int column = 0; column < 8; column++) {
-            addPiece(1, column, wpawn.clone());
-            addPiece(6, column, bpawn.clone());
-        }
-
-        addPiece(0, 0, wrook.clone());
-        addPiece(0, 1, wknight.clone());
-        addPiece(0, 2, wbishop.clone());
-        addPiece(0, 3, wqueen.clone());
-        addPiece(0, 4, wking.clone());
-        addPiece(0, 5, wbishop.clone());
-        addPiece(0, 6, wknight.clone());
-        addPiece(0, 7, wrook.clone());
-
-        addPiece(7, 0, brook.clone());
-        addPiece(7, 1, bknight.clone());
-        addPiece(7, 2, bbishop.clone());
-        addPiece(7, 3, bqueen.clone());
-        addPiece(7, 4, bking.clone());
-        addPiece(7, 5, bbishop.clone());
-        addPiece(7, 6, bknight.clone());
-        addPiece(7, 7, brook.clone());
-
     }
 
     /**
@@ -297,16 +218,6 @@ public class Board {
     }
 
     /**
-     * replaces a piece on the board with another
-     * @param s the square that the piece to be replaced occupies
-     * @param p the piece which will replace the piece on that square
-     * @see #replacePiece(int, int, Piece)
-     */
-    public void replacePiece(Square s, Piece p){
-        replacePiece(s.getRow(), s.getCol(), p);
-    }
-
-    /**
      *
      * @param row the row of pawn to be promoted
      * @param col the col of the pawn to be promoted
@@ -334,49 +245,6 @@ public class Board {
      */
     public void promotePawn(Square s, Type type){
         promotePawn(s.getRow(), s.getCol(), type);
-    }
-
-    /**
-     * @param board the board that is to replace the current board.
-     */
-    public void setBoard(Square[][] board) {
-        this.board = board;
-    }
-
-
-
-    /**
-     * @return square on board which contains the white king.
-     */
-    public Square getWhiteKing() {
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                if (hasPiece(row, col)) {
-                    if (getPiece(row, col).getType() == Type.KING &&
-                            getPiece(row, col).getColor() == Color.WHITE) {
-                        return getSquare(row, col);
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @return square on board which contains the black king.
-     */
-    public Square getBlackKing() {
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                if (hasPiece(row, col)) {
-                    if (getPiece(row, col).getType() == Type.KING &&
-                            getPiece(row, col).getColor() == Color.BLACK) {
-                        return getSquare(row, col);
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     /**
@@ -416,28 +284,10 @@ public class Board {
      */
     public void addToSet(Piece p, Square s){
         if(p.getColor() == Color.WHITE){
-            addToWhiteSet(p, s);
+            whitePieceSet.add(p, s);
         }else{
-            addToBlackSet(p, s);
+            blackPieceSet.add(p, s);
         }
-    }
-
-    /**
-     *
-     * @param p the white piece to be added to the list of all
-     *         white pieces on the board
-     */
-    public void addToWhiteSet(Piece p, Square s){
-        whitePieceSet.add(p, s);
-    }
-
-    /**
-     *
-     * @param p the black piece to be added to the list of all black
-     *          pieces on the board
-     */
-    public void addToBlackSet(Piece p, Square s){
-        blackPieceSet.add(p, s);
     }
 
     /**
@@ -447,30 +297,11 @@ public class Board {
      */
     public void removeFromSet(Piece p, Square s){
         if(p.getColor() == Color.WHITE){
-            removeFromWhiteSet(p, s);
+            whitePieceSet.remove(p, s);
         }else{
-            removeFromBlackSet(p, s);
+            blackPieceSet.remove(p, s);
         }
     }
-
-    /**
-     *
-     * @param p the white piece to be removed from the set
-     *          of all white pieces on the board
-     */
-    public void removeFromWhiteSet(Piece p, Square s){
-        whitePieceSet.remove(p, s);
-    }
-
-    /**
-     *
-     * @param p the black piece to be removed from the set of
-     *         all black pieces on the board
-     */
-    public void removeFromBlackSet(Piece p, Square s){
-        blackPieceSet.remove(p, s);
-    }
-
 
     /**
      *
@@ -517,6 +348,75 @@ public class Board {
      */
     public void setLog(MoveLog log){this.log = log;}
 
+    /**
+     * Initializes the square on the board by creating
+     * appropriate square objects and placing adding them to the
+     * board array.
+     *
+     * @see Board#board
+     */
+    public void setUpSquares() {
+        for (int row = 0; row <= 7; row++) {
+            for (int column = 0; column <= 7; column++) {
+                if ((row + column) % 2 == 0) {
+                    Square sq = new Square(row, column, Color.BLACK);
+                    board[row][column] = sq;
+                } else {
+                    Square sq = new Square(row, column, Color.WHITE);
+                    board[row][column] = sq;
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Creates appropriate pieces for each color and places them
+     * in both the appropriate squares on the board and the list of
+     * pieces.
+     *
+     * @see Board#whitePieceSet
+     * @see Board#blackPieceSet
+     */
+    public void setPieces() {
+        Piece wpawn = new Piece(Type.PAWN, Color.WHITE);
+        Piece wknight = new Piece(Type.KNIGHT, Color.WHITE);
+        Piece wbishop = new Piece(Type.BISHOP, Color.WHITE);
+        Piece wrook = new Piece(Type.ROOK, Color.WHITE);
+        Piece wqueen = new Piece(Type.QUEEN, Color.WHITE);
+        Piece wking = new Piece(Type.KING, Color.WHITE);
+
+        Piece bpawn = new Piece(Type.PAWN, Color.BLACK);
+        Piece bknight = new Piece(Type.KNIGHT, Color.BLACK);
+        Piece bbishop = new Piece(Type.BISHOP, Color.BLACK);
+        Piece brook = new Piece(Type.ROOK, Color.BLACK);
+        Piece bqueen = new Piece(Type.QUEEN, Color.BLACK);
+        Piece bking = new Piece(Type.KING, Color.BLACK);
+
+        for (int column = 0; column < 8; column++) {
+            addPiece(1, column, wpawn.clone());
+            addPiece(6, column, bpawn.clone());
+        }
+
+        addPiece(0, 0, wrook.clone());
+        addPiece(0, 1, wknight.clone());
+        addPiece(0, 2, wbishop.clone());
+        addPiece(0, 3, wqueen.clone());
+        addPiece(0, 4, wking.clone());
+        addPiece(0, 5, wbishop.clone());
+        addPiece(0, 6, wknight.clone());
+        addPiece(0, 7, wrook.clone());
+
+        addPiece(7, 0, brook.clone());
+        addPiece(7, 1, bknight.clone());
+        addPiece(7, 2, bbishop.clone());
+        addPiece(7, 3, bqueen.clone());
+        addPiece(7, 4, bking.clone());
+        addPiece(7, 5, bbishop.clone());
+        addPiece(7, 6, bknight.clone());
+        addPiece(7, 7, brook.clone());
+
+    }
 
     /**
      * Returns a clone of this Board object.
@@ -529,9 +429,6 @@ public class Board {
     public Board clone() {
         Board clone = new Board();
 
-//        for(Move m : log.getMoves()){
-//
-//        }
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 clone.board[row][col] = (getSquare(row, col).clone());

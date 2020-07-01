@@ -168,7 +168,10 @@ public class MoveLog {
         return null;
     }
 
-
+    /**
+     *
+     * @return
+     */
     public MoveLog clone(){
         MoveLog clone = new MoveLog();
         for(Move m : moves){

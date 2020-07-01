@@ -16,13 +16,8 @@ public class PositionValidator {
     public boolean isValidPosition(Board board){
         int movesPlayed = board.getLog().size();
         Color toMove = movesPlayed % 2 == 0? Color.WHITE : Color.BLACK;
-        if(toMove == Color.WHITE){
-            Square blackKing = board.getBlackKing();
-            return isSafeSquare(board, blackKing, Color.WHITE);
-        }else{
-            Square whiteKing = board.getWhiteKing();
-            return isSafeSquare(board, whiteKing, Color.BLACK);
-        }
+        Square king = toMove == Color.WHITE? board.getBlackPieceSet().getKingPosition() : board.getWhitePieceSet().getKingPosition();
+        return isSafeSquare(board, king, toMove);
     }
 
     /**

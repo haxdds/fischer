@@ -105,6 +105,10 @@ public class Move {
         return this.getStart().equals(m.getStart()) && this.getEnd().equals(m.getEnd());
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode(){
         return this.getStart().getRow() + this.getEnd().getCol();

@@ -26,9 +26,7 @@ public class MoveHandler {
     /**
      *
      */
-
     private MoveGenerator generator;
-    private MoveValidator validator;
     private PositionValidator positionValidator;
 
 
@@ -37,7 +35,6 @@ public class MoveHandler {
      */
     public MoveHandler(){
         generator = new MoveGenerator();
-        validator = new MoveValidator();
         positionValidator = new PositionValidator();
     }
 
@@ -154,6 +151,7 @@ public class MoveHandler {
      */
     public Move getCastlingRookMove(Move kingMove){
         int rookRow = kingMove.getStart().getRow();
+        // if king castles right, return H->F file rook move, else return A->C file rook move
         return kingMove.getEnd().getCol() - kingMove.getStart().getCol() > 0 ?
                 new Move(new Square(rookRow, 7, Color.WHITE), new Square(rookRow, 5, Color.WHITE)) :
                 new Move(new Square(rookRow, 0, Color.WHITE), new Square(rookRow, 4, Color.WHITE));

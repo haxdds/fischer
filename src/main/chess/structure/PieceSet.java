@@ -81,6 +81,18 @@ public class PieceSet implements Iterable<Piece>{
         pieceMap.remove(p, s);
     }
 
+
+    /**
+     *
+     * @return
+     */
+    public Square getKingPosition(){
+        for(Piece p: pieceMap.keySet()){
+            if(p.getType() == Type.KING) return pieceMap.get(p);
+        }
+        return null;
+    }
+
     /**
      *
      * @return
