@@ -89,7 +89,7 @@ public class PositionValidator {
             if (enemyPiece.getColor() != enemyColor || !dangerousPieces.contains(enemyPiece.getType())) continue;
 
             // deadly square
-            if(enemyPiece.getType() != Type.KING || enemyPiece.getType() != Type.PAWN) return false;
+            if(enemyPiece.getType() != Type.KING && enemyPiece.getType() != Type.PAWN) return false;
 
             int deltaRow = square.getRow() - end.getRow();
             int deltaCol = square.getCol() - end.getCol();
