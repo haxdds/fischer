@@ -142,6 +142,7 @@ public class MoveGenerator {
         // if 2 square move
         if(t.getY() == 2 * y){
             if(start.getRow() != startingRow) return false;
+            if(board.getSquare((startingRow + end.getRow())/2, end.getCol()).isOccupied()) return false;
             if(end.isOccupied()) return false;
         }
 

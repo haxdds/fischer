@@ -58,83 +58,6 @@ public class Board {
         setPieces();
     }
 
-    /**
-     * Initializes the square on the board by creating
-     * appropriate square objects and placing adding them to the
-     * board array.
-     *
-     * @see Board#board
-     */
-    public void setUpSquares() {
-        for (int row = 0; row <= 7; row++) {
-            for (int column = 0; column <= 7; column++) {
-                if ((row + column) % 2 == 0) {
-                    Square sq = new Square(row, column, Color.BLACK);
-                    board[row][column] = sq;
-                } else {
-                    Square sq = new Square(row, column, Color.WHITE);
-                    board[row][column] = sq;
-                }
-            }
-        }
-    }
-
-    /**
-     * Sets square on board with the given square.
-     *
-     * @param s the square that will replace the old square.
-     */
-    public void setSquare(Square s) {
-        board[s.getRow()][s.getCol()] = s;
-    }
-
-    /**
-     * Creates appropriate pieces for each color and places them
-     * in both the appropriate squares on the board and the list of
-     * pieces.
-     *
-     * @see Board#whitePieceSet
-     * @see Board#blackPieceSet
-     */
-    public void setPieces() {
-        Piece wpawn = new Piece(Type.PAWN, Color.WHITE);
-        Piece wknight = new Piece(Type.KNIGHT, Color.WHITE);
-        Piece wbishop = new Piece(Type.BISHOP, Color.WHITE);
-        Piece wrook = new Piece(Type.ROOK, Color.WHITE);
-        Piece wqueen = new Piece(Type.QUEEN, Color.WHITE);
-        Piece wking = new Piece(Type.KING, Color.WHITE);
-
-        Piece bpawn = new Piece(Type.PAWN, Color.BLACK);
-        Piece bknight = new Piece(Type.KNIGHT, Color.BLACK);
-        Piece bbishop = new Piece(Type.BISHOP, Color.BLACK);
-        Piece brook = new Piece(Type.ROOK, Color.BLACK);
-        Piece bqueen = new Piece(Type.QUEEN, Color.BLACK);
-        Piece bking = new Piece(Type.KING, Color.BLACK);
-
-        for (int column = 0; column < 8; column++) {
-            addPiece(1, column, wpawn.clone());
-            addPiece(6, column, bpawn.clone());
-        }
-
-        addPiece(0, 0, wrook.clone());
-        addPiece(0, 1, wknight.clone());
-        addPiece(0, 2, wbishop.clone());
-        addPiece(0, 3, wqueen.clone());
-        addPiece(0, 4, wking.clone());
-        addPiece(0, 5, wbishop.clone());
-        addPiece(0, 6, wknight.clone());
-        addPiece(0, 7, wrook.clone());
-
-        addPiece(7, 0, brook.clone());
-        addPiece(7, 1, bknight.clone());
-        addPiece(7, 2, bbishop.clone());
-        addPiece(7, 3, bqueen.clone());
-        addPiece(7, 4, bking.clone());
-        addPiece(7, 5, bbishop.clone());
-        addPiece(7, 6, bknight.clone());
-        addPiece(7, 7, brook.clone());
-
-    }
 
     /**
      * Moves the piece occupying the starting row and column
@@ -517,6 +440,83 @@ public class Board {
      */
     public void setLog(MoveLog log){this.log = log;}
 
+    /**
+     * Initializes the square on the board by creating
+     * appropriate square objects and placing adding them to the
+     * board array.
+     *
+     * @see Board#board
+     */
+    public void setUpSquares() {
+        for (int row = 0; row <= 7; row++) {
+            for (int column = 0; column <= 7; column++) {
+                if ((row + column) % 2 == 0) {
+                    Square sq = new Square(row, column, Color.BLACK);
+                    board[row][column] = sq;
+                } else {
+                    Square sq = new Square(row, column, Color.WHITE);
+                    board[row][column] = sq;
+                }
+            }
+        }
+    }
+
+    /**
+     * Sets square on board with the given square.
+     *
+     * @param s the square that will replace the old square.
+     */
+    public void setSquare(Square s) {
+        board[s.getRow()][s.getCol()] = s;
+    }
+
+    /**
+     * Creates appropriate pieces for each color and places them
+     * in both the appropriate squares on the board and the list of
+     * pieces.
+     *
+     * @see Board#whitePieceSet
+     * @see Board#blackPieceSet
+     */
+    public void setPieces() {
+        Piece wpawn = new Piece(Type.PAWN, Color.WHITE);
+        Piece wknight = new Piece(Type.KNIGHT, Color.WHITE);
+        Piece wbishop = new Piece(Type.BISHOP, Color.WHITE);
+        Piece wrook = new Piece(Type.ROOK, Color.WHITE);
+        Piece wqueen = new Piece(Type.QUEEN, Color.WHITE);
+        Piece wking = new Piece(Type.KING, Color.WHITE);
+
+        Piece bpawn = new Piece(Type.PAWN, Color.BLACK);
+        Piece bknight = new Piece(Type.KNIGHT, Color.BLACK);
+        Piece bbishop = new Piece(Type.BISHOP, Color.BLACK);
+        Piece brook = new Piece(Type.ROOK, Color.BLACK);
+        Piece bqueen = new Piece(Type.QUEEN, Color.BLACK);
+        Piece bking = new Piece(Type.KING, Color.BLACK);
+
+        for (int column = 0; column < 8; column++) {
+            addPiece(1, column, wpawn.clone());
+            addPiece(6, column, bpawn.clone());
+        }
+
+        addPiece(0, 0, wrook.clone());
+        addPiece(0, 1, wknight.clone());
+        addPiece(0, 2, wbishop.clone());
+        addPiece(0, 3, wqueen.clone());
+        addPiece(0, 4, wking.clone());
+        addPiece(0, 5, wbishop.clone());
+        addPiece(0, 6, wknight.clone());
+        addPiece(0, 7, wrook.clone());
+
+        addPiece(7, 0, brook.clone());
+        addPiece(7, 1, bknight.clone());
+        addPiece(7, 2, bbishop.clone());
+        addPiece(7, 3, bqueen.clone());
+        addPiece(7, 4, bking.clone());
+        addPiece(7, 5, bbishop.clone());
+        addPiece(7, 6, bknight.clone());
+        addPiece(7, 7, brook.clone());
+
+    }
 
     /**
      * Returns a clone of this Board object.
@@ -529,9 +529,6 @@ public class Board {
     public Board clone() {
         Board clone = new Board();
 
-//        for(Move m : log.getMoves()){
-//
-//        }
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 clone.board[row][col] = (getSquare(row, col).clone());
