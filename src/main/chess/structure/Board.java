@@ -2,8 +2,6 @@ package main.chess.structure;
 
 import main.chess.controller.Controller;
 
-import java.util.HashMap;
-
 /**
  * Created by Rahul on 7/19/2017.
  * <p>

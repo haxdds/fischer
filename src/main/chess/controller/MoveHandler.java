@@ -1,10 +1,6 @@
 package main.chess.controller;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-
+import java.util.*;
 import main.chess.structure.*;
 
 /**
@@ -27,8 +23,7 @@ public class MoveHandler {
      *
      */
 
-    private MoveGenerator generator;
-    private MoveValidator validator;
+    private MoveGenerator generator;    
     private PositionValidator positionValidator;
 
 
@@ -36,8 +31,7 @@ public class MoveHandler {
      * A constructor for MoveHandler objects.
      */
     public MoveHandler(){
-        generator = new MoveGenerator();
-        validator = new MoveValidator();
+        generator = new MoveGenerator();        
         positionValidator = new PositionValidator();
     }
 

@@ -1,7 +1,5 @@
 package main.chess.structure;
 
-import main.chess.controller.MoveHandler;
-
 /**
  * Created by Rahul on 7/19/2017.
  * <p>

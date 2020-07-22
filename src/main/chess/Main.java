@@ -1,7 +1,6 @@
 package main.chess;
 
 import main.chess.game.Game;
-import main.chess.structure.*;
 
 /**
  * Created by Rahul on 7/19/2017.

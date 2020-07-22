@@ -1,11 +1,7 @@
 package main.chess.controller;
 
 import main.chess.structure.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  *  Created by Rahul: 06/07/2020
